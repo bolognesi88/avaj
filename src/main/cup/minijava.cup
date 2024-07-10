@@ -21,7 +21,7 @@ terminal INTEGER_TYPE;
 terminal STRING;
 terminal IF, ELSE, WHILE, RETURN;
 terminal CLASS, EXTENDS;
-terminal PUBLIC, STATIC, VOID, MAIN;
+terminal PRIVATE, PROTECTED, PUBLIC, STATIC, VOID, MAIN;
 terminal TRUE, FALSE, THIS;
 terminal LENGTH;
 terminal NEW;
@@ -62,6 +62,8 @@ nonterminal ExpList MethodInvocationParameterList;
 nonterminal ExpList ExpressionList;
 nonterminal ClassDecl ClassDecl;
 nonterminal ClassDeclList ClassDeclList;
+nonterminal String ClassVisibility;
+nonterminal String MethodVisibility;
 
 /* Precedence declarations */
 
@@ -86,13 +88,25 @@ StatementList ::= Statement:s StatementList:l
         |
             {: RESULT = new StatementList(0); :};
 
-MainClass ::= CLASS:c Identifier:id LBRACE PUBLIC STATIC VOID MAIN LPAREN STRING LBRACKET RBRACKET Identifier:args RPAREN LBRACE Statement:stmt RBRACE RBRACE
-            {: RESULT = new MainClass(id, args, stmt, cleft); :};
+ClassVisibility ::= // empty
+			{: RESULT = ""; :}
+		| PUBLIC 		
+			{: RESULT = "public"; :};
 
-ClassDecl ::= CLASS Identifier:i LBRACE VarDeclarationList:v MethodDeclList:m RBRACE
-            {: RESULT = new ClassDeclSimple(i, v, m, ileft); :}
-        | CLASS Identifier:i EXTENDS Identifier:parent LBRACE VarDeclarationList:v MethodDeclList:m RBRACE
-            {: RESULT = new ClassDeclExtends(i, parent, v, m, ileft); :};
+MethodVisibility ::= PUBLIC 		
+			{: RESULT = "public"; :}
+		| PROTECTED 		
+			{: RESULT = "protected"; :}
+		| PRIVATE
+			{: RESULT = "private"; :};	
+
+MainClass ::= ClassVisibility:v CLASS:c Identifier:id LBRACE PUBLIC STATIC VOID MAIN LPAREN STRING LBRACKET RBRACKET Identifier:args RPAREN LBRACE Statement:stmt RBRACE RBRACE
+            {: RESULT = new MainClass(id, args, stmt, v, cleft); :};
+
+ClassDecl ::= ClassVisibility:p CLASS Identifier:i LBRACE VarDeclarationList:v MethodDeclList:m RBRACE
+            {: RESULT = new ClassDeclSimple(i, p, v, m, ileft); :}
+        | ClassVisibility:p CLASS Identifier:i EXTENDS Identifier:parent LBRACE VarDeclarationList:v MethodDeclList:m RBRACE
+            {: RESULT = new ClassDeclExtends(i, parent, p, v, m, ileft); :};
 
 ClassDeclList ::=
             {: RESULT = new ClassDeclList(0); :}
@@ -104,8 +118,8 @@ MethodDeclList ::=
         | MethodDecl:m MethodDeclList:l
             {: RESULT = l; l.addElement(m); :};
 
-MethodDecl ::= PUBLIC:p Type:t Identifier:i FormalParameterListAndParens:params LBRACE VarDeclarationList:vars StatementList:stmts RETURN Expression:rv SEMICOLON RBRACE
-            {: RESULT = new MethodDecl(t, i, params, vars, stmts, rv, pleft); :};
+MethodDecl ::= MethodVisibility:p Type:t Identifier:i FormalParameterListAndParens:params LBRACE VarDeclarationList:vars StatementList:stmts RETURN Expression:rv SEMICOLON RBRACE
+            {: RESULT = new MethodDecl(t, i, p, params, vars, stmts, rv, pleft); :};
 
 Statement   ::= Identifier:id BECOMES Expression:expr SEMICOLON
                 {: RESULT = new Assign(id, expr, idleft); :}

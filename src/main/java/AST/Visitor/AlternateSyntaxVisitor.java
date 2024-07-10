@@ -18,6 +18,9 @@ public class AlternateSyntaxVisitor implements Visitor {
   // Identifier i1,i2;
   // Statement s;
   public void visit(MainClass n) {
+	if (n.v!=null && n.v.trim().length()>0) {
+		System.out.print(n.v+" ");
+	}
     System.out.print("class ");
     n.i1.accept(this);
     System.out.println(" {");
@@ -34,6 +37,10 @@ public class AlternateSyntaxVisitor implements Visitor {
   // VarDeclList vl;
   // MethodDeclList ml;
   public void visit(ClassDeclSimple n) {
+	if (n.v!=null && n.v.trim().length()>0) {
+		System.out.print(n.v+" ");
+	}
+	
     System.out.print("class ");
     n.i.accept(this);
     System.out.println(" { ");
@@ -89,7 +96,10 @@ public class AlternateSyntaxVisitor implements Visitor {
   // StatementList sl;
   // Exp e;
   public void visit(MethodDecl n) {
-    System.out.print("  public ");
+	if (n.v!=null && n.v.trim().length()>0) {
+		System.out.print(n.v+" ");
+	}
+    // System.out.print("  public ");
     n.t.accept(this);
     System.out.print(" ");
     n.i.accept(this);

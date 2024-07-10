@@ -71,6 +71,8 @@ import Throwables.*;
       case sym.CLASS: return "CLASS";
       case sym.EXTENDS: return "EXTENDS";
       case sym.PUBLIC: return "PUBLIC";
+      case sym.PROTECTED: return "PROTECTED";
+      case sym.PRIVATE: return "PRIVATE";
       case sym.STATIC: return "STATIC";
       case sym.VOID: return "VOID";
       case sym.MAIN: return "MAIN";
@@ -129,6 +131,8 @@ end_comment = "*/"
 "class" { return symbol(sym.CLASS); }
 "extends" { return symbol(sym.EXTENDS); }
 "public" { return symbol(sym.PUBLIC); }
+"protected" { return symbol(sym.PROTECTED); }
+"private" { return symbol(sym.PRIVATE); }
 "static" { return symbol(sym.STATIC); }
 "void" { return symbol(sym.VOID); }
 "main" { return symbol(sym.MAIN); }
