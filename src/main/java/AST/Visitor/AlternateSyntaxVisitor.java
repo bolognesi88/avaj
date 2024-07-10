@@ -28,7 +28,16 @@ public class AlternateSyntaxVisitor implements Visitor {
     n.i2.accept(this);
     System.out.println(") {");
     System.out.print("    ");
-    n.s.accept(this);
+    for ( int i = 0; i < n.dl.size(); i++ ) {
+        System.out.print("\t");
+        n.dl.elementAt(i).accept(this);
+        System.out.println("");
+    }
+    for ( int i = 0; i < n.sl.size(); i++ ) {
+        System.out.print("\t");
+        n.sl.elementAt(i).accept(this);
+        if ( i < n.sl.size() ) { System.out.println(""); }    
+    };
     System.out.println("\n  }");
     System.out.println("}");
   }
@@ -207,9 +216,11 @@ public class AlternateSyntaxVisitor implements Visitor {
 
   // Exp e;
   public void visit(Print n) {
-    System.out.print("System.out.println(");
-    n.e.accept(this);
-    System.out.print(")");
+	System.out.print("(");
+	n.e.accept(this);
+    System.out.print(")\n\t|\n\tSystem.out.println");
+    
+    
     System.out.print(STATEMENT_END);//    System.out.print(";");
   }
   
@@ -217,7 +228,7 @@ public class AlternateSyntaxVisitor implements Visitor {
   // Exp e;
   public void visit(Assign n) {
 	n.e.accept(this);
-    System.out.print("\n\t\\\n\t");
+    System.out.print("\n\t|\n\t");
     n.i.accept(this);
     
     System.out.print(STATEMENT_END);//    System.out.print(";");
@@ -354,7 +365,7 @@ public class AlternateSyntaxVisitor implements Visitor {
 	        n.el.elementAt(i).accept(this);
 	        if ( i+1 < n.el.size() ) { System.out.print(", "); }
 	    }
-	    System.out.print(")\n\t\\\n");
+	    System.out.print(")\n\t|\n");
 	
 	System.out.print("\t");
     n.e.accept(this);

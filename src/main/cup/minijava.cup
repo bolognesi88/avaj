@@ -117,8 +117,8 @@ MethodModifier ::= PUBLIC
 		| STRICTFP
 			{: RESULT = "strictfp"; :};	
 
-MainClass ::= ClassVisibility:v CLASS:c Identifier:id LBRACE PUBLIC STATIC VOID MAIN LPAREN STRING LBRACKET RBRACKET Identifier:args RPAREN LBRACE Statement:stmt RBRACE RBRACE
-            {: RESULT = new MainClass(id, args, stmt, v, cleft); :};
+MainClass ::= ClassVisibility:v CLASS:c Identifier:id LBRACE PUBLIC STATIC VOID MAIN LPAREN STRING LBRACKET RBRACKET Identifier:args RPAREN LBRACE VarDeclarationList:vars StatementList:stmts RBRACE RBRACE
+            {: RESULT = new MainClass(id, args, vars, stmts, v, cleft); :};
 
 ClassDecl ::= ClassVisibility:p CLASS Identifier:i LBRACE VarDeclarationList:v MethodDeclList:m RBRACE
             {: RESULT = new ClassDeclSimple(i, p, v, m, ileft); :}

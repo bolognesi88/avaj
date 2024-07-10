@@ -3,12 +3,13 @@ import AST.Visitor.Visitor;
 
 public class MainClass extends ASTNode{
   public Identifier i1,i2;
-  public Statement s;
+  public VarDeclList dl;
+  public StatementList sl;
   public String v;
 
-  public MainClass(Identifier ai1, Identifier ai2, Statement as, String visibility, int ln) {
+  public MainClass(Identifier ai1, Identifier ai2, VarDeclList avl, StatementList asl, String visibility, int ln) {
     super(ln);
-    i1=ai1; i2=ai2; s=as;
+    i1=ai1; i2=ai2; sl=asl; dl = avl;
     v=visibility;
   }
 

@@ -1,6 +1,9 @@
 public class MyTestClass {
     public static void main(String[] args) {
-        System.out.println((new Bar()).meep(false));
+    	Bar b;
+    	
+    	b = new Bar();
+        System.out.println(b.meep(false));
     }
 }
 
