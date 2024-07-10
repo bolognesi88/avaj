@@ -53,7 +53,7 @@
 	        <dependency>
 			   <groupId>com.sun</groupId>
 			   <artifactId>tools</artifactId>
-			   <version>1.6</version>
+			   <version>1.8</version>
 			   <scope>system</scope>
 			   <systemPath>C:\Java\jdk1.8.0_45\lib\tools.jar</systemPath>
 			 </dependency>
@@ -76,7 +76,6 @@
 			    <className>minijava</className>
 			    <symbolsName>sym</symbolsName>
 			    <cupDefinition>src/main/cup/minijava.cup</cupDefinition>
-			    <outputDirectory>${project.build.directory}/generated-sources/jflex</outputDirectory>
 			  </configuration>
 			</plugin>
 	      
