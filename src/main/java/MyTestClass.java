@@ -12,10 +12,10 @@ class Bar {
         a = 5;
         b = 3;
 
-        while (a > b)
+        while (a < b)
             System.out.println(6);
 
-        if (b > a) {
+        if (b < a) {
             b = a;
         } else {
             b = 5 * 2 + 3;
