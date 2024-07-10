@@ -228,6 +228,32 @@ public class AlternateSyntaxVisitor implements Visitor {
     System.out.print(")");
   }
 
+  // Exp e1,e2;
+  public void visit(LessThanEquals n) {
+    System.out.print("(");
+    n.e1.accept(this);
+    System.out.print(" <= ");
+    n.e2.accept(this);
+    System.out.print(")");
+  }
+
+  // Exp e1,e2;
+  public void visit(GreaterThanEquals n) {
+    System.out.print("(");
+    n.e1.accept(this);
+    System.out.print(" >= ");
+    n.e2.accept(this);
+    System.out.print(")");
+  }
+
+  // Exp e1,e2;
+  public void visit(Equals n) {
+    System.out.print("(");
+    n.e1.accept(this);
+    System.out.print(" == ");
+    n.e2.accept(this);
+    System.out.print(")");
+  } 
   
   // Exp e1,e2;
   public void visit(Plus n) {
@@ -256,6 +282,15 @@ public class AlternateSyntaxVisitor implements Visitor {
     System.out.print(")");
   }
 
+  // Exp e1,e2;
+  public void visit(Divide n) {
+    System.out.print("(");
+    n.e1.accept(this);
+    System.out.print(" / ");
+    n.e2.accept(this);
+    System.out.print(")");
+  }
+  
   // Exp e1,e2;
   public void visit(ArrayLookup n) {
     n.e1.accept(this);

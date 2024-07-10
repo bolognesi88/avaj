@@ -44,6 +44,11 @@ import Throwables.*;
       case sym.TIMES: return "TIMES";
       case sym.AND: return "AND";
       case sym.LT: return "LT";
+      case sym.LE: return "LE";
+      case sym.GT: return "GT";
+      case sym.GE: return "GE";
+      case sym.EQUALS: return "EQUALS";
+      case sym.DIVIDE: return "DIVIDE";
       case sym.LPAREN: return "LPAREN";
       case sym.RPAREN: return "RPAREN";
       case sym.LBRACKET: return "LBRACKET";
@@ -142,6 +147,10 @@ end_comment = "*/"
 "&&" { return symbol(sym.AND); }
 "<" { return symbol(sym.LT); }
 ">" { return symbol(sym.GT); }
+">=" { return symbol(sym.GE); }
+"<=" { return symbol(sym.LE); }
+"==" { return symbol(sym.EQUALS); }
+"/" { return symbol(sym.DIVIDE); }
 "!" { return symbol(sym.NOT); }
 "." { return symbol(sym.DOT); }
 "," { return symbol(sym.COMMA); }

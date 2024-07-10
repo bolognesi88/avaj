@@ -21,8 +21,7 @@ public interface Visitor {
   public void visit(Assign n);
   public void visit(ArrayAssign n);
   public void visit(And n);
-  public void visit(LessThan n);
-  public void visit(GreaterThan n);
+  public void visit(LessThan n);  
   public void visit(Plus n);
   public void visit(Minus n);
   public void visit(Times n);
@@ -40,4 +39,10 @@ public interface Visitor {
   public void visit(Identifier n);
   public void visit(FloatLiteral n);
   public void visit(FloatType n);
+
+	public void visit(GreaterThan n);
+	public void visit(Divide divide);
+	public void visit(Equals equals);
+	public void visit(GreaterThanEquals greaterThanEquals);
+	public void visit(LessThanEquals lessThanEquals);
 }
