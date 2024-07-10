@@ -38,8 +38,11 @@ class Bar {
     	return v;
     }
     
-    protected int meep3() {
+    protected void meep3() {
     	System.out.println(3);
-    	return 3;
+    }
+    
+    static void meep4() {
+    	System.out.println(4);
     }
 }

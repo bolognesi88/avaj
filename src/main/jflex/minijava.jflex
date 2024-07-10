@@ -87,16 +87,25 @@ end_comment = "*/"
 /* declarations */
 "class" { return symbol(sym.CLASS); }
 "extends" { return symbol(sym.EXTENDS); }
+"void" { return symbol(sym.VOID); }
+"main" { return symbol(sym.MAIN); }
+"length" { return symbol(sym.LENGTH); }
+"this" { return symbol(sym.THIS); }
+"new" { return symbol(sym.NEW); }
+
+/* modifiers */
 "public" { return symbol(sym.PUBLIC); }
 "protected" { return symbol(sym.PROTECTED); }
 "private" { return symbol(sym.PRIVATE); }
 "static" { return symbol(sym.STATIC); }
-"void" { return symbol(sym.VOID); }
-"main" { return symbol(sym.MAIN); }
+"abstract" { return symbol(sym.ABSTRACT); }
+"final" { return symbol(sym.FINAL); }
+"native" { return symbol(sym.NATIVE); }
+"synchronized" { return symbol(sym.SYNCHRONIZED); }
+"transient" { return symbol(sym.TRANSIENT); }
+"volatile" { return symbol(sym.VOLATILE); }
+"strictfp" { return symbol(sym.STRICTFP); }
 
-"length" { return symbol(sym.LENGTH); }
-"this" { return symbol(sym.THIS); }
-"new" { return symbol(sym.NEW); }
 
 /* literals */
 {digit}+ { return symbol(sym.INTEGER_LITERAL, new Integer(yytext())); }

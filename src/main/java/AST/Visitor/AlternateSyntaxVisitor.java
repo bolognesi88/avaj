@@ -40,6 +40,9 @@ public class AlternateSyntaxVisitor implements Visitor {
 	if (n.v!=null && n.v.trim().length()>0) {
 		System.out.print(n.v+" ");
 	}
+	else {
+		System.out.print("package protected ");
+	}
 	
     System.out.print("class ");
     n.i.accept(this);
@@ -62,6 +65,13 @@ public class AlternateSyntaxVisitor implements Visitor {
   // VarDeclList vl;
   // MethodDeclList ml;
   public void visit(ClassDeclExtends n) {
+		if (n.v!=null && n.v.trim().length()>0) {
+			System.out.print(n.v+" ");
+		}
+		else {
+			System.out.print("package protected ");
+		}
+		
     System.out.print("class ");
     n.i.accept(this);
     System.out.println(" extends ");
@@ -99,8 +109,17 @@ public class AlternateSyntaxVisitor implements Visitor {
 	if (n.v!=null && n.v.trim().length()>0) {
 		System.out.print(n.v+" ");
 	}
+	else {
+		System.out.print("package protected ");
+	}
     // System.out.print("  public ");
-    n.t.accept(this);
+	
+	if (n.t!=null) {
+		n.t.accept(this);
+	}
+	else {
+		System.out.print("void");
+	}
     System.out.print(" ");
     n.i.accept(this);
     System.out.print(" (");
@@ -117,10 +136,13 @@ public class AlternateSyntaxVisitor implements Visitor {
     for ( int i = 0; i < n.sl.size(); i++ ) {
         System.out.print("    ");
         n.sl.elementAt(i).accept(this);
-        if ( i < n.sl.size() ) { System.out.println(""); }
+        if ( i < n.sl.size() ) { System.out.println(""); }    
     }
-    System.out.print("    return ");
-    n.e.accept(this);
+    
+    if (n.e!=null) {
+	    System.out.print("    return ");
+	    n.e.accept(this);
+    }
     System.out.print(STATEMENT_END);//System.out.println(";");
     System.out.print("  }");
   }

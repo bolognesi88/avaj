@@ -21,8 +21,9 @@ terminal INTEGER_TYPE;
 terminal STRING;
 terminal IF, ELSE, WHILE, RETURN;
 terminal CLASS, EXTENDS;
-terminal PRIVATE, PROTECTED, PUBLIC, STATIC, VOID, MAIN;
-terminal TRUE, FALSE, THIS;
+terminal PRIVATE, PROTECTED, PUBLIC, STATIC, ABSTRACT, FINAL, NATIVE, SYNCHRONIZED, TRANSIENT, VOLATILE, STRICTFP; 
+terminal MAIN;
+terminal TRUE, FALSE, VOID, THIS;
 terminal LENGTH;
 terminal NEW;
 terminal SYSTEM_OUT_PRINTLN;
@@ -63,7 +64,7 @@ nonterminal ExpList ExpressionList;
 nonterminal ClassDecl ClassDecl;
 nonterminal ClassDeclList ClassDeclList;
 nonterminal String ClassVisibility;
-nonterminal String MethodVisibility;
+nonterminal String MethodModifier;
 
 /* Precedence declarations */
 
@@ -93,12 +94,28 @@ ClassVisibility ::= // empty
 		| PUBLIC 		
 			{: RESULT = "public"; :};
 
-MethodVisibility ::= PUBLIC 		
+MethodModifier ::= PUBLIC 		
 			{: RESULT = "public"; :}
 		| PROTECTED 		
 			{: RESULT = "protected"; :}
 		| PRIVATE
-			{: RESULT = "private"; :};	
+			{: RESULT = "private"; :}
+		| STATIC
+			{: RESULT = "static"; :}
+		| ABSTRACT
+			{: RESULT = "abstract"; :}
+		| FINAL
+			{: RESULT = "final"; :}
+		| NATIVE
+			{: RESULT = "native"; :}
+		| SYNCHRONIZED
+			{: RESULT = "synchronized"; :}
+		| TRANSIENT
+			{: RESULT = "transient"; :}
+		| VOLATILE
+			{: RESULT = "volatile"; :}
+		| STRICTFP
+			{: RESULT = "strictfp"; :};	
 
 MainClass ::= ClassVisibility:v CLASS:c Identifier:id LBRACE PUBLIC STATIC VOID MAIN LPAREN STRING LBRACKET RBRACKET Identifier:args RPAREN LBRACE Statement:stmt RBRACE RBRACE
             {: RESULT = new MainClass(id, args, stmt, v, cleft); :};
@@ -118,8 +135,19 @@ MethodDeclList ::=
         | MethodDecl:m MethodDeclList:l
             {: RESULT = l; l.addElement(m); :};
 
-MethodDecl ::= MethodVisibility:p Type:t Identifier:i FormalParameterListAndParens:params LBRACE VarDeclarationList:vars StatementList:stmts RETURN Expression:rv SEMICOLON RBRACE
-            {: RESULT = new MethodDecl(t, i, p, params, vars, stmts, rv, pleft); :};
+MethodDecl ::= MethodModifier:p Type:t Identifier:i FormalParameterListAndParens:params LBRACE VarDeclarationList:vars StatementList:stmts RETURN Expression:rv SEMICOLON RBRACE
+            {: RESULT = new MethodDecl(t, i, p, params, vars, stmts, rv, pleft); :}
+            |
+            MethodModifier:p VOID Identifier:i FormalParameterListAndParens:params LBRACE VarDeclarationList:vars StatementList:stmts RBRACE
+            {: RESULT = new MethodDecl(null, i, p, params, vars, stmts, null, pleft); :};
+
+VarDeclarationList ::=
+            {: RESULT = new VarDeclList(0); :}
+        | VarDeclarationList:l VarDeclaration:e
+            {: RESULT = l; l.addElement(e); :};
+
+VarDeclaration ::= Type:t Identifier:i SEMICOLON
+            {: RESULT = new VarDecl(t, i, tleft); :};
 
 Statement   ::= Identifier:id BECOMES Expression:expr SEMICOLON
                 {: RESULT = new Assign(id, expr, idleft); :}
@@ -196,14 +224,6 @@ Type ::= INTEGER_TYPE:i
             {: RESULT = new IdentifierType(i.s, ileft); :}
         | INTEGER_TYPE:i LBRACKET RBRACKET
             {: RESULT = new IntArrayType(ileft); :};
-
-VarDeclaration ::= Type:t Identifier:i SEMICOLON
-            {: RESULT = new VarDecl(t, i, tleft); :};
-
-VarDeclarationList ::=
-            {: RESULT = new VarDeclList(0); :}
-        | VarDeclarationList:l VarDeclaration:e
-            {: RESULT = l; l.addElement(e); :};
 
 FormalParameter ::= Type:t Identifier:i
             {: RESULT = new Formal(t, i, tleft); :};
