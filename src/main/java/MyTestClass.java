@@ -5,6 +5,8 @@ public class MyTestClass {
 }
 
 class Bar {
+	int property;
+	
     public int meep(boolean aVar) {
         int a;
         int b;

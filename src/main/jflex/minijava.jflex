@@ -36,55 +36,12 @@ import Throwables.*;
 
   // print out a symbol (aka token) nicely
   public String symbolToString(Symbol s) {
-    switch (s.sym) {
-      case sym.BECOMES: return "BECOMES";
-      case sym.SEMICOLON: return "SEMICOLON";
-      case sym.PLUS: return "PLUS";
-      case sym.MINUS: return "MINUS";
-      case sym.TIMES: return "TIMES";
-      case sym.AND: return "AND";
-      case sym.LT: return "LT";
-      case sym.LE: return "LE";
-      case sym.GT: return "GT";
-      case sym.GE: return "GE";
-      case sym.EQUALS: return "EQUALS";
-      case sym.DIVIDE: return "DIVIDE";
-      case sym.LPAREN: return "LPAREN";
-      case sym.RPAREN: return "RPAREN";
-      case sym.LBRACKET: return "LBRACKET";
-      case sym.RBRACKET: return "RBRACKET";
-      case sym.LBRACE: return "LBRACE";
-      case sym.RBRACE: return "RBRACE";
-      case sym.RETURN: return "RETURN";
-      case sym.IDENTIFIER: return "ID(" + (String)s.value + ")";
-      case sym.INTEGER_LITERAL: return "INTEGER_LITERAL(" + s.value + ")";
-      case sym.BOOLEAN_TYPE: return "BOOLEAN";
-      case sym.INTEGER_TYPE: return "INTEGER";
-      case sym.IF: return "IF";
-      case sym.NOT: return "NOT";
-      case sym.DOT: return "DOT";
-      case sym.COMMA: return "COMMA";
-      case sym.STRING: return "STRING";
-      case sym.SYSTEM_OUT_PRINTLN: return "SYSTEM_OUT_PRINTLN";
-      case sym.ELSE: return "ELSE";
-      case sym.WHILE: return "WHILE";
-      case sym.CLASS: return "CLASS";
-      case sym.EXTENDS: return "EXTENDS";
-      case sym.PUBLIC: return "PUBLIC";
-      case sym.PROTECTED: return "PROTECTED";
-      case sym.PRIVATE: return "PRIVATE";
-      case sym.STATIC: return "STATIC";
-      case sym.VOID: return "VOID";
-      case sym.MAIN: return "MAIN";
-      case sym.TRUE: return "TRUE";
-      case sym.FALSE: return "FALSE";
-      case sym.LENGTH: return "LENGTH";
-      case sym.THIS: return "THIS";
-      case sym.NEW: return "NEW";
-      case sym.EOF: return "<EOF>";
-      case sym.error: return "<ERROR>";
-      default: return "<UNEXPECTED TOKEN " + s.toString() + ">";
-    }
+    	if (s.value!=null) {
+    		return (sym.terminalNames[s.sym]+"("+s.value+")");
+    	}
+    	else {
+    		return (sym.terminalNames[s.sym]);
+    	}	
   }
 %}
 
