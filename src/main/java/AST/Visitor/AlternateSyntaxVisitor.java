@@ -217,7 +217,7 @@ public class AlternateSyntaxVisitor implements Visitor {
   // Exp e;
   public void visit(Assign n) {
 	n.e.accept(this);
-    System.out.print("\n\t|\n\t");
+    System.out.print("\n\t\\\n\t");
     n.i.accept(this);
     
     System.out.print(STATEMENT_END);//    System.out.print(";");
@@ -354,7 +354,7 @@ public class AlternateSyntaxVisitor implements Visitor {
 	        n.el.elementAt(i).accept(this);
 	        if ( i+1 < n.el.size() ) { System.out.print(", "); }
 	    }
-	    System.out.print(")\n\t|\n");
+	    System.out.print(")\n\t\\\n");
 	
 	System.out.print("\t");
     n.e.accept(this);
