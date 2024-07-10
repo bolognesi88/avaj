@@ -7,6 +7,7 @@ public class MyTestClass {
     }
 }
 
+/* isto é um comentário */
 class Bar {
 	int property;
 	
@@ -48,4 +49,11 @@ class Bar {
     static void meep4() {
     	System.out.println(4);
     }
+}
+
+
+class Toba extends Bar {
+	public void nadinha() {
+		
+	}
 }
