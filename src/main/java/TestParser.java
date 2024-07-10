@@ -19,7 +19,7 @@ public class TestParser {
             root = p.parse();
 
             Program prog = (Program)root.value;
-            prog.accept(new PrettyPrintVisitor());
+            prog.accept(new AlternateSyntaxVisitor());
 
             System.out.print("\nParsing successfull"); 
         } catch (CompilerException e) {
