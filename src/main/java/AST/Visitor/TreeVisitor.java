@@ -290,6 +290,25 @@ public class TreeVisitor implements Visitor {
         --indentLevel;
     }
 
+    public void visit(GreaterThan n) {
+        println("greater than:");
+        ++indentLevel;
+
+        println("left side:");
+        ++indentLevel;
+        n.e1.accept(this);
+        --indentLevel;
+
+        println("right side:");
+        ++indentLevel;
+        n.e2.accept(this);
+        --indentLevel;
+
+        --indentLevel;
+    }
+
+    
+    
     public void visit(Plus n) {
         println("addition:");
         ++indentLevel;

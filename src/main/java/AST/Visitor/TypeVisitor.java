@@ -191,6 +191,7 @@ public class TypeVisitor implements Visitor {
     public void visit(ArrayAssign n) { }
     public void visit(And n) { }
     public void visit(LessThan n) { }
+    public void visit(GreaterThan n) { }
     public void visit(Plus n) { }
     public void visit(Minus n) { }
     public void visit(Times n) { }

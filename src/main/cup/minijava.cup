@@ -28,7 +28,7 @@ terminal NEW;
 terminal SYSTEM_OUT_PRINTLN;
 
 /* operators and friends: */
-terminal PLUS, MINUS, TIMES, AND, LT, BECOMES, NOT, DOT, COMMA;
+terminal PLUS, MINUS, TIMES, AND, LT, GT, BECOMES, NOT, DOT, COMMA;
 
 /* delimiters: */
 terminal LBRACKET, RBRACKET,
@@ -67,7 +67,7 @@ nonterminal ClassDeclList ClassDeclList;
 
 precedence nonassoc BECOMES;
 precedence nonassoc AND;
-precedence left LT;
+precedence left LT, GT;
 precedence left PLUS, MINUS;
 precedence left TIMES;
 precedence right NOT, NEW;
@@ -132,6 +132,8 @@ Expression    ::= IDENTIFIER:name
             {: RESULT = new Times(arg1, arg2, arg1left); :}
         | Expression:arg1 LT Expression:arg2
             {: RESULT = new LessThan(arg1, arg2, arg1left); :}
+        | Expression:arg1 GT Expression:arg2
+            {: RESULT = new GreaterThan(arg1, arg2, arg1left); :}    
         | Expression:arg1 AND Expression:arg2
             {: RESULT = new And(arg1, arg2, arg1left); :}
         | LPAREN Expression:expr RPAREN

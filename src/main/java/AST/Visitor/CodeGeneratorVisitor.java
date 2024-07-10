@@ -530,6 +530,25 @@ public class CodeGeneratorVisitor implements Visitor {
         code.add(labelEnd + ":");
     }
 
+    
+    public void visit(GreaterThan n) {
+        String labelTrue = getLabel();
+        String labelEnd = getLabel();
+
+        n.e1.accept(this);
+        code.add("    pushl %eax");
+        n.e2.accept(this);
+        code.add("    popl %edx");
+        code.add("    cmpl %eax, %edx");
+        code.add("    jg " + labelTrue);
+        code.add("    movl $0, %eax");
+        code.add("    jmp " + labelEnd);
+        code.add(labelTrue + ":");
+        code.add("    movl $1, %eax");
+        code.add(labelEnd + ":");
+    }
+
+    
     public void visit(Plus n) {
         n.e1.accept(this);
         code.add("    pushl %eax");

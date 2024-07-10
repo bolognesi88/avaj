@@ -141,6 +141,7 @@ end_comment = "*/"
 "*" { return symbol(sym.TIMES); }
 "&&" { return symbol(sym.AND); }
 "<" { return symbol(sym.LT); }
+">" { return symbol(sym.GT); }
 "!" { return symbol(sym.NOT); }
 "." { return symbol(sym.DOT); }
 "," { return symbol(sym.COMMA); }

@@ -353,6 +353,26 @@ public class VerifyTypeVisitor implements Visitor {
         this.rValueType = NodeType.BOOLEAN;
     }
 
+    
+    public void visit(GreaterThan n) {
+        n.e1.accept(this);
+        if(!this.rValueType.equals(NodeType.INT) &&
+           !this.rValueType.equals(NodeType.FLOAT)) {
+            returnValue = 1;
+            System.out.print("[GREATERTHAN ERROR]: line "+n.getLine());
+            System.out.println(": ARG1 NOT NUMBER");
+        }
+        n.e2.accept(this);
+        if(!this.rValueType.equals(NodeType.INT) &&
+           !this.rValueType.equals(NodeType.FLOAT)) {
+            returnValue = 1;
+            System.out.print("[GREATERTHAN ERROR]: line "+n.getLine());
+            System.out.println(": ARG2 NOT NUMBER");
+        }
+        this.rValueType = NodeType.BOOLEAN;
+    }
+
+    
     public void visit(Plus n) {
         NodeType arg1, arg2;
 

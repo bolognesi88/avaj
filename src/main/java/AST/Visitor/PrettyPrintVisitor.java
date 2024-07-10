@@ -217,6 +217,16 @@ public class PrettyPrintVisitor implements Visitor {
   }
 
   // Exp e1,e2;
+  public void visit(GreaterThan n) {
+    System.out.print("(");
+    n.e1.accept(this);
+    System.out.print(" > ");
+    n.e2.accept(this);
+    System.out.print(")");
+  }
+
+  
+  // Exp e1,e2;
   public void visit(Plus n) {
     System.out.print("(");
     n.e1.accept(this);

@@ -15,7 +15,7 @@ class Bar {
         while (a < b)
             System.out.println(6);
 
-        if (b < a) {
+        if (b > a) {
             b = a;
         } else {
             b = 5 * 2 + 3;
