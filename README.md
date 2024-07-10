@@ -3,3 +3,18 @@ alternative experimental syntaxes for java just for fun
 
 
 https://docs.oracle.com/javase/specs/jls/se7/html/jls-18.html
+
+
+Current experiments:
+* `public` keyword is implicit and can be omitted for classes and methods
+* the "package friendly" visibility is stated as `package protected`
+* `void` return type is implicit and can be omitted
+* variable assignment is provided by pipe `|`
+* parameter passing for methods is provided by pipe `|` 
+* empty lines act as statement separator
+
+Further trials:
+* class attribute with no qualifiers interpreted as private attribute plus public getters and setters
+* longer pipe chains (e.g.: method > method or method > variable > method)
+
+ 

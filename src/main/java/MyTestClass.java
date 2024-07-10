@@ -54,6 +54,6 @@ class Bar {
 
 class Toba extends Bar {
 	public void nadinha() {
-		
+		// este método não faz nada
 	}
 }
