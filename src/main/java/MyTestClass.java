@@ -28,12 +28,12 @@ class Bar {
         a = 6;
         b = 9;
 
-        b = this.meep2(a);
-                
+        b = this.meep2(a, b);
+                        
         return b;
     }
     
-    private int meep2(int v) {
+    private int meep2(int v, int j) {
     	System.out.println(2);
     	return v;
     }
