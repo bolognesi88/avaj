@@ -1,0 +1,96 @@
+class MyTestClass {
+  static main (String [] args) {
+  	Bar b
+
+	new Bar
+	|
+	b
+
+	false
+	|
+	b.meep
+	|
+	System.out.println
+  }
+}
+
+package protected class Toba extends Bar { 
+
+	package protected nadinha () { 	
+  	}
+}
+
+package protected class Bar { 
+  	int property
+
+	static  meep4 () { 
+		4
+		|
+		System.out.println
+  	}
+  	
+	protected  meep3 () { 
+		3
+		|
+		System.out.println
+	}
+	  
+	private int meep2 (int v, int j) { 
+		2
+		|
+		System.out.println
+	
+		return v
+	}
+	
+	package protected int meep (boolean aVar) { 
+		int a
+	
+		int b
+	
+		5
+		|
+		a
+	
+		3
+		|
+		b
+	
+		while (((a < b) && (b == a))) 
+			(6)
+			|
+			System.out.println
+		
+		if ((b >= a)) 
+		{ 
+			a
+			|
+			b	
+		} 
+		else { 
+			((5 * 2) + (3 / a))
+			|
+			b		
+		} 
+				
+		(b)
+		|
+		System.out.println
+	
+		6
+		|
+		a
+	
+		9
+		|
+		b
+	
+		(b, a)
+		|
+		this.meep2
+		|
+		b
+	
+		return b
+	  }
+}
