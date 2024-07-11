@@ -56,13 +56,13 @@ package protected class Bar {
 		|
 		b
 	
-		while (((a < b) && (b == a))) 
+		while (((a < b) && (b == a))) {
 			(6)
 			|
 			System.out.println
+		}
 		
-		if ((b >= a)) 
-		{ 
+		if ((b >= a)) { 
 			a
 			|
 			b	
