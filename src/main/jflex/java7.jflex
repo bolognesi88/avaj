@@ -79,7 +79,7 @@ end_comment = "*/"
 "byte" { return symbol(Java7Sym.BYTE); }
 "short" { return symbol(Java7Sym.SHORT); }
 "char" { return symbol(Java7Sym.CHAR); }
-"int" { return symbol(Java7Sym.INTEGER); }
+"int" { return symbol(Java7Sym.INT); }
 "long" { return symbol(Java7Sym.LONG); }
 "float" { return symbol(Java7Sym.FLOAT); }
 "double" { return symbol(Java7Sym.DOUBLE); }
@@ -161,6 +161,8 @@ end_comment = "*/"
 "^" { return symbol(Java7Sym.XOR); }
 "%" { return symbol(Java7Sym.MOD); }
 "~" { return symbol(Java7Sym.BITWISE_NOT); }
+"\"" { return symbol(Java7Sym.DOUBLE_QUOTE); }
+"'" { return symbol(Java7Sym.QUOTE); }
 
 /* FUTURE USE, FUTURE NAME */
 "#" { return symbol(Java7Sym.CHAIN); }

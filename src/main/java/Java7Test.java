@@ -22,7 +22,7 @@ public class Java7Test{
                 // print each token that we scan
                 System.out.print(s.symbolToString(t) + "(#"+t.sym+") ");
                 
-                if (t.sym == Java7Sym.SEMICOLON) System.out.println();
+                if (t.sym == Java7Sym.SEMICOLON ||t.sym == Java7Sym.LBRACE || t.sym == Java7Sym.RBRACE) System.out.println();
                 
                 t = s.next_token(); 
             }            

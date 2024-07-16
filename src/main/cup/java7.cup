@@ -19,7 +19,7 @@ terminal	IMPLEMENTS	;
 terminal	BYTE	;
 terminal	SHORT	;
 terminal	CHAR	;
-terminal	INTEGER	;
+terminal	INT	;
 terminal	LONG	;
 terminal	FLOAT	;
 terminal	DOUBLE	;
@@ -124,6 +124,8 @@ terminal	LBRACE	;
 terminal	RBRACE	;
 terminal	LT	;
 terminal	GT	;
+terminal	QUOTE	;
+terminal	DOUBLE_QUOTE	;
 		
 		
 /* punctuation */		
@@ -160,8 +162,29 @@ nonterminal ElementValues;
 nonterminal ElementValue;
 nonterminal ElementValueArrayInitializer;
 nonterminal Expression1;
-		    
-
+nonterminal NormalClassDeclaration;
+nonterminal EnumDeclaration;
+nonterminal NormalInterfaceDeclaration;
+nonterminal AnnotationTypeDeclaration;
+nonterminal Type;
+nonterminal BasicType; 
+nonterminal ReferenceType;
+nonterminal TypeArguments; 
+nonterminal TypeArgument;  
+nonterminal TypeArgumentList;
+nonterminal NonWildcardTypeArguments;
+nonterminal TypeList;  
+nonterminal TypeArgumentsOrDiamond;
+nonterminal NonWildcardTypeArgumentsOrDiamond;
+nonterminal TypeParameters;
+nonterminal TypeParameter;
+nonterminal Bound;  
+nonterminal EmptyArrays;
+nonterminal EmptyArray;
+nonterminal ClassBody;
+nonterminal InterfaceBody;
+nonterminal AnnotationTypeBody;
+nonterminal EnumBody;
 
 /* Precedence declarations */
 precedence nonassoc BECOMES;
@@ -295,13 +318,164 @@ Modifier::=
     ;
 
 
-ClassDeclaration::= CLASS Identifier LBRACE RBRACE;
+ClassDeclaration::= NormalClassDeclaration
+				|
+			    EnumDeclaration
+			    ;
 
 
-InterfaceDeclaration::= INTERFACE Identifier LBRACE RBRACE;
+InterfaceDeclaration::= NormalInterfaceDeclaration
+				|
+			    AnnotationTypeDeclaration
+			    ;
+			    
+			    
+NormalClassDeclaration::= CLASS Identifier TypeParameters EXTENDS Type IMPLEMENTS TypeList ClassBody
+				|
+				CLASS Identifier EXTENDS Type IMPLEMENTS TypeList ClassBody
+				|
+				CLASS Identifier TypeParameters IMPLEMENTS TypeList ClassBody
+				|
+				CLASS Identifier TypeParameters EXTENDS Type ClassBody
+				|
+				CLASS Identifier IMPLEMENTS TypeList ClassBody
+				|
+				CLASS Identifier EXTENDS Type ClassBody
+				|
+				CLASS Identifier TypeParameters ClassBody
+				|
+				CLASS Identifier ClassBody
+				;
+
+EnumDeclaration::= ENUM Identifier IMPLEMENTS TypeList EnumBody
+				|
+				ENUM Identifier EnumBody
+				;
+
+NormalInterfaceDeclaration::=  INTERFACE Identifier TypeParameters EXTENDS TypeList InterfaceBody
+				|
+				INTERFACE Identifier EXTENDS TypeList InterfaceBody
+				|
+				INTERFACE Identifier TypeParameters InterfaceBody
+				|
+				INTERFACE Identifier InterfaceBody
+				;
+
+AnnotationTypeDeclaration::= AT INTERFACE Identifier AnnotationTypeBody ;
+				
+EmptyArrays::= EmptyArray
+			|
+			EmptyArrays EmptyArray
+			;				
+
+EmptyArray::= LBRACKET RBRACKET;
+				
+Type::=
+    BasicType EmptyArrays
+    |
+    ReferenceType EmptyArrays
+    |
+    BasicType 
+    |
+    ReferenceType 
+    ;
+
+BasicType::= 
+    BYTE
+    |
+    SHORT
+    |
+    CHAR
+    |
+    INT
+    |
+    LONG
+    |
+    FLOAT
+    |
+    DOUBLE
+    |
+    BOOLEAN
+    ;
+
+ReferenceType::=  Identifier TypeArguments DOT ReferenceType
+			|
+			Identifier DOT ReferenceType
+			|
+			Identifier TypeArguments 
+			|
+			Identifier
+			;
+
+TypeArguments::= LT TypeArgumentList GT
+			;
+
+TypeArgumentList::= TypeArgument
+			|
+			TypeArgumentList COMMA TypeArgument 
+			;
+    
+
+TypeArgument::=  QUESTION EXTENDS ReferenceType
+			|
+			ReferenceType
+			;
 
 
-Expression1::= Identifier;			
+NonWildcardTypeArguments::= GT TypeList LT;
+
+TypeList::=  ReferenceType
+			|
+			COMMA TypeList
+			;
+
+TypeArgumentsOrDiamond::=
+    LT GT 
+    |
+    TypeArguments
+    ;
+
+NonWildcardTypeArgumentsOrDiamond::=
+    LT GT
+    |
+    NonWildcardTypeArguments
+    ;
+
+
+TypeParameters::=
+    	LT TypeParameter GT
+    	|
+    	LT TypeParameter COMMA TypeParameters GT
+    	;
+
+TypeParameter::=
+    Identifier EXTENDS Bound
+    |
+    Identifier
+    ;
+
+Bound::=  
+    ReferenceType
+    | 
+	AND Bound
+	;
+
+
+ClassBody::= LBRACE RBRACE;
+
+InterfaceBody::= LBRACE RBRACE;
+
+AnnotationTypeBody::= LBRACE RBRACE;
+
+EnumBody::= LBRACE RBRACE;
+
+
+
+
+
+Expression1::= Identifier
+	|
+	DOUBLE_QUOTE Identifier DOUBLE_QUOTE;		
 
 
 
