@@ -142,7 +142,9 @@ nonterminal CompilationUnit;
 nonterminal Annotations;
 nonterminal QualifiedIdentifier;
 nonterminal ImportDeclaration;
+nonterminal ImportDeclarations;
 nonterminal TypeDeclaration;
+nonterminal TypeDeclarations;
 nonterminal PackageDeclaration;
 nonterminal Annotation;
 nonterminal Identifier;
@@ -170,18 +172,18 @@ precedence left TIMES, DIVIDE;
 precedence right NOT, NEW;
 precedence left DOT;
 precedence nonassoc EQUALS;
-
-
+precedence nonassoc AT;
+precedence nonassoc PACKAGE;
 
 /* Productions */
 
-CompilationUnit::= PackageDeclaration ImportDeclaration TypeDeclaration
+CompilationUnit::= PackageDeclaration ImportDeclarations TypeDeclarations
 				|
-				PackageDeclaration TypeDeclaration
+				PackageDeclaration TypeDeclarations
 				|
-				ImportDeclaration TypeDeclaration
+				ImportDeclarations TypeDeclarations
 				|
-				TypeDeclaration
+				TypeDeclarations
 				;
 
 PackageDeclaration::= Annotations PACKAGE QualifiedIdentifier SEMICOLON
@@ -242,6 +244,11 @@ ElementValues ::= ElementValue
 			|
 			ElementValues COMMA	ElementValue
 			;
+				
+ImportDeclarations ::= ImportDeclaration
+				|
+				ImportDeclarations ImportDeclaration
+				;					
 					
 ImportDeclaration::= IMPORT STATIC QualifiedIdentifier DOT TIMES SEMICOLON
 				|
@@ -250,6 +257,11 @@ ImportDeclaration::= IMPORT STATIC QualifiedIdentifier DOT TIMES SEMICOLON
 				IMPORT QualifiedIdentifier DOT TIMES SEMICOLON
 				|
 				IMPORT QualifiedIdentifier SEMICOLON
+				;
+
+TypeDeclarations::= TypeDeclaration
+				|
+				TypeDeclarations TypeDeclaration
 				;
 
 TypeDeclaration::= Modifiers ClassOrInterfaceDeclaration
@@ -268,7 +280,7 @@ Modifiers::= Modifier Modifiers
 			Modifier;
 
 Modifier::=
-    Annotation
+    Annotations
     | PUBLIC
     | PROTECTED
     | PRIVATE
@@ -283,7 +295,7 @@ Modifier::=
     ;
 
 
-ClassDeclaration::= CLASS;
+ClassDeclaration::= CLASS Identifier LBRACE RBRACE;
 
 
 InterfaceDeclaration::= INTERFACE;
