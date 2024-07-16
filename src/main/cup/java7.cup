@@ -178,6 +178,7 @@ nonterminal TypeArgumentsOrDiamond;
 nonterminal NonWildcardTypeArgumentsOrDiamond;
 nonterminal TypeParameters;
 nonterminal TypeParameter;
+nonterminal TypeParameterList;
 nonterminal Bound;  
 nonterminal EmptyArrays;
 nonterminal EmptyArray;
@@ -185,6 +186,23 @@ nonterminal ClassBody;
 nonterminal InterfaceBody;
 nonterminal AnnotationTypeBody;
 nonterminal EnumBody;
+nonterminal EnumConstants;
+nonterminal EnumConstant;
+nonterminal EnumBodyDeclarations;
+nonterminal ExpressionList;
+nonterminal Arguments;
+nonterminal AnnotationTypeElementDeclarations;
+nonterminal AnnotationTypeElementDeclaration;
+nonterminal AnnotationTypeElementRest;
+nonterminal AnnotationMethodOrConstantRest;
+nonterminal AnnotationMethodRest;
+nonterminal ConstantDeclaratorsRest;
+nonterminal ConstantDeclaratorRest;
+nonterminal VariableInitializer;
+nonterminal ConstantDeclarator;
+nonterminal ArrayInitializer;
+nonterminal VariableInitializerList;
+
 
 /* Precedence declarations */
 precedence nonassoc BECOMES;
@@ -268,6 +286,11 @@ ElementValues ::= ElementValue
 			ElementValues COMMA	ElementValue
 			;
 				
+				
+				
+				
+				
+				
 ImportDeclarations ::= ImportDeclaration
 				|
 				ImportDeclarations ImportDeclaration
@@ -318,6 +341,9 @@ Modifier::=
     ;
 
 
+
+
+
 ClassDeclaration::= NormalClassDeclaration
 				|
 			    EnumDeclaration
@@ -360,6 +386,10 @@ NormalInterfaceDeclaration::=  INTERFACE Identifier TypeParameters EXTENDS TypeL
 				|
 				INTERFACE Identifier InterfaceBody
 				;
+
+
+
+
 
 AnnotationTypeDeclaration::= AT INTERFACE Identifier AnnotationTypeBody ;
 				
@@ -407,14 +437,14 @@ ReferenceType::=  Identifier TypeArguments DOT ReferenceType
 			Identifier
 			;
 
-TypeArguments::= LT TypeArgumentList GT
+
+TypeArguments ::= LT TypeArgumentList GT;
+
+TypeArgumentList ::= TypeArgument
+			|
+			TypeArgumentList COMMA TypeArgument
 			;
 
-TypeArgumentList::= TypeArgument
-			|
-			TypeArgumentList COMMA TypeArgument 
-			;
-    
 
 TypeArgument::=  QUESTION EXTENDS ReferenceType
 			|
@@ -442,11 +472,12 @@ NonWildcardTypeArgumentsOrDiamond::=
     ;
 
 
-TypeParameters::=
-    	LT TypeParameter GT
-    	|
-    	LT TypeParameter COMMA TypeParameters GT
-    	;
+TypeParameters::= LT TypeParameterList GT    	;
+
+TypeParameterList::= TypeParameter
+			|
+			TypeParameterList COMMA TypeParameter
+			;
 
 TypeParameter::=
     Identifier EXTENDS Bound
@@ -461,16 +492,161 @@ Bound::=
 	;
 
 
+
+
+
+
+
+EnumBody::=
+    LBRACE EnumConstants COMMA EnumBodyDeclarations RBRACE
+    |
+    LBRACE COMMA EnumBodyDeclarations RBRACE
+    |
+    LBRACE EnumConstants EnumBodyDeclarations RBRACE
+    |
+    LBRACE EnumConstants COMMA RBRACE
+    |
+    LBRACE EnumBodyDeclarations RBRACE
+    |
+    LBRACE EnumConstants RBRACE
+    |
+    LBRACE COMMA RBRACE
+    |
+    LBRACE RBRACE
+    ;
+
+EnumConstants::=
+    EnumConstant
+    |
+    EnumConstants COMMA EnumConstant
+    ;
+
+EnumConstant::=
+    Annotations Identifier Arguments ClassBody
+    |
+    Annotations Identifier ClassBody
+    |
+    Annotations Identifier Arguments
+    |
+    Annotations Identifier 
+    |
+    Identifier Arguments ClassBody
+    |
+    Identifier ClassBody
+    |
+    Identifier Arguments
+    |
+    Identifier
+    ;
+
+
+EnumBodyDeclarations::=
+    SEMICOLON
+    |
+	SEMICOLON ClassBody
+    ;
+
+
+
+AnnotationTypeBody::=
+    LBRACE AnnotationTypeElementDeclarations RBRACE
+    |
+    LBRACE RBRACE
+    ;
+
+AnnotationTypeElementDeclarations::=
+    AnnotationTypeElementDeclaration
+    |
+    AnnotationTypeElementDeclarations AnnotationTypeElementDeclaration
+    ;
+
+AnnotationTypeElementDeclaration::=
+    Modifier AnnotationTypeElementRest
+    |
+    AnnotationTypeElementRest
+    ;
+
+AnnotationTypeElementRest::=
+    Type Identifier AnnotationMethodOrConstantRest SEMICOLON
+    ;
+    
+    /* ???
+    |
+    ClassDeclaration
+    |
+    InterfaceDeclaration
+    |
+    EnumDeclaration  
+    |
+    AnnotationTypeDeclaration
+    ;
+    */
+
+AnnotationMethodOrConstantRest::=
+    AnnotationMethodRest
+    |
+    ConstantDeclaratorsRest  
+    ;
+
+AnnotationMethodRest::=
+    LPAREN RPAREN LBRACKET RBRACKET DEFAULT ElementValue
+    |
+    LPAREN RPAREN DEFAULT ElementValue
+    |
+    LPAREN RPAREN LBRACKET RBRACKET
+    |
+    LPAREN RPAREN 
+    ;
+    
+ConstantDeclaratorsRest::=
+	ConstantDeclarator	
+	|
+    ConstantDeclaratorRest COMMA ConstantDeclarator
+    ;
+
+ConstantDeclaratorRest::=
+    LBRACKET RBRACKET BECOMES VariableInitializer
+    |
+    BECOMES VariableInitializer
+    ;
+
+ConstantDeclarator::= Identifier ConstantDeclaratorRest;
+
+
+/* fixme expression */
+VariableInitializer::=
+    ArrayInitializer
+    |
+    Expression1
+    ;
+
+VariableInitializerList::= VariableInitializer
+	|
+	VariableInitializerList COMMA VariableInitializer
+	;
+
+
+ArrayInitializer::=
+    LBRACE VariableInitializerList COMMA RBRACE
+    |
+    LBRACE VariableInitializerList RBRACE
+	;
+
+
+
+
 ClassBody::= LBRACE RBRACE;
 
 InterfaceBody::= LBRACE RBRACE;
 
-AnnotationTypeBody::= LBRACE RBRACE;
 
-EnumBody::= LBRACE RBRACE;
-
-
-
+ExpressionList::= Expression1
+		|
+		ExpressionList COMMA Expression1
+		;
+		
+/* fixme Arguments: ( [ Expression { , Expression } ] ) */
+Arguments::=  LPAREN ExpressionList RPAREN;
 
 
 Expression1::= Identifier

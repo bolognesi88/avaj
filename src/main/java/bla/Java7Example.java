@@ -10,7 +10,7 @@ public class Java7Example extends Classe2 implements Classe3{
 	
 }
 
-abstract class Classe2 {
+abstract class Classe2 implements Classe3{
 	
 }
 
@@ -24,4 +24,14 @@ interface Class4 extends java.util.List<Integer> {
 
 class Class5 extends Java7Example {
 	
+}
+
+enum Merassaum {
+	@Anotacao("X")
+	VALOR1,	
+	VALOR2;
+}
+
+@interface Anotacao {
+	String[] value();	
 }
