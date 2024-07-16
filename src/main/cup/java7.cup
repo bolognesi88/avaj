@@ -1,0 +1,143 @@
+package Parser;
+
+import java.util.*;
+import java_cup.runtime.*;
+
+
+/* Terminals (tokens returned by the scanner) */
+/* declarations */		
+terminal	PACKAGE	;
+terminal	IMPORT	;
+terminal	CLASS	;
+terminal	ENUM	;
+terminal	INTERFACE	;
+terminal	EXTENDS	;
+terminal	IMPLEMENTS	;
+		
+		
+/* types */		
+terminal	BYTE	;
+terminal	SHORT	;
+terminal	CHAR	;
+terminal	INTEGER	;
+terminal	LONG	;
+terminal	FLOAT	;
+terminal	DOUBLE	;
+terminal	BOOLEAN	;
+		
+		
+terminal	VOID	;
+terminal	THIS	;
+terminal	SUPER	;
+terminal	NEW	;
+terminal	TRUE	;
+terminal	FALSE	;
+terminal	NULL	;
+		
+		
+/* control flow */		
+terminal	IF	;
+terminal	ELSE	;
+terminal	FOR	;
+terminal	WHILE	;
+terminal	RETURN	;
+terminal	DO	;
+terminal	ASSERT	;
+terminal	SWITCH	;
+terminal	CASE	;
+terminal	DEFAULT	;
+terminal	BREAK	;
+terminal	CONTINUE	;
+terminal	SYNCHRONIZED	;
+terminal	TRY	;
+terminal	CATCH	;
+terminal	FINALLY	;
+terminal	THROW	;
+terminal	THROWS	;
+		
+		
+/* modifiers */		
+terminal	PUBLIC	;
+terminal	PROTECTED	;
+terminal	PRIVATE	;
+terminal	STATIC	;
+terminal	ABSTRACT	;
+terminal	FINAL	;
+terminal	NATIVE	;
+terminal	SYNCHRONIZED	;
+terminal	TRANSIENT	;
+terminal	VOLATILE	;
+terminal	STRICTFP	;
+		
+		
+/* literals */		
+	INTEGER_LITERAL	;
+		
+/* operators */		
+terminal	DOUBLE_AND	;
+terminal	DOUBLE_OR	;
+terminal	GE	;
+terminal	LE	;
+terminal	EQUALS	;
+terminal	NOT_EQUALS	;
+terminal	DOUBLE_OR	;
+terminal	DOUBLE_AND	;
+terminal	SHIFT_LEFT	;
+terminal	SHIFT_RIGHT	;
+terminal	SHIFT_RIGHT_ARITHM	;
+terminal	INC	;
+terminal	DEC	;
+		
+		
+terminal	PLUS	;
+terminal	MINUS	;
+terminal	TIMES	;
+terminal	DIVIDE	;
+terminal	NOT	;
+terminal	AND	;
+terminal	OR	;
+terminal	XOR	;
+terminal	MOD	;
+terminal	BITWISE_NOT	;
+		
+/* FUTURE USE, FUTURE NAME */		
+terminal	CHAIN	;
+		
+/* assignments */		
+terminal	PLUS_EQUALS	;
+terminal	MINUS_EQUALS	;
+terminal	TIMES_EQUALS	;
+terminal	DIV_EQUALS	;
+terminal	AND_EQUALS	;
+terminal	OR_EQUALS	;
+terminal	XOR_EQUALS	;
+terminal	MOD_EQUALS	;
+terminal	SHIFT_LEFT_EQUALS	;
+terminal	SHIFT_RIGHT_EQUALS	;
+terminal	SHIFT_RIGHT_ARITHM_EQUALS	;
+terminal	BECOMES	;
+		
+    		
+/* delimiters */		
+terminal	LPAREN	;
+terminal	RPAREN	;
+terminal	LBRACKET	;
+terminal	RBRACKET	;
+terminal	LBRACE	;
+terminal	RBRACE	;
+terminal	LT	;
+terminal	GT	;
+		
+		
+/* punctuation */		
+terminal	DOT	;
+terminal	COMMA	;
+terminal	SEMICOLON	;
+terminal	QUESTION	;
+		
+/* identifiers */		
+terminal	IDENTIFIER	;
+
+
+/* Nonterminals */
+

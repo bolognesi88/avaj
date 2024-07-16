@@ -73,9 +73,9 @@
 			    </execution>
 			  </executions>
 			  <configuration>
-			    <className>minijava</className>
-			    <symbolsName>sym</symbolsName>
-			    <cupDefinition>src/main/cup/minijava.cup</cupDefinition>
+			    <className>Java7Parser</className>
+			    <symbolsName>Java7Sym</symbolsName>
+			    <cupDefinition>src/main/cup/java7.cup</cupDefinition>
 			  </configuration>
 			</plugin>
 	      
