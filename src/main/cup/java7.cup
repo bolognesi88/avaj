@@ -48,7 +48,6 @@ terminal	CASE	;
 terminal	DEFAULT	;
 terminal	BREAK	;
 terminal	CONTINUE	;
-terminal	SYNCHRONIZED	;
 terminal	TRY	;
 terminal	CATCH	;
 terminal	FINALLY	;
@@ -71,11 +70,9 @@ terminal	STRICTFP	;
 		
 		
 /* literals */		
-	INTEGER_LITERAL	;
+terminal	INTEGER_LITERAL	;
 		
 /* operators */		
-terminal	DOUBLE_AND	;
-terminal	DOUBLE_OR	;
 terminal	GE	;
 terminal	LE	;
 terminal	EQUALS	;
@@ -134,10 +131,166 @@ terminal	DOT	;
 terminal	COMMA	;
 terminal	SEMICOLON	;
 terminal	QUESTION	;
-		
+terminal    AT ; 
+
 /* identifiers */		
 terminal	IDENTIFIER	;
 
 
 /* Nonterminals */
+nonterminal CompilationUnit;
+nonterminal Annotations;
+nonterminal QualifiedIdentifier;
+nonterminal ImportDeclaration;
+nonterminal TypeDeclaration;
+nonterminal PackageDeclaration;
+nonterminal Annotation;
+nonterminal Identifier;
+nonterminal AnnotationElement;
+nonterminal ClassDeclaration;
+nonterminal InterfaceDeclaration;
+nonterminal ClassOrInterfaceDeclaration;
+nonterminal Modifiers;
+nonterminal Modifier;
+nonterminal ElementValuePairs;
+nonterminal ElementValuePair;
+nonterminal ElementValues;
+nonterminal ElementValue;
+nonterminal ElementValueArrayInitializer;
+nonterminal Expression1;
+		    
 
+
+/* Precedence declarations */
+precedence nonassoc BECOMES;
+precedence nonassoc AND, OR;
+precedence left LT, GT, LE, GE;
+precedence left PLUS, MINUS;
+precedence left TIMES, DIVIDE;
+precedence right NOT, NEW;
+precedence left DOT;
+precedence nonassoc EQUALS;
+
+
+
+/* Productions */
+
+CompilationUnit::= PackageDeclaration ImportDeclaration TypeDeclaration
+				|
+				PackageDeclaration TypeDeclaration
+				|
+				ImportDeclaration TypeDeclaration
+				|
+				TypeDeclaration
+				;
+
+PackageDeclaration::= Annotations PACKAGE QualifiedIdentifier SEMICOLON
+				|
+				PACKAGE QualifiedIdentifier SEMICOLON
+				;
+
+QualifiedIdentifier::= Identifier 
+ 				|
+				QualifiedIdentifier DOT Identifier
+				;
+
+Annotations::= Annotation 
+				|
+				Annotations Annotation
+				;   
+
+Annotation::= AT QualifiedIdentifier LPAREN AnnotationElement RPAREN
+				|
+				AT QualifiedIdentifier LPAREN RPAREN
+				|
+				AT QualifiedIdentifier				
+				;
+
+AnnotationElement::=
+		    ElementValuePairs
+		    |
+		    ElementValue
+		    ;
+
+ElementValuePairs::= ElementValuePair 
+			|
+			ElementValuePairs COMMA ElementValuePair
+			;
+
+ElementValuePair::= Identifier BECOMES ElementValue
+			;
+    
+ElementValue::=  Annotation
+			|
+		    Expression1 
+		    |
+		    ElementValueArrayInitializer
+		    ;
+
+
+ElementValueArrayInitializer::= LBRACE ElementValues COMMA RBRACE
+			|
+			LBRACE ElementValues RBRACE
+			|
+			LBRACE COMMA RBRACE
+			|
+			LBRACE RBRACE
+			;
+
+
+ElementValues ::= ElementValue 
+			|
+			ElementValues COMMA	ElementValue
+			;
+					
+ImportDeclaration::= IMPORT STATIC QualifiedIdentifier DOT TIMES SEMICOLON
+				|
+				IMPORT STATIC QualifiedIdentifier SEMICOLON
+				|
+				IMPORT QualifiedIdentifier DOT TIMES SEMICOLON
+				|
+				IMPORT QualifiedIdentifier SEMICOLON
+				;
+
+TypeDeclaration::= Modifiers ClassOrInterfaceDeclaration
+				|
+				ClassOrInterfaceDeclaration
+				;
+
+ClassOrInterfaceDeclaration::=  
+				ClassDeclaration 
+				| 
+				InterfaceDeclaration
+				;
+
+Modifiers::= Modifier Modifiers
+			|
+			Modifier;
+
+Modifier::=
+    Annotation
+    | PUBLIC
+    | PROTECTED
+    | PRIVATE
+    | STATIC 
+    | ABSTRACT
+    | FINAL
+    | NATIVE
+    | SYNCHRONIZED
+    | TRANSIENT
+    | VOLATILE
+    | STRICTFP
+    ;
+
+
+ClassDeclaration::= CLASS;
+
+
+InterfaceDeclaration::= INTERFACE;
+
+
+Expression1::= Identifier;			
+
+
+
+Identifier::= IDENTIFIER;

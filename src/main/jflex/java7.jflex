@@ -109,7 +109,6 @@ end_comment = "*/"
 "default" { return symbol(Java7Sym.DEFAULT); }
 "break" { return symbol(Java7Sym.BREAK); }
 "continue" { return symbol(Java7Sym.CONTINUE); }
-"synchronized" { return symbol(Java7Sym.SYNCHRONIZED); }
 "try" { return symbol(Java7Sym.TRY); }
 "catch" { return symbol(Java7Sym.CATCH); }
 "finally" { return symbol(Java7Sym.FINALLY); }
@@ -139,8 +138,6 @@ end_comment = "*/"
 
 
 /* operators */
-"&&" { return symbol(Java7Sym.DOUBLE_AND); }
-"&&" { return symbol(Java7Sym.DOUBLE_OR); }
 ">=" { return symbol(Java7Sym.GE); }
 "<=" { return symbol(Java7Sym.LE); }
 "==" { return symbol(Java7Sym.EQUALS); }
@@ -197,8 +194,9 @@ end_comment = "*/"
 /* punctuation */
 "." { return symbol(Java7Sym.DOT); }
 "," { return symbol(Java7Sym.COMMA); }
-";" { return symbol(Java7Sym.SEMICOLON); 
-"?" { return symbol(Java7Sym.QUESTION); 
+";" { return symbol(Java7Sym.SEMICOLON); }
+"?" { return symbol(Java7Sym.QUESTION); }
+"@" { return symbol(Java7Sym.AT); }
 
 /* identifiers */
 {letter} ({letter}|{digit}|_)* { return symbol(Java7Sym.IDENTIFIER, yytext()); }
