@@ -298,7 +298,7 @@ Modifier::=
 ClassDeclaration::= CLASS Identifier LBRACE RBRACE;
 
 
-InterfaceDeclaration::= INTERFACE;
+InterfaceDeclaration::= INTERFACE Identifier LBRACE RBRACE;
 
 
 Expression1::= Identifier;			

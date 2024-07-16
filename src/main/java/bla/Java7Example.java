@@ -8,3 +8,11 @@ import javax.annotation.concurrent.Immutable;
 public class Java7Example {
 	
 }
+
+abstract class Classe2 {
+	
+}
+
+interface Classe3 {
+	
+}
