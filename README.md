@@ -16,5 +16,7 @@ Current experiments:
 Further trials:
 * class attribute with no qualifiers interpreted as private attribute plus public getters and setters
 * longer pipe chains (e.g.: method > method or method > variable > method)
+* null-safe method and attribute access
 
+Avaj was supposed to be a java superset, but now I don giv a fick anymore. It seems funnier just to keep the resemblance.
  
