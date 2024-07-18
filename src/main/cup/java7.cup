@@ -225,6 +225,25 @@ nonterminal NullLiteral;
 nonterminal Selector;
 nonterminal SuperSuffix;
 
+nonterminal MethodOrFieldDecl;
+nonterminal VoidMethodDeclaratorRest;
+nonterminal ConstructorDeclaratorRest;
+nonterminal GenericMethodOrConstructorDecl;
+nonterminal MethodOrFieldRest  ;
+nonterminal FieldDeclaratorsRest;
+nonterminal MethodDeclaratorRest;
+nonterminal ClassBodyDeclarationList;
+nonterminal ClassBodyDeclaration;
+nonterminal MemberDecl;
+nonterminal Block;
+nonterminal VariableDeclaratorRest;
+nonterminal VariableDeclarator;
+nonterminal OptionalThrowsQualifiedIdentifierList;
+nonterminal QualifiedIdentifierList;
+nonterminal FormalParameters;
+nonterminal GenericMethodOrConstructorRest;
+
+
 
 /* Precedence declarations */
 precedence nonassoc BECOMES;
@@ -591,9 +610,8 @@ AnnotationTypeElementDeclaration::=
 
 AnnotationTypeElementRest::=
     Type Identifier AnnotationMethodOrConstantRest SEMICOLON
-    ;
     
-    /* FIXME ???
+    /* FIXME
     |
     ClassDeclaration
     |
@@ -601,9 +619,9 @@ AnnotationTypeElementRest::=
     |
     EnumDeclaration  
     |
-    AnnotationTypeDeclaration
-    ;
+    AnnotationTypeDeclaration    
     */
+    ;
 
 AnnotationMethodOrConstantRest::=
     AnnotationMethodRest
@@ -879,18 +897,119 @@ ExplicitGenericInvocationSuffix:
 */		
 		
 		
-		
-		
-		
-		
-		
 			
+ClassBody::= LBRACE ClassBodyDeclarationList RBRACE;
 
-ClassBody::= LBRACE RBRACE;
+
+ClassBodyDeclarationList::= /* empty */
+			|
+			ClassBodyDeclarationList ClassBodyDeclaration
+			;
+			
+ClassBodyDeclaration::=     SEMICOLON
+	|
+    Modifiers MemberDecl
+    |
+    MemberDecl
+    |
+    STATIC Block			
+    |
+    Block
+    ;
+
+
+MemberDecl::=
+    MethodOrFieldDecl
+    |
+    VOID Identifier VoidMethodDeclaratorRest
+    |
+    Identifier ConstructorDeclaratorRest
+    |
+    GenericMethodOrConstructorDecl
+    |
+    ClassDeclaration
+    |
+    InterfaceDeclaration
+    ;
+
+
+
+MethodOrFieldDecl::= Type Identifier MethodOrFieldRest;
+
+MethodOrFieldRest::=  
+    FieldDeclaratorsRest SEMICOLON
+    |
+    MethodDeclaratorRest
+    ;
+
+FieldDeclaratorsRest::=  
+    VariableDeclaratorRest
+    |
+    FieldDeclaratorsRest COMMA VariableDeclarator
+    ;
+
+VariableDeclaratorRest::=	/* empty */
+	|
+	EmptyArrays BECOMES VariableInitializer
+	|
+	EmptyArrays
+	|
+	BECOMES VariableInitializer
+	;
+
+
+ArrayInitializer::=
+    LBRACKET VariableInitializerList COMMA  RBRACKET
+    |
+    LBRACKET VariableInitializerList RBRACKET
+    |
+    LBRACKET RBRACKET
+    ;
+	
+
+OptionalThrowsQualifiedIdentifierList::= /* empty */
+	|
+	THROWS QualifiedIdentifierList
+	;
+
+QualifiedIdentifierList::=
+    QualifiedIdentifier 
+    |
+    QualifiedIdentifierList COMMA QualifiedIdentifier
+	;
+
+
+MethodDeclaratorRest::=
+    FormalParameters EmptyArrays OptionalThrowsQualifiedIdentifierList LPAREN Block RPAREN
+    |
+    FormalParameters EmptyArrays  OptionalThrowsQualifiedIdentifierList LPAREN SEMICOLON RPAREN
+	|
+    FormalParameters OptionalThrowsQualifiedIdentifierList LPAREN Block RPAREN
+    |
+    FormalParameters OptionalThrowsQualifiedIdentifierList LPAREN SEMICOLON RPAREN
+    ;
+
+VoidMethodDeclaratorRest::=
+    FormalParameters OptionalThrowsQualifiedIdentifierList LPAREN Block RPAREN
+    |
+    FormalParameters OptionalThrowsQualifiedIdentifierList LPAREN SEMICOLON RPAREN
+    ;
+
+
+ConstructorDeclaratorRest::=
+    FormalParameters OptionalThrowsQualifiedIdentifierList Block ;
+
+GenericMethodOrConstructorDecl::=
+    TypeParameters GenericMethodOrConstructorRest;
+
+
+
+
+
+
+
 
 InterfaceBody::= LBRACE RBRACE;
-
-
 
 
 Identifier::= IDENTIFIER;

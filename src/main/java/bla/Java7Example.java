@@ -7,7 +7,7 @@ import javax.annotation.concurrent.Immutable;
 @Immutable
 @java.lang.SuppressWarnings("serial")
 public class Java7Example extends Classe2 implements Classe3{
-
+	
 }
 
 abstract class Classe2 implements Classe3{
@@ -23,7 +23,14 @@ interface Class4 extends java.util.List<Integer> {
 }
 
 class Class5 extends Java7Example {
+	int i = 3;
 	
+	public static final int MAX = 50;
+	
+	int j;
+	
+	@SuppressWarnings("unused")
+	private double x;
 }
 
 enum Merassaum {

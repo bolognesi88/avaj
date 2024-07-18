@@ -16,13 +16,19 @@ public class Java7Test{
         try {
             // create a scanner on the input file
             Java7Scanner s = new Java7Scanner(new FileReader(FILE));
-            int count = 1;
             Symbol t = s.next_token();
+            
+            Integer lastLeft =null;
+            
             while (t.sym != Java7Sym.EOF){ 
                 // print each token that we scan
+            
+            	Integer currLeft = t.left;
+            	if (currLeft!=lastLeft) {
+            		System.out.print("Input line "+currLeft+": ");
+            		lastLeft = currLeft;
+            	}
             	
-            	System.out.print(count++);
-            	System.out.print("-");
                 System.out.print(s.symbolToString(t));
                 System.out.print("(#"+t.sym+") ");
                 
@@ -54,6 +60,8 @@ public class Java7Test{
             System.err.println("Unexpected internal compiler error: " + 
                                e.toString());
             // print out a stack dump
+            
+            // Syntax error at character < LINE NUMBER !!!! > of input
             e.printStackTrace();
         }
     }
