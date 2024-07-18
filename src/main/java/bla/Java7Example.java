@@ -35,5 +35,5 @@ enum Merassaum {
 @interface Anotacao {
 	String[] value();	
 	int outro() default 10;
-	// final int MAX = 20;
+	public static final int MAX = 20;
 }

@@ -584,7 +584,7 @@ AnnotationTypeElementDeclarations::=
     ;
 
 AnnotationTypeElementDeclaration::=
-    Modifier AnnotationTypeElementRest
+    Modifiers AnnotationTypeElementRest  /* mudei aqui em relação ao original modifier */
     |
     AnnotationTypeElementRest
     ;
