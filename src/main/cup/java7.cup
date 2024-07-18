@@ -13,6 +13,7 @@ terminal	ENUM	;
 terminal	INTERFACE	;
 terminal	EXTENDS	;
 terminal	IMPLEMENTS	;
+terminal	INSTANCEOF;
 		
 		
 /* types */		
@@ -71,6 +72,7 @@ terminal	STRICTFP	;
 		
 /* literals */		
 terminal	INTEGER_LITERAL	;
+terminal    STRING_LITERAL;
 		
 /* operators */		
 terminal	GE	;
@@ -95,10 +97,9 @@ terminal	AND	;
 terminal	OR	;
 terminal	XOR	;
 terminal	MOD	;
-terminal	BITWISE_NOT	;
-		
-/* FUTURE USE, FUTURE NAME */		
-terminal	CHAIN	;
+terminal	BITWISE_NOT	;		
+terminal	HASH	;
+terminal	BACKSLASH	;
 		
 /* assignments */		
 terminal	PLUS_EQUALS	;
@@ -125,13 +126,13 @@ terminal	RBRACE	;
 terminal	LT	;
 terminal	GT	;
 terminal	QUOTE	;
-terminal	DOUBLE_QUOTE	;
 		
 		
 /* punctuation */		
 terminal	DOT	;
 terminal	COMMA	;
 terminal	SEMICOLON	;
+terminal	COLON	;
 terminal	QUESTION	;
 terminal    AT ; 
 
@@ -161,7 +162,6 @@ nonterminal ElementValuePair;
 nonterminal ElementValues;
 nonterminal ElementValue;
 nonterminal ElementValueArrayInitializer;
-nonterminal Expression1;
 nonterminal NormalClassDeclaration;
 nonterminal EnumDeclaration;
 nonterminal NormalInterfaceDeclaration;
@@ -202,6 +202,28 @@ nonterminal VariableInitializer;
 nonterminal ConstantDeclarator;
 nonterminal ArrayInitializer;
 nonterminal VariableInitializerList;
+nonterminal Expression;
+nonterminal AssignmentOperator;
+nonterminal Expression1;
+nonterminal Expression1Rest	;
+nonterminal Expression2;
+nonterminal Expression2Rest;
+nonterminal Expression3List;
+nonterminal InfixOp;
+nonterminal Expression3;
+nonterminal PrefixOp;
+nonterminal PostfixOp;
+
+nonterminal Primary ;
+nonterminal Literal;
+nonterminal ParExpression;
+nonterminal IntegerLiteral;
+nonterminal CharacterLiteral ;
+nonterminal StringLiteral ;
+nonterminal BooleanLiteral;
+nonterminal NullLiteral;
+nonterminal Selector;
+nonterminal SuperSuffix;
 
 
 /* Precedence declarations */
@@ -215,6 +237,7 @@ precedence left DOT;
 precedence nonassoc EQUALS;
 precedence nonassoc AT;
 precedence nonassoc PACKAGE;
+precedence left INC, DEC;
 
 /* Productions */
 
@@ -570,7 +593,7 @@ AnnotationTypeElementRest::=
     Type Identifier AnnotationMethodOrConstantRest SEMICOLON
     ;
     
-    /* ???
+    /* FIXME ???
     |
     ClassDeclaration
     |
@@ -585,7 +608,7 @@ AnnotationTypeElementRest::=
 AnnotationMethodOrConstantRest::=
     AnnotationMethodRest
     |
-    ConstantDeclaratorsRest  
+    ConstantDeclaratorRest  /* era ConstantDeclaratorsRest */
     ;
 
 AnnotationMethodRest::=
@@ -613,11 +636,10 @@ ConstantDeclaratorRest::=
 ConstantDeclarator::= Identifier ConstantDeclaratorRest;
 
 
-/* fixme expression */
 VariableInitializer::=
     ArrayInitializer
     |
-    Expression1
+    Expression
     ;
 
 VariableInitializerList::= VariableInitializer
@@ -632,26 +654,242 @@ ArrayInitializer::=
     LBRACE VariableInitializerList RBRACE
 	;
 
+Expression::= Expression1
+		|
+		Expression1 AssignmentOperator Expression1
+		;
+
+AssignmentOperator::=
+    BECOMES
+    | 
+    PLUS_EQUALS
+    |
+    MINUS_EQUALS
+    |
+    TIMES_EQUALS
+    |
+    DIV_EQUALS
+    |
+    AND_EQUALS
+    |
+    OR_EQUALS
+    |
+    XOR_EQUALS
+    |
+    MOD_EQUALS
+    |
+	SHIFT_LEFT_EQUALS
+	|
+	SHIFT_RIGHT_EQUALS
+	|
+	SHIFT_RIGHT_ARITHM_EQUALS
+	;
+	
+	
+Expression1::=
+    Expression2 Expression1Rest
+    |
+    Expression2
+    ;
+
+Expression1Rest::= QUESTION Expression COLON Expression1;	
+
+Expression2::=
+    Expression3 Expression2Rest
+    |
+    Expression3
+    ;
+
+Expression2Rest::=
+    Expression3List
+    |
+    INSTANCEOF Type	
+    ;
+    
+Expression3List::= InfixOp Expression3 Expression3List
+	|
+	InfixOp Expression3
+	;
+    
+InfixOp::=
+	DOUBLE_OR
+	|
+	DOUBLE_AND
+	|
+	AND
+	|
+	OR
+	|
+	XOR
+	|
+	EQUALS
+	|
+	NOT_EQUALS
+	|
+	LT
+	|
+	GT    
+	|
+	GE
+	|
+	LE
+	|
+	SHIFT_LEFT
+	|
+	SHIFT_RIGHT
+	|
+	SHIFT_RIGHT_ARITHM
+	|
+	PLUS
+	|
+	MINUS
+	|
+	TIMES
+	|
+	DIVIDE
+	|
+	MOD
+	;
 
 
+Expression3::=
+    PrefixOp Expression3
+    |
+    LPAREN Expression RPAREN Expression3
+    |
+    LPAREN Type RPAREN Expression3
+    |
+    Primary Selector PostfixOp
+    |
+    Primary Selector
+    |
+	Primary PostfixOp
+	|
+	Primary
+	;
+
+PrefixOp::= 
+		INC
+		|
+		DEC
+		|
+		NOT
+		|
+		BITWISE_NOT
+		|
+		PLUS
+		|
+		MINUS
+		;
+    
+
+PostfixOp::=
+			INC
+			|
+			DEC
+			;
+			
+			
+Primary::= 
+    Literal
+    |
+    ParExpression
+    |
+    THIS
+    |
+    THIS Arguments
+    |
+    SUPER SuperSuffix
+    |   
+    
+    /* FIXME
+    new Creator
+    NonWildcardTypeArguments (ExplicitGenericInvocationSuffix | this Arguments)
+    Identifier { . Identifier } [IdentifierSuffix]
+    */
+    
+    
+    BasicType EmptyArrays DOT CLASS
+    |
+    BasicType DOT CLASS
+    |
+    VOID DOT CLASS
+    ;
+
+
+
+Literal::=
+    IntegerLiteral
+    |
+    /* FloatingPointLiteral */
+    CharacterLiteral 
+    |
+    StringLiteral 
+    |
+    BooleanLiteral
+    |
+    NullLiteral
+    ;
+
+IntegerLiteral::= INTEGER_LITERAL;
+
+CharacterLiteral::= QUOTE Identifier QUOTE;
+
+StringLiteral::= STRING_LITERAL;
+
+BooleanLiteral::= TRUE | FALSE;
+
+NullLiteral::= NULL;
+
+
+ParExpression::= LPAREN Expression RPAREN;
+
+ExpressionList::= Expression
+		|
+		ExpressionList COMMA Expression
+		;
+		
+Arguments::=  LPAREN ExpressionList RPAREN;
+
+
+Selector::=
+    DOT Identifier;
+    
+    /* FIXME
+    DOT Identifier [Arguments]
+    . ExplicitGenericInvocation
+    . this
+    . super SuperSuffix
+    . new [NonWildcardTypeArguments] InnerCreator
+    [ Expression ]
+	*/
+
+SuperSuffix::=
+    Arguments 
+    |
+    DOT Identifier Arguments
+    |
+    DOT Identifier
+    ;
+    
+/*
+ExplicitGenericInvocationSuffix: 
+    super SuperSuffix
+    Identifier Arguments			
+*/		
+		
+		
+		
+		
+		
+		
+		
+			
 
 ClassBody::= LBRACE RBRACE;
 
 InterfaceBody::= LBRACE RBRACE;
 
-
-ExpressionList::= Expression1
-		|
-		ExpressionList COMMA Expression1
-		;
-		
-/* fixme Arguments: ( [ Expression { , Expression } ] ) */
-Arguments::=  LPAREN ExpressionList RPAREN;
-
-
-Expression1::= Identifier
-	|
-	DOUBLE_QUOTE Identifier DOUBLE_QUOTE;		
 
 
 

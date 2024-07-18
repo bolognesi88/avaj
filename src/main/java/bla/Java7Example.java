@@ -7,7 +7,7 @@ import javax.annotation.concurrent.Immutable;
 @Immutable
 @java.lang.SuppressWarnings("serial")
 public class Java7Example extends Classe2 implements Classe3{
-	
+
 }
 
 abstract class Classe2 implements Classe3{
@@ -27,11 +27,13 @@ class Class5 extends Java7Example {
 }
 
 enum Merassaum {
-	@Anotacao("X")
+	@Anotacao("String Literal Z")
 	VALOR1,	
 	VALOR2;
 }
 
 @interface Anotacao {
 	String[] value();	
+	int outro() default 10;
+	// final int MAX = 20;
 }

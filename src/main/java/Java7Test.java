@@ -16,11 +16,15 @@ public class Java7Test{
         try {
             // create a scanner on the input file
             Java7Scanner s = new Java7Scanner(new FileReader(FILE));
-            
+            int count = 1;
             Symbol t = s.next_token();
             while (t.sym != Java7Sym.EOF){ 
                 // print each token that we scan
-                System.out.print(s.symbolToString(t) + "(#"+t.sym+") ");
+            	
+            	System.out.print(count++);
+            	System.out.print("-");
+                System.out.print(s.symbolToString(t));
+                System.out.print("(#"+t.sym+") ");
                 
                 if (t.sym == Java7Sym.SEMICOLON ||t.sym == Java7Sym.LBRACE || t.sym == Java7Sym.RBRACE) System.out.println();
                 
