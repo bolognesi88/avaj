@@ -8,13 +8,22 @@ import javax.annotation.concurrent.Immutable;
 @java.lang.SuppressWarnings("serial")
 public class Java7Example extends Classe2 implements Classe3 {
 	public void	x(int i, int j) throws Throwable, NullPointerException {
-	
+		{
+			// bloco vazio :-)
+		}
 	}
 	
 	protected int hum() {
 		final long x = 1;
 		
 		int y = 2;
+		
+		try {
+			if (x==2) return 1;
+		}
+		finally {
+			// nada
+		}
 		
 		return (int) (y / 1 - x * 1);
 	}

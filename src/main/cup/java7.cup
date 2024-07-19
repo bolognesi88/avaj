@@ -1119,7 +1119,7 @@ Block::= LBRACE RBRACE
 	
 BlockStatements::= BlockStatement
 	|
-	BlockStatements SEMICOLON BlockStatement
+	BlockStatements BlockStatement
 	;	
 
 BlockStatement::=
@@ -1134,26 +1134,25 @@ BlockStatement::=
    */ 
     ;
 
-LocalVariableDeclarationStatement::= VariableModifierList Type VariableDeclarators; /* FIXME a ausencia do modificador de variavel faz pensar que é um Primary... */
+LocalVariableDeclarationStatement::= VariableModifierList Type VariableDeclarators SEMICOLON ; 
 
 Statement::=
     RETURN Expression SEMICOLON
-    /*
     |
     RETURN SEMICOLON    
     |
     Block
-    |
+    |    
     SEMICOLON
     |
-    Identifier COLON Statement
-    |
-    StatementExpression SEMICOLON
+    IF ParExpression Statement
+        |
+    TRY Block Finally
+    /*
+    
     |
     IF ParExpression Statement ELSE Statement
-    | 
-    IF ParExpression Statement
-    |
+    |     
     ASSERT Expression COLON Expression SEMICOLON
     |
     ASSERT Expression SEMICOLON
@@ -1177,12 +1176,18 @@ Statement::=
     THROW Expression SEMICOLON
     |
     SYNCHRONIZED ParExpression Block
+    
+
+    |
+    Identifier COLON Statement
+    |
+    StatementExpression SEMICOLON
+    
     |
     TRY Block Catches Finally
     |
     TRY Block Catches
-    |
-    TRY Block Finally
+
     |
     TRY ResourceSpecification Block Catches Finally
     |
@@ -1192,6 +1197,7 @@ Statement::=
     |        
     TRY ResourceSpecification Block
     */
+    
     ;
 
 
