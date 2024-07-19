@@ -1,0 +1,106 @@
+class MyTestClass {
+  static main (String [] args) {
+  	Bar b
+
+	new Bar
+	\
+	b
+
+	false
+	\
+	b.meep
+	\
+	System.out.println
+	
+	false
+	\
+	b.meep
+	\
+	System.out.println("meep result", #)   // # as wildcard for data flow placement
+	
+
+	#("1+1" , 1+1)			// #() for tuple values/content, implemented as object array Object[] $$a$$ = {"1+1", 1+1};
+	\
+	#[String, Integer]		// #[] for tuple declaration (?)
+	\
+	System.out.println(#{2} + " result of "+ #{1})   // #{N} as tuple part wildcard for data flow placement
+	
+  }
+}
+
+package protected class Toba extends Bar { 
+
+	package protected nadinha () { 	
+  	}
+}
+
+package protected class Bar { 
+  	int property
+
+	static  meep4 () { 
+		4
+		\
+		System.out.println
+  	}
+  	
+	protected  meep3 () { 
+		3
+		\
+		System.out.println
+	}
+	  
+	private int meep2 (int v, int j) { 
+		2
+		\
+		System.out.println
+	
+		return v
+	}
+	
+	package protected int meep (boolean aVar) { 
+		int a
+	
+		// move 5 to a cobol style
+		5  \  int a		
+	
+		// move 3 to new int var b oppan gangnam style
+		3  \  int b
+	
+		while (((a < b) && (b == a))) {
+			(6)
+			\
+			System.out.println
+		}
+		
+		if ((b >= a)) { 
+			a
+			\
+			b	
+		} 
+		else { 
+			((5 * 2) + (3 / a))
+			\
+			b		
+		} 
+				
+		(b)
+		\
+		System.out.println
+	
+		6
+		\
+		a
+	
+		9
+		\
+		b
+	
+		(b, a)
+		\
+		this.meep2
+		\
+		b
+	
+		return b
+	  }
+}

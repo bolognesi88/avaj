@@ -805,9 +805,7 @@ Expression3::=
 	;
 
 PrefixOp::= 
-		INC
-		|
-		DEC
+		PostfixOp
 		|
 		NOT
 		|
@@ -838,7 +836,7 @@ Primary::=
     SUPER SuperSuffix
     |   
     NEW Creator
-    |
+    |    
     NonWildcardTypeArguments LPAREN ExplicitGenericInvocationSuffix RPAREN
     |
     NonWildcardTypeArguments LPAREN THIS Arguments RPAREN

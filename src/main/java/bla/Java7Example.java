@@ -11,6 +11,8 @@ public class Java7Example extends Classe2 implements Classe3{
 }
 
 abstract class Classe2 implements Classe3{
+	public Class c = void.class;
+	
 	
 }
 
