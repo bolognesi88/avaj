@@ -68,11 +68,14 @@ package protected class Bar {
 	package protected int meep (boolean aVar) { 
 		int a
 	
-		// move 5 to a cobol style
+		// move 5 to a, cobol style
 		5  \  int a		
 	
-		// move 3 to new int var b oppan gangnam style
+		// move 3 to some new int var named b, oppan gangnam style
 		3  \  int b
+		
+		// compute 2 times b and slide it into a
+		2 * b \ a
 	
 		while (((a < b) && (b == a))) {
 			(6)
