@@ -21,6 +21,8 @@ public class Java7Example extends Classe2 implements Classe3 {
 		}
 		while (false);
 		
+		// ainda não foi hoje que consegui chamar um método. preciso do StatementExpression SEMICOLON sem conflito 
+		// hum();
 	}
 	
 	protected int hum() {

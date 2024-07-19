@@ -892,7 +892,16 @@ OptionalDotIdentifierList::= /* empty */
 			DOT Identifier
 			;
 	
+IdentifierSuffix::=  Arguments
+	;
+	/* FIXME
+	[ ({[]} . class | Expression) ]
+     
+    . (class | ExplicitGenericInvocation | this | super Arguments |
+                                new [NonWildcardTypeArguments] InnerCreator)	
 
+	*/
+	
 Literal::=
     IntegerLiteral
     |
