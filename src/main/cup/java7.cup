@@ -236,7 +236,6 @@ nonterminal MethodDeclaratorRest;
 nonterminal ClassBodyDeclarationList;
 nonterminal ClassBodyDeclaration;
 nonterminal MemberDecl;
-nonterminal Block;
 nonterminal VariableDeclaratorRest;
 nonterminal VariableDeclarator;
 nonterminal OptionalThrowsQualifiedIdentifierList;
@@ -254,6 +253,37 @@ nonterminal VariableModifierList;
 nonterminal VariableModifier;
 nonterminal FormalParameterDeclsRest;
 nonterminal VariableDeclaratorId;
+
+nonterminal Block;
+nonterminal BlockStatements;
+nonterminal BlockStatement;
+nonterminal LocalVariableDeclarationStatement;
+nonterminal Statement;
+nonterminal SwitchBlockStatementGroups;
+nonterminal CatchClause;
+nonterminal CatchType;
+nonterminal Catches ;
+nonterminal Finally ;
+nonterminal ResourceSpecification; 
+nonterminal SwitchBlockStatementGroup; 
+nonterminal SwitchLabels;
+nonterminal SwitchLabel;
+nonterminal EnumConstantName;
+nonterminal StatementExpression;
+nonterminal ForControl;
+nonterminal ForVarControl;
+nonterminal ForVarControlRest;
+nonterminal ForVariableDeclaratorsRest;
+nonterminal OptionalVariableInitializer;
+nonterminal VariableDeclaratorList ;
+nonterminal ForInit;
+nonterminal ForUpdate;
+nonterminal Resources;
+nonterminal Resource;
+nonterminal VariableDeclarators;
+
+
+
 
 
 /* Precedence declarations */
@@ -1082,7 +1112,233 @@ VariableDeclaratorId::= Identifier
 
 
 
-Block::= LBRACE RBRACE;
+Block::= LBRACE RBRACE
+	|
+	LBRACE BlockStatements RBRACE;
+	
+	
+BlockStatements::= BlockStatement
+	|
+	BlockStatements SEMICOLON BlockStatement
+	;	
+
+BlockStatement::=
+    LocalVariableDeclarationStatement
+    |
+    Statement
+/*    
+    |
+    ClassOrInterfaceDeclaration
+    |
+    Identifier COLON Statement
+   */ 
+    ;
+
+LocalVariableDeclarationStatement::= VariableModifier Type VariableDeclarators; /* FIXME a ausencia do modificador de variavel faz pensar que é um Primary... */
+
+Statement::=
+    RETURN Expression SEMICOLON
+    /*
+    |
+    RETURN SEMICOLON    
+    |
+    Block
+    |
+    SEMICOLON
+    |
+    Identifier COLON Statement
+    |
+    StatementExpression SEMICOLON
+    |
+    IF ParExpression Statement ELSE Statement
+    | 
+    IF ParExpression Statement
+    |
+    ASSERT Expression COLON Expression SEMICOLON
+    |
+    ASSERT Expression SEMICOLON
+    |
+    SWITCH ParExpression SwitchBlockStatementGroups
+    | 
+    WHILE ParExpression Statement
+    |
+    DO Statement WHILE ParExpression SEMICOLON
+    |
+    FOR LPAREN ForControl RPAREN Statement
+    |
+    BREAK Identifier SEMICOLON
+    |
+    BREAK SEMICOLON
+    |
+    CONTINUE Identifier SEMICOLON
+    |
+    CONTINUE SEMICOLON
+    |
+    THROW Expression SEMICOLON
+    |
+    SYNCHRONIZED ParExpression Block
+    |
+    TRY Block Catches Finally
+    |
+    TRY Block Catches
+    |
+    TRY Block Finally
+    |
+    TRY ResourceSpecification Block Catches Finally
+    |
+    TRY ResourceSpecification Block Catches
+    |
+    TRY ResourceSpecification Block Finally
+    |        
+    TRY ResourceSpecification Block
+    */
+    ;
+
+
+SwitchBlockStatementGroups::= SwitchBlockStatementGroup
+	|
+	SwitchBlockStatementGroups SwitchBlockStatementGroup
+	;
+	
+SwitchBlockStatementGroup::= 
+    SwitchLabels BlockStatements
+    ;
+
+SwitchLabels::=
+    SwitchLabels SwitchLabel
+    |
+    SwitchLabel
+    ;
+
+SwitchLabel::=
+    CASE Expression COLON
+    |
+    CASE EnumConstantName COLON
+    |
+    DEFAULT COLON
+    ;
+
+EnumConstantName::=
+    Identifier
+    ;
+
+	 
+ForControl::=
+    ForVarControl
+    |
+    ForInit SEMICOLON Expression SEMICOLON ForUpdate
+    |
+    ForInit SEMICOLON Expression SEMICOLON
+    | 
+    ForInit SEMICOLON SEMICOLON ForUpdate
+    |
+    ForInit SEMICOLON SEMICOLON
+    ;
+
+ForVarControl::=
+    VariableModifierList Type VariableDeclaratorId  ForVarControlRest
+    ;
+
+ForVarControlRest::=
+    ForVariableDeclaratorsRest SEMICOLON Expression SEMICOLON ForUpdate
+    |
+    ForVariableDeclaratorsRest SEMICOLON Expression SEMICOLON
+    |
+    ForVariableDeclaratorsRest SEMICOLON SEMICOLON ForUpdate
+    |
+    ForVariableDeclaratorsRest SEMICOLON SEMICOLON
+    | 
+    COLON Expression
+    ;
+
+ForVariableDeclaratorsRest::=  OptionalVariableInitializer VariableDeclaratorList;
+
+OptionalVariableInitializer::= /* empty */
+	|
+	BECOMES VariableInitializer
+	;
+	
+
+VariableDeclaratorList ::= COMMA VariableDeclarator 
+	| 
+	VariableDeclaratorList COMMA VariableDeclarator
+	;
+
+ForInit::=
+ 	ForInit COMMA StatementExpression     
+ 	|
+ 	StatementExpression
+ 	;
+ 
+ForUpdate::=
+ 	ForUpdate COMMA StatementExpression     
+ 	|
+ 	StatementExpression
+ 	;
+    
+    
+ResourceSpecification::=
+    LPAREN Resources SEMICOLON RPAREN
+    |
+    LPAREN Resources RPAREN
+    ;
+
+Resources::=
+    Resource
+    |
+    Resources SEMICOLON Resource
+    ;
+
+Resource::=
+    VariableModifierList ReferenceType VariableDeclaratorId BECOMES Expression
+    ; 
+
+
+StatementExpression::=
+    Expression
+    ;
+
+
+VariableDeclarators::=
+    VariableDeclarators COMMA VariableDeclarator
+    |
+    VariableDeclarator
+    ;
+
+VariableDeclarator::=
+    Identifier VariableDeclaratorRest
+    ;
+
+
+
+Catches::=
+    CatchClause
+    |
+    Catches CatchClause
+    ;
+
+CatchClause::=  
+    CATCH LPAREN {VariableModifier} CatchType Identifier RPAREN Block
+    ;
+
+CatchType::=
+    CatchType OR QualifiedIdentifier
+    |
+    QualifiedIdentifier
+    ;
+
+Finally::=
+    FINALLY Block
+    ;
+
+
+
+
+
+
+
+
+
 
 
 

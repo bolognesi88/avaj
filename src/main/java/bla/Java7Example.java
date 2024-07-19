@@ -10,7 +10,12 @@ public class Java7Example extends Classe2 implements Classe3 {
 	public void	x(int i, int j) throws Throwable, NullPointerException {
 	
 	}
-
+	
+	protected int hum() {
+		final int x = 1; 
+		
+		return x;
+	}
 }
 
 abstract class Classe2 implements Classe3 {
