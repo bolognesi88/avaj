@@ -13,7 +13,9 @@ public class Java7Example extends Classe2 implements Classe3{
 abstract class Classe2 implements Classe3{
 	public Class c = void.class;
 	
+	private static final int TWO = 1+1;
 	
+	public static String sure = (1+1 == TWO) ? "True" : "False"; 
 }
 
 interface Classe3 {

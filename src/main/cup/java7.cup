@@ -730,21 +730,18 @@ Expression1::=
 
 Expression1Rest::= QUESTION Expression COLON Expression1;	
 
-Expression2::=
-    Expression3 Expression2Rest
-    |
-    Expression3
-    ;
+Expression2::= Expression3 Expression2Rest;
 
-Expression2Rest::=
+Expression2Rest::= /* empty */
+	|
     Expression3List
     |
     INSTANCEOF Type	
     ;
     
-Expression3List::= InfixOp Expression3 Expression3List
+Expression3List::= InfixOp Expression3 
 	|
-	InfixOp Expression3
+	Expression3List InfixOp Expression3
 	;
     
 InfixOp::=
@@ -789,8 +786,10 @@ InfixOp::=
 
 
 Expression3::=
+	/* FIXME
     PrefixOp Expression3
     |
+    */
     LPAREN Expression RPAREN Expression3
     |
     LPAREN Type RPAREN Expression3
