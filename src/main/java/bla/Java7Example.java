@@ -8,9 +8,10 @@ import javax.annotation.concurrent.Immutable;
 @java.lang.SuppressWarnings("serial")
 public class Java7Example extends Classe2 implements Classe3 {
 	public void	x(int i, int j) throws Throwable, NullPointerException {
-		{
+		synchronized (this) {
 			// bloco vazio :-)
 		}
+		
 	}
 	
 	protected int hum() {
@@ -20,6 +21,11 @@ public class Java7Example extends Classe2 implements Classe3 {
 		
 		try {
 			if (x==2) return 1;
+			
+			if (x==3) return 1; else { /* nada */ };
+		}
+		catch (RuntimeException t) {
+			throw t;
 		}
 		finally {
 			// nada

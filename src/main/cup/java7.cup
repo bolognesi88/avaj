@@ -304,7 +304,7 @@ precedence left SHIFT_LEFT, SHIFT_RIGHT, SHIFT_RIGHT_ARITHM;   	/* LEVEL 10 */
 precedence left PLUS, MINUS; 			/* LEVEL 11 */
 precedence left TIMES, DIVIDE, MOD; 	/* LEVEL 12 */
 precedence right NOT, BITWISE_NOT;		/* LEVEL 14 + UNARY PLUS MINUS PREINC, PREDEC */
-precedence nonassoc AT;					/* ? */
+precedence nonassoc AT, ELSE;					/* ? */
 precedence left INC, DEC; 				/* LEVEL 15*/
 precedence left LPAREN, RPAREN, LBRACE, RBRACE, NEW, DOT; 		/*LEVEL 16, + METHOD REFERENCE :: */
 
@@ -1145,13 +1145,25 @@ Statement::=
     |    
     SEMICOLON
     |
+    IF ParExpression Statement ELSE Statement
+    |
     IF ParExpression Statement
-        |
+    |
     TRY Block Finally
+    |
+    TRY Block Catches Finally
+    |
+    TRY Block Catches
+    |
+    THROW Expression SEMICOLON
+    |
+    SYNCHRONIZED ParExpression Block
+    
+    
+    
     /*
     
-    |
-    IF ParExpression Statement ELSE Statement
+    
     |     
     ASSERT Expression COLON Expression SEMICOLON
     |
@@ -1171,22 +1183,14 @@ Statement::=
     |
     CONTINUE Identifier SEMICOLON
     |
-    CONTINUE SEMICOLON
-    |
-    THROW Expression SEMICOLON
-    |
-    SYNCHRONIZED ParExpression Block
-    
+    CONTINUE SEMICOLON    
 
     |
     Identifier COLON Statement
     |
     StatementExpression SEMICOLON
     
-    |
-    TRY Block Catches Finally
-    |
-    TRY Block Catches
+
 
     |
     TRY ResourceSpecification Block Catches Finally
@@ -1324,7 +1328,7 @@ Catches::=
     ;
 
 CatchClause::=  
-    CATCH LPAREN {VariableModifier} CatchType Identifier RPAREN Block
+    CATCH LPAREN VariableModifierList CatchType Identifier RPAREN Block
     ;
 
 CatchType::=
