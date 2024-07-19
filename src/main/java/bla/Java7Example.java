@@ -12,9 +12,11 @@ public class Java7Example extends Classe2 implements Classe3 {
 	}
 	
 	protected int hum() {
-		final int x = 1; 
+		final int x = 1;
 		
-		return x;
+		int y = 2;
+		
+		return y - x;
 	}
 }
 

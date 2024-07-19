@@ -1134,7 +1134,7 @@ BlockStatement::=
    */ 
     ;
 
-LocalVariableDeclarationStatement::= VariableModifier Type VariableDeclarators; /* FIXME a ausencia do modificador de variavel faz pensar que é um Primary... */
+LocalVariableDeclarationStatement::= VariableModifierList Type VariableDeclarators; /* FIXME a ausencia do modificador de variavel faz pensar que é um Primary... */
 
 Statement::=
     RETURN Expression SEMICOLON
