@@ -25,6 +25,14 @@ class MyTestClass {
 	\
 	System.out.println(#{2} + " result of "+ #{1})   // #{N} as tuple part wildcard for data flow placement
 	
+	MyPojo p, q
+	
+	p
+	\
+	#["codest", "nivsal"] // partial pojo get/set attribute data copy?!?!?!?
+	\
+	q
+	
   }
 }
 
