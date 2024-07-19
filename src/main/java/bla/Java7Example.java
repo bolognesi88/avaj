@@ -12,6 +12,13 @@ public class Java7Example extends Classe2 implements Classe3 {
 			// bloco vazio :-)
 		}
 		
+		do {
+			int[] vetor = {1,2,3};
+			
+			if (true) break;
+		}
+		while (false);
+		
 	}
 	
 	protected int hum() {
@@ -30,6 +37,8 @@ public class Java7Example extends Classe2 implements Classe3 {
 		finally {
 			// nada
 		}
+		
+		assert x < 1000;
 		
 		return (int) (y / 1 - x * 1);
 	}

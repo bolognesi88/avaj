@@ -1158,24 +1158,10 @@ Statement::=
     THROW Expression SEMICOLON
     |
     SYNCHRONIZED ParExpression Block
-    
-    
-    
-    /*
-    
-    
-    |     
-    ASSERT Expression COLON Expression SEMICOLON
-    |
-    ASSERT Expression SEMICOLON
-    |
-    SWITCH ParExpression SwitchBlockStatementGroups
-    | 
-    WHILE ParExpression Statement
-    |
+ 	|
+ 	WHILE ParExpression Statement
+ 	| 
     DO Statement WHILE ParExpression SEMICOLON
-    |
-    FOR LPAREN ForControl RPAREN Statement
     |
     BREAK Identifier SEMICOLON
     |
@@ -1183,15 +1169,11 @@ Statement::=
     |
     CONTINUE Identifier SEMICOLON
     |
-    CONTINUE SEMICOLON    
-
+    CONTINUE SEMICOLON         
+    |     
+    ASSERT Expression COLON Expression SEMICOLON
     |
-    Identifier COLON Statement
-    |
-    StatementExpression SEMICOLON
-    
-
-
+    ASSERT Expression SEMICOLON  
     |
     TRY ResourceSpecification Block Catches Finally
     |
@@ -1200,6 +1182,18 @@ Statement::=
     TRY ResourceSpecification Block Finally
     |        
     TRY ResourceSpecification Block
+    
+    /*
+    
+    |
+    SWITCH ParExpression SwitchBlockStatementGroups
+    |
+    FOR LPAREN ForControl RPAREN Statement
+    |
+    Identifier COLON Statement
+    |
+    StatementExpression SEMICOLON
+
     */
     
     ;
