@@ -46,6 +46,15 @@ public class Java7Example extends Classe2 implements Classe3 {
 		
 		return (int) (y / 1 - x * 1);
 	}
+	
+	/**
+	 * Este método retorna o numero dois.
+	 * Isto é um Documentation Comment (javadoc)
+	 * @return
+	 */
+	public int dois () {
+		return 2;
+	}
 }
 
 abstract class Classe2 implements Classe3 {
@@ -59,8 +68,7 @@ abstract class Classe2 implements Classe3 {
 }
 
 interface Classe3 {
-	
-	
+
 }
 
 interface Class4 extends java.util.List<Integer> {
