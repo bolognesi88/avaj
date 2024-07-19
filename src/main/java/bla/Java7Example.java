@@ -15,6 +15,8 @@ public class Java7Example extends Classe2 implements Classe3 {
 		do {
 			int[] vetor = {1,2,3};
 			
+			int[][] matriz = {{1,2,3}, {4,5,6}, {7,8,9}};
+			
 			if (true) break;
 		}
 		while (false);
