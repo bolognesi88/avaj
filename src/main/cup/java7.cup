@@ -242,21 +242,39 @@ nonterminal OptionalThrowsQualifiedIdentifierList;
 nonterminal QualifiedIdentifierList;
 nonterminal FormalParameters;
 nonterminal GenericMethodOrConstructorRest;
-
+nonterminal ExplicitGenericInvocation;
+nonterminal ExplicitGenericInvocationSuffix;
+nonterminal InnerCreator;
+nonterminal OptionalDotIdentifierList;
+nonterminal Creator;
+nonterminal IdentifierSuffix;
 
 
 /* Precedence declarations */
-precedence nonassoc BECOMES;
-precedence nonassoc AND, OR;
-precedence left LT, GT, LE, GE;
-precedence left PLUS, MINUS;
-precedence left TIMES, DIVIDE;
-precedence right NOT, NEW;
-precedence left DOT;
-precedence nonassoc EQUALS;
-precedence nonassoc AT;
-precedence nonassoc PACKAGE;
-precedence left INC, DEC;
+/* The last precedence declaration give its terminals the highest precedence */
+/* https://introcs.cs.princeton.edu/java/11precedence/ */
+
+/* precedence right lambda -> */
+precedence right BECOMES, PLUS_EQUALS, MINUS_EQUALS, TIMES_EQUALS, DIV_EQUALS, MOD_EQUALS, AND_EQUALS, XOR_EQUALS, OR_EQUALS, SHIFT_LEFT_EQUALS, SHIFT_RIGHT_EQUALS, SHIFT_RIGHT_ARITHM_EQUALS; /* level 1*/
+precedence left QUESTION, COLON; 		/* level 2*/
+precedence left DOUBLE_OR; 				/* level 3*/
+precedence left DOUBLE_AND; 			/* level 4*/
+precedence left OR; 					/* level 5*/
+precedence left XOR; 					/* level 6*/
+precedence left AND; 					/* level 7*/
+precedence left EQUALS, NOT_EQUALS; 	/* LEVEL 8 */
+precedence left LT, GT, LE, GE, INSTANCEOF;   					/* LEVEL 9 */
+precedence left SHIFT_LEFT, SHIFT_RIGHT, SHIFT_RIGHT_ARITHM;   	/* LEVEL 10 */
+precedence left PLUS, MINUS; 			/* LEVEL 11 */
+precedence left TIMES, DIVIDE, MOD; 	/* LEVEL 12 */
+precedence right NOT, BITWISE_NOT;		/* LEVEL 14 + UNARY PLUS MINUS PREINC, PREDEC */
+precedence nonassoc AT;					/* ? */
+precedence left INC, DEC; 				/* LEVEL 15*/
+precedence left LPAREN, RPAREN, LBRACE, RBRACE, NEW, DOT; 		/*LEVEL 16, + METHOD REFERENCE :: */
+
+
+
+
 
 /* Productions */
 
@@ -819,22 +837,28 @@ Primary::=
     |
     SUPER SuperSuffix
     |   
-    
-    /* FIXME
-    new Creator
-    NonWildcardTypeArguments (ExplicitGenericInvocationSuffix | this Arguments)
-    Identifier { . Identifier } [IdentifierSuffix]
-    */
-    
-    
-    BasicType EmptyArrays DOT CLASS
+    NEW Creator
+    |
+    NonWildcardTypeArguments LPAREN ExplicitGenericInvocationSuffix RPAREN
+    |
+    NonWildcardTypeArguments LPAREN THIS Arguments RPAREN
+    |
+    Identifier OptionalDotIdentifierList IdentifierSuffix
+	|   
+	Identifier OptionalDotIdentifierList
+	|   	
+	BasicType EmptyArrays DOT CLASS
     |
     BasicType DOT CLASS
     |
     VOID DOT CLASS
     ;
 
-
+OptionalDotIdentifierList::= /* empty */
+			|
+			DOT Identifier
+			;
+	
 
 Literal::=
     IntegerLiteral
@@ -871,16 +895,22 @@ Arguments::=  LPAREN ExpressionList RPAREN;
 
 
 Selector::=
-    DOT Identifier;
-    
-    /* FIXME
-    DOT Identifier [Arguments]
-    . ExplicitGenericInvocation
-    . this
-    . super SuperSuffix
-    . new [NonWildcardTypeArguments] InnerCreator
-    [ Expression ]
-	*/
+    DOT Identifier
+    |
+    DOT Identifier Arguments
+    |
+    DOT ExplicitGenericInvocation
+    |
+    DOT THIS
+    |
+    DOT SUPER SuperSuffix
+    |
+    DOT NEW NonWildcardTypeArguments InnerCreator
+    |
+    DOT NEW InnerCreator
+    |
+    Expression
+	;
 
 SuperSuffix::=
     Arguments 
@@ -890,12 +920,14 @@ SuperSuffix::=
     DOT Identifier
     ;
     
-/*
-ExplicitGenericInvocationSuffix: 
-    super SuperSuffix
+
+ExplicitGenericInvocationSuffix::=
+    SUPER SuperSuffix
+    |
     Identifier Arguments			
-*/		
+    ;
 		
+
 		
 			
 ClassBody::= LBRACE ClassBodyDeclarationList RBRACE;
