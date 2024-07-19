@@ -6,24 +6,30 @@ import javax.annotation.concurrent.Immutable;
 
 @Immutable
 @java.lang.SuppressWarnings("serial")
-public class Java7Example extends Classe2 implements Classe3{
+public class Java7Example extends Classe2 implements Classe3 {
+	public void	x(int i, int j) throws Throwable, NullPointerException {
 	
+	}
+
 }
 
-abstract class Classe2 implements Classe3{
+abstract class Classe2 implements Classe3 {
 	public Class c = void.class;
 	
 	private static final int TWO = 1+1;
 	
-	public static String sure = (1+1 == TWO) ? "True" : "False"; 
+	public static String sure = (1+1 == TWO) ? "True" : "False";
+	
+	
 }
 
 interface Classe3 {
 	
+	
 }
 
 interface Class4 extends java.util.List<Integer> {
-	
+
 }
 
 class Class5 extends Java7Example {
@@ -35,6 +41,7 @@ class Class5 extends Java7Example {
 	
 	@SuppressWarnings("unused")
 	private double x;
+	
 }
 
 enum Merassaum {

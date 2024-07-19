@@ -25,14 +25,14 @@ public class Java7Test{
             
             	Integer currLeft = t.left;
             	if (currLeft!=lastLeft) {
-            		System.out.print("Input line "+currLeft+": ");
+            		System.out.print("\nInput line "+currLeft+": ");
             		lastLeft = currLeft;
             	}
             	
                 System.out.print(s.symbolToString(t));
                 System.out.print("(#"+t.sym+") ");
                 
-                if (t.sym == Java7Sym.SEMICOLON ||t.sym == Java7Sym.LBRACE || t.sym == Java7Sym.RBRACE) System.out.println();
+                // if (t.sym == Java7Sym.SEMICOLON ||t.sym == Java7Sym.LBRACE || t.sym == Java7Sym.RBRACE) System.out.println();
                 
                 t = s.next_token(); 
             }            
@@ -43,7 +43,7 @@ public class Java7Test{
             s = new Java7Scanner(new FileReader(FILE));            
             Java7Parser p = new Java7Parser(s);
             Symbol root;
-            root = p.debug_parse();
+            root = p.parse();
 
             // Program prog = (Program) root.value;
             System.out.println(root.value);

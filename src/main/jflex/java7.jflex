@@ -203,6 +203,7 @@ end_comment = "*/"
 	
 	
 	/* punctuation */
+	"..." { return symbol(Java7Sym.ELLIPSIS); }
 	"." { return symbol(Java7Sym.DOT); }
 	"," { return symbol(Java7Sym.COMMA); }
 	":" { return symbol(Java7Sym.COLON); }
