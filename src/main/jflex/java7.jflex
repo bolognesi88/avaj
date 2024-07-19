@@ -52,10 +52,14 @@ eol = [\r\n]
 not_eol = [^\r\n]
 white = {eol}|[ \t]
 
-/* C89-style comments */
-start_comment = "/*"
-comment_contents = ([^*]|\*[^/])
-end_comment = "*/"
+    /* comments from https://github.com/jflex-de/jflex/blob/master/docs/md/example.md */
+    Comment = {TraditionalComment} | {EndOfLineComment} | {DocumentationComment}
+
+    TraditionalComment   = "/*" [^*] ~"*/" | "/*" "*"+ "/"
+    // Comment can be the last line of the file, without line terminator.
+    EndOfLineComment     = "//" {not_eol}* {eol}?
+    DocumentationComment = "/**" {CommentContent} "*"+ "/"
+    CommentContent       = ( [^*] | \*+ [^/*] )*
 
 %state STRING
 
@@ -66,9 +70,8 @@ end_comment = "*/"
 	
 	/* Token definitions */
 	
-	/* comments */
-	"//"{not_eol}*{eol} { /* do nothing */ }
-	{start_comment}{comment_contents}*{end_comment} { /* do nothing */ }
+    /* comments */
+    {Comment}                      { /* ignore */ }
 	
 	
 	/* reserved words */
