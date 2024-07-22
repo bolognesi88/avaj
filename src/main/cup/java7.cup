@@ -73,6 +73,8 @@ terminal	STRICTFP	;
 /* literals */		
 terminal	INTEGER_LITERAL	;
 terminal    STRING_LITERAL;
+terminal 	CHARACTER_LITERAL;
+terminal	FLOATING_POINT_LITERAL;
 		
 /* operators */		
 terminal	GE	;
@@ -219,6 +221,7 @@ nonterminal Primary ;
 nonterminal Literal;
 nonterminal ParExpression;
 nonterminal IntegerLiteral;
+nonterminal FloatingPointLiteral;
 nonterminal CharacterLiteral ;
 nonterminal StringLiteral ;
 nonterminal BooleanLiteral;
@@ -245,7 +248,7 @@ nonterminal GenericMethodOrConstructorRest;
 nonterminal ExplicitGenericInvocation;
 nonterminal ExplicitGenericInvocationSuffix;
 nonterminal InnerCreator;
-nonterminal OptionalDotIdentifierList;
+nonterminal ChainedIdentifier;
 nonterminal Creator;
 nonterminal IdentifierSuffix;
 nonterminal FormalParameterDecls;
@@ -839,6 +842,42 @@ Expression3::=
 	Primary
 	;
 
+			
+Primary::= 
+    Literal
+    |
+    ParExpression
+    |
+    THIS
+    |
+    THIS Arguments
+    |
+    SUPER SuperSuffix
+    |   
+    NEW Creator
+    |    
+    NonWildcardTypeArguments LPAREN ExplicitGenericInvocationSuffix RPAREN
+    |
+    NonWildcardTypeArguments LPAREN THIS Arguments RPAREN
+    |
+    ChainedIdentifier IdentifierSuffix
+	|   
+	ChainedIdentifier
+	|   	
+	BasicType EmptyArrays DOT CLASS
+    |
+    BasicType DOT CLASS
+    |
+    VOID DOT CLASS
+    ;
+
+
+ChainedIdentifier::= Identifier
+			|
+			ChainedIdentifier DOT Identifier
+			;
+
+
 PrefixOp::= 
 		PostfixOp
 		|
@@ -858,54 +897,33 @@ PostfixOp::=
 			DEC
 			;
 			
-			
-Primary::= 
-    Literal
-    |
-    ParExpression
-    |
-    THIS
-    |
-    THIS Arguments
-    |
-    SUPER SuperSuffix
-    |   
-    NEW Creator
-    |    
-    NonWildcardTypeArguments LPAREN ExplicitGenericInvocationSuffix RPAREN
-    |
-    NonWildcardTypeArguments LPAREN THIS Arguments RPAREN
-    |
-    Identifier OptionalDotIdentifierList IdentifierSuffix
-	|   
-	Identifier OptionalDotIdentifierList
-	|   	
-	BasicType EmptyArrays DOT CLASS
-    |
-    BasicType DOT CLASS
-    |
-    VOID DOT CLASS
-    ;
-
-OptionalDotIdentifierList::= /* empty */
-			|
-			DOT Identifier
-			;
 	
 IdentifierSuffix::=  Arguments
+	|
+	DOT CLASS
+	|
+	DOT ExplicitGenericInvocation
+	|
+	DOT THIS
+	|
+	DOT SUPER Arguments
+	|
+	DOT NEW NonWildcardTypeArguments InnerCreator
+	|
+	DOT NEW InnerCreator
 	;
 	/* FIXME
 	[ ({[]} . class | Expression) ]
      
-    . (class | ExplicitGenericInvocation | this | super Arguments |
-                                new [NonWildcardTypeArguments] InnerCreator)	
+
 
 	*/
 	
 Literal::=
     IntegerLiteral
     |
-    /* FloatingPointLiteral */
+    FloatingPointLiteral
+    |
     CharacterLiteral 
     |
     StringLiteral 
@@ -917,13 +935,15 @@ Literal::=
 
 IntegerLiteral::= INTEGER_LITERAL;
 
-CharacterLiteral::= QUOTE Identifier QUOTE;
+CharacterLiteral::= CHARACTER_LITERAL;
 
 StringLiteral::= STRING_LITERAL;
 
 BooleanLiteral::= TRUE | FALSE;
 
 NullLiteral::= NULL;
+
+FloatingPointLiteral ::= FLOATING_POINT_LITERAL;
 
 
 ParExpression::= LPAREN Expression RPAREN;
@@ -1207,6 +1227,10 @@ Statement::=
     
     ;
 
+StatementExpression::=
+    Expression
+    ;
+
 
 SwitchBlockStatementGroups::= SwitchBlockStatementGroup
 	|
@@ -1306,10 +1330,6 @@ Resource::=
     VariableModifierList ReferenceType VariableDeclaratorId BECOMES Expression
     ; 
 
-
-StatementExpression::=
-    Expression
-    ;
 
 
 VariableDeclarators::=

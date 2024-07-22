@@ -61,7 +61,17 @@ white = {eol}|[ \t]
     DocumentationComment = "/**" {CommentContent} "*"+ "/"
     CommentContent       = ( [^*] | \*+ [^/*] )*
 
-%state STRING
+
+	/* floating point literals */        
+	FloatLiteral  = ({FLit1}|{FLit2}|{FLit3}) {Exponent}? [fF]
+	DoubleLiteral = ({FLit1}|{FLit2}|{FLit3}) {Exponent}?
+	
+	FLit1    = [0-9]+ \. [0-9]* 
+	FLit2    = \. [0-9]+ 
+	FLit3    = [0-9]+ 
+	Exponent = [eE] [+-]? [0-9]+
+
+%state STRING, CHARLITERAL
 
 %%
 
@@ -146,9 +156,12 @@ white = {eol}|[ \t]
 	
 	/* literals */
 	{digit}+ { return symbol(Java7Sym.INTEGER_LITERAL, new Integer(yytext())); }
+	
 	/*    FloatingPointLiteral	*/
-	/*    CharacterLiteral */
-	/*    StringLiteral */
+	{FloatLiteral}                 { return symbol(Java7Sym.FLOATING_POINT_LITERAL, new Float(yytext().substring(0,yylength()-1))); }
+  	{DoubleLiteral}                { return symbol(Java7Sym.FLOATING_POINT_LITERAL, new Double(yytext())); }
+  	{DoubleLiteral}[dD]            { return symbol(Java7Sym.FLOATING_POINT_LITERAL, new Double(yytext().substring(0,yylength()-1))); }
+	
 	
 	/* operators */
 	">=" { return symbol(Java7Sym.GE); }
@@ -174,8 +187,7 @@ white = {eol}|[ \t]
 	"^" { return symbol(Java7Sym.XOR); }
 	"%" { return symbol(Java7Sym.MOD); }
 	"~" { return symbol(Java7Sym.BITWISE_NOT); }
-	"'" { return symbol(Java7Sym.QUOTE); }
-	
+		
 	
 	"#" { return symbol(Java7Sym.HASH); }
 	
@@ -222,8 +234,11 @@ white = {eol}|[ \t]
 	{white}+ { /* ignore whitespace */ }
 	
 	\"              { string.setLength(0); yybegin(STRING); }
+	\'              { string.setLength(0); yybegin(CHARLITERAL); }
 	
 }
+
+/*    StringLiteral */
 
 <STRING> {
   \"                             { yybegin(YYINITIAL);  return symbol(Java7Sym.STRING_LITERAL,string.toString()); }
@@ -235,6 +250,31 @@ white = {eol}|[ \t]
   \\\"                           { string.append('\"'); }
   \\                             { string.append('\\'); }
 }
+
+/*    CharacterLiteral */
+	
+	
+<CHARLITERAL> {
+  [^\r\n\'\\]\'            { yybegin(YYINITIAL); return symbol(Java7Sym.CHARACTER_LITERAL, yytext().charAt(0)); }
+  
+  /* escape sequences */
+  "\\b"\'                        { yybegin(YYINITIAL); return symbol(Java7Sym.CHARACTER_LITERAL, '\b');}
+  "\\t"\'                        { yybegin(YYINITIAL); return symbol(Java7Sym.CHARACTER_LITERAL, '\t');}
+  "\\n"\'                        { yybegin(YYINITIAL); return symbol(Java7Sym.CHARACTER_LITERAL, '\n');}
+  "\\f"\'                        { yybegin(YYINITIAL); return symbol(Java7Sym.CHARACTER_LITERAL, '\f');}
+  "\\r"\'                        { yybegin(YYINITIAL); return symbol(Java7Sym.CHARACTER_LITERAL, '\r');}
+  "\\\""\'                       { yybegin(YYINITIAL); return symbol(Java7Sym.CHARACTER_LITERAL, '\"');}
+  "\\'"\'                        { yybegin(YYINITIAL); return symbol(Java7Sym.CHARACTER_LITERAL, '\'');}
+  "\\\\"\'                       { yybegin(YYINITIAL); return symbol(Java7Sym.CHARACTER_LITERAL, '\\'); }
+  \\[0-3]?[0-7]?[0-7]\' 		 { yybegin(YYINITIAL); 
+			                              int val = Integer.parseInt(yytext().substring(1,yylength()-1),8);
+			                            return symbol(Java7Sym.CHARACTER_LITERAL, (char)val); }
+  
+  /* error cases */
+  \\.                            { throw new RuntimeException("Illegal escape sequence \""+yytext()+"\""); }
+  {eol}               { throw new RuntimeException("Unterminated character literal at end of line"); }
+}
+
 
 
 /* lexical errors (put last so other matches take precedence) */

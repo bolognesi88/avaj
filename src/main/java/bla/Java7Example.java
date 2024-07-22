@@ -7,6 +7,10 @@ import javax.annotation.concurrent.Immutable;
 @Immutable
 @java.lang.SuppressWarnings("serial")
 public class Java7Example extends Classe2 implements Classe3 {
+	public static final double PI = 3.14;
+	
+	public static final char letra = 'a';
+	
 	public void	x(int i, int j) throws Throwable, NullPointerException {
 		synchronized (this) {
 			// bloco vazio :-)
@@ -68,7 +72,7 @@ abstract class Classe2 implements Classe3 {
 }
 
 interface Classe3 {
-
+	
 }
 
 interface Class4 extends java.util.List<Integer> {
