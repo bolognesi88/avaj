@@ -3,11 +3,15 @@ package bla;
 import java.util.*;
 import static java.lang.Math.abs;
 import javax.annotation.concurrent.Immutable;
+import javax.xml.bind.annotation.XmlTransient;
 
 @Immutable
 @java.lang.SuppressWarnings("serial")
 public class Java7Example extends Classe2 implements Classe3 {
 	public static final double PI = 3.14;
+	
+	@XmlTransient
+	private final float MEIO_PI = 1.6f;
 	
 	public static final char letra = 'a';
 	
@@ -25,8 +29,10 @@ public class Java7Example extends Classe2 implements Classe3 {
 		}
 		while (false);
 		
-		// ainda não foi hoje que consegui chamar um método. preciso do StatementExpression SEMICOLON sem conflito 
-		// hum();
+		// ainda não foi hoje que consegui chamar um método.  
+		Java7Example um;
+		// um = new Java7Example();
+		// um.hum();
 	}
 	
 	protected int hum() {

@@ -13,6 +13,8 @@ public class Java7Test{
 	
     public static void main(String [] args) {
     	final String FILE = "C:\\Java\\eclipse-workspace\\avaj\\src\\main\\java\\bla\\Java7Example.java";
+    	
+    	Java7Parser p=null;
         try {
             // create a scanner on the input file
             Java7Scanner s = new Java7Scanner(new FileReader(FILE));
@@ -41,7 +43,7 @@ public class Java7Test{
             s.yyclose();
         
             s = new Java7Scanner(new FileReader(FILE));            
-            Java7Parser p = new Java7Parser(s);
+            p = new Java7Parser(s);
             Symbol root;
             root = p.parse();
 
@@ -60,6 +62,17 @@ public class Java7Test{
             System.err.println("Unexpected internal compiler error: " + 
                                e.toString());
             // print out a stack dump
+            if (p!=null) {
+            	p.dump_stack();
+            	try {
+					System.out.println("next:" +p.getScanner().next_token());
+				} 
+            	catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+            }
+            
             
             // Syntax error at character < LINE NUMBER !!!! > of input
             e.printStackTrace();
