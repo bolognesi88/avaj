@@ -157,6 +157,10 @@ white = {eol}|[ \t]
 	/* literals */
 	{digit}+ { return symbol(Java7Sym.INTEGER_LITERAL, new Integer(yytext())); }
 	
+	  /* This is matched together with the minus, because the number is too big to 
+     be represented by a positive integer. */
+  	 "-2147483648"                  { return symbol(Java7Sym.INTEGER_LITERAL, new Integer(Integer.MIN_VALUE)); }
+	
 	/*    FloatingPointLiteral	*/
 	{FloatLiteral}                 { return symbol(Java7Sym.FLOATING_POINT_LITERAL, new Float(yytext().substring(0,yylength()-1))); }
   	{DoubleLiteral}                { return symbol(Java7Sym.FLOATING_POINT_LITERAL, new Double(yytext())); }

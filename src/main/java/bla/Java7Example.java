@@ -20,6 +20,8 @@ public class Java7Example extends Classe2 implements Classe3 {
 			// bloco vazio :-)
 		}
 		
+		final int inteiroMuitoMuitoNegativo = -2147483648;
+		
 		do {
 			int[] vetor = {1,2,3};
 			
