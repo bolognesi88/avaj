@@ -17,7 +17,7 @@ public class Java7Test{
     	Java7Parser p=null;
         try {
             // create a scanner on the input file
-            Java7Scanner s = new Java7Scanner(new FileReader(FILE));
+            Java7Scanner s = new Java7Scanner(new FileReader(FILE));          
             Symbol t = s.next_token();
             
             Integer lastLeft =null;
@@ -41,9 +41,37 @@ public class Java7Test{
             System.out.println("\nLexical analysis successfull");
             
             s.yyclose();
+            
         
-            s = new Java7Scanner(new FileReader(FILE));            
-            p = new Java7Parser(s);
+            s = new Java7Scanner(new FileReader(FILE));        
+            
+            boolean debugging = true;
+            
+            if (debugging) {
+	            p = new Java7Parser(s) {
+	            	@Override
+	            	public Symbol scan() throws java.lang.Exception {
+	            		Symbol s = super.scan();
+	            		// dump_stack();
+	            		   debug_message("============ Parse Stack Dump ============");
+
+	            		      /* dump the stack */
+	            		      for (int i=0; i<stack.size(); i++)
+	            			{
+	            			  debug_message("Symbol #" + 
+	            					((Symbol)stack.elementAt(i)).sym
+	            			  		+ " " +((Symbol)stack.elementAt(i)).value +
+	            					" State: " + ((Symbol)stack.elementAt(i)).parse_state);
+	            			}
+	            		      debug_message("==========================================");
+	            		    
+	            		System.err.println("\\+"+s.sym+": "+symbl_name_from_id(s.sym));
+	            		return s;
+	            	}
+	            };
+            }
+            else p = new Java7Parser(s); 
+            
             Symbol root;
             root = p.parse();
 
@@ -63,7 +91,6 @@ public class Java7Test{
                                e.toString());
             // print out a stack dump
             if (p!=null) {
-            	p.dump_stack();
             	try {
 					System.out.println("next:" +p.getScanner().next_token());
 				} 
@@ -78,4 +105,5 @@ public class Java7Test{
             e.printStackTrace();
         }
     }
+
 }
