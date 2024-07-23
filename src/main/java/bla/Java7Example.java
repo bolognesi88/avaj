@@ -67,6 +67,11 @@ public class Java7Example extends Classe2 implements Classe3 {
 	public int dois () {
 		return 2;
 	}
+
+	@Override
+	public float metodo() {
+		return (float) Java7Example.PI;
+	}
 }
 
 abstract class Classe2 implements Classe3 {
@@ -76,7 +81,7 @@ abstract class Classe2 implements Classe3 {
 	
 	public static String sure = (1+1 == TWO) ? "True" : "False";
 	
-	
+	public abstract float metodo();
 }
 
 interface Classe3 {
