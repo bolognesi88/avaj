@@ -285,6 +285,14 @@ nonterminal Resources;
 nonterminal Resource;
 nonterminal VariableDeclarators;
 
+	
+nonterminal InterfaceBodyDeclaration;  
+nonterminal InterfaceMemberDecl;
+nonterminal InterfaceMethodOrFieldDecl;
+nonterminal InterfaceMethodOrFieldRest;
+nonterminal InterfaceMethodDeclaratorRest;	
+nonterminal VoidInterfaceMethodDeclaratorRest;
+nonterminal InterfaceGenericMethodDecl;
 
 
 
@@ -1375,7 +1383,62 @@ Finally::=
 
 
 
-InterfaceBody::= LBRACE RBRACE;
+InterfaceBody::= LBRACE RBRACE
+	|
+	LBRACE InterfaceBodyDeclaration RBRACE
+	;
+	
+InterfaceBodyDeclaration ::=  
+	SEMICOLON
+	|
+    Modifier InterfaceMemberDecl
+    |
+    InterfaceMemberDecl
+    ;
+
+
+InterfaceMemberDecl::=
+    InterfaceMethodOrFieldDecl
+    |
+    VOID Identifier VoidInterfaceMethodDeclaratorRest
+    |
+    InterfaceGenericMethodDecl
+    |
+    ClassDeclaration
+    |
+    InterfaceDeclaration
+    ;
+
+InterfaceMethodOrFieldDecl::=
+    Type Identifier InterfaceMethodOrFieldRest
+    ;
+
+InterfaceMethodOrFieldRest::=
+    ConstantDeclaratorsRest SEMICOLON
+    |
+    InterfaceMethodDeclaratorRest
+    ;
+
+
+
+InterfaceMethodDeclaratorRest::=	
+    FormalParameters EmptyArrays THROWS QualifiedIdentifierList SEMICOLON
+    |
+    FormalParameters EmptyArrays SEMICOLON
+    ; 
+	
+VoidInterfaceMethodDeclaratorRest::=
+	FormalParameters THROWS QualifiedIdentifierList SEMICOLON
+	;
+
+
+InterfaceGenericMethodDecl::=
+	TypeParameters Type Identifier InterfaceMethodDeclaratorRest
+	|
+	TypeParameters VOID Identifier InterfaceMethodDeclaratorRest
+	;
+
+
 
 
 Identifier::= IDENTIFIER;
