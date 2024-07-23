@@ -89,69 +89,69 @@ white = {eol}|[ \t]
 	
 	
 	/* declarations */
-	"package" { return symbol(Java7Sym.PACKAGE); }
-	"import" { return symbol(Java7Sym.IMPORT); }
-	"class" { return symbol(Java7Sym.CLASS); }
-	"enum" { return symbol(Java7Sym.ENUM); }
-	"interface" { return symbol(Java7Sym.INTERFACE); }
-	"extends" { return symbol(Java7Sym.EXTENDS); }
-	"implements" { return symbol(Java7Sym.IMPLEMENTS); }
-	"instanceof" { return symbol(Java7Sym.INSTANCEOF); }
+	"package" { return symbol(Java7Sym.PACKAGE, yytext()); }
+	"import" { return symbol(Java7Sym.IMPORT, yytext()); }
+	"class" { return symbol(Java7Sym.CLASS, yytext()); }
+	"enum" { return symbol(Java7Sym.ENUM, yytext()); }
+	"interface" { return symbol(Java7Sym.INTERFACE, yytext()); }
+	"extends" { return symbol(Java7Sym.EXTENDS, yytext()); }
+	"implements" { return symbol(Java7Sym.IMPLEMENTS, yytext()); }
+	"instanceof" { return symbol(Java7Sym.INSTANCEOF, yytext()); }
 	
 	
 	/* types */
-	"byte" { return symbol(Java7Sym.BYTE); }
-	"short" { return symbol(Java7Sym.SHORT); }
-	"char" { return symbol(Java7Sym.CHAR); }
-	"int" { return symbol(Java7Sym.INT); }
-	"long" { return symbol(Java7Sym.LONG); }
-	"float" { return symbol(Java7Sym.FLOAT); }
-	"double" { return symbol(Java7Sym.DOUBLE); }
-	"boolean" { return symbol(Java7Sym.BOOLEAN); }
+	"byte" { return symbol(Java7Sym.BYTE, yytext()); }
+	"short" { return symbol(Java7Sym.SHORT, yytext()); }
+	"char" { return symbol(Java7Sym.CHAR, yytext()); }
+	"int" { return symbol(Java7Sym.INT, yytext()); }
+	"long" { return symbol(Java7Sym.LONG, yytext()); }
+	"float" { return symbol(Java7Sym.FLOAT, yytext()); }
+	"double" { return symbol(Java7Sym.DOUBLE, yytext()); }
+	"boolean" { return symbol(Java7Sym.BOOLEAN, yytext()); }
 	
 	
-	"void" { return symbol(Java7Sym.VOID); }
-	"this" { return symbol(Java7Sym.THIS); }
-	"super" { return symbol(Java7Sym.SUPER); }
-	"new" { return symbol(Java7Sym.NEW); }
-	"true" { return symbol(Java7Sym.TRUE); }
-	"false" { return symbol(Java7Sym.FALSE); }
-	"null" { return symbol(Java7Sym.NULL); }
+	"void" { return symbol(Java7Sym.VOID, yytext()); }
+	"this" { return symbol(Java7Sym.THIS, yytext()); }
+	"super" { return symbol(Java7Sym.SUPER, yytext()); }
+	"new" { return symbol(Java7Sym.NEW, yytext()); }
+	"true" { return symbol(Java7Sym.TRUE, yytext()); }
+	"false" { return symbol(Java7Sym.FALSE, yytext()); }
+	"null" { return symbol(Java7Sym.NULL, yytext()); }
 	
 	
 	
 	/* control flow */
-	"if" { return symbol(Java7Sym.IF); }
-	"else" { return symbol(Java7Sym.ELSE); }
-	"for" { return symbol(Java7Sym.FOR); }
-	"while" { return symbol(Java7Sym.WHILE); }
-	"return" { return symbol(Java7Sym.RETURN); }
-	"do" { return symbol(Java7Sym.DO); }
-	"assert" { return symbol(Java7Sym.ASSERT); }
-	"switch" { return symbol(Java7Sym.SWITCH); }
-	"case" { return symbol(Java7Sym.CASE); }
-	"default" { return symbol(Java7Sym.DEFAULT); }
-	"break" { return symbol(Java7Sym.BREAK); }
-	"continue" { return symbol(Java7Sym.CONTINUE); }
-	"try" { return symbol(Java7Sym.TRY); }
-	"catch" { return symbol(Java7Sym.CATCH); }
-	"finally" { return symbol(Java7Sym.FINALLY); }
-	"throw" { return symbol(Java7Sym.THROW); }
-	"throws" { return symbol(Java7Sym.THROWS); }
+	"if" { return symbol(Java7Sym.IF, yytext()); }
+	"else" { return symbol(Java7Sym.ELSE, yytext()); }
+	"for" { return symbol(Java7Sym.FOR, yytext()); }
+	"while" { return symbol(Java7Sym.WHILE, yytext()); }
+	"return" { return symbol(Java7Sym.RETURN, yytext()); }
+	"do" { return symbol(Java7Sym.DO, yytext()); }
+	"assert" { return symbol(Java7Sym.ASSERT, yytext()); }
+	"switch" { return symbol(Java7Sym.SWITCH, yytext()); }
+	"case" { return symbol(Java7Sym.CASE, yytext()); }
+	"default" { return symbol(Java7Sym.DEFAULT, yytext()); }
+	"break" { return symbol(Java7Sym.BREAK, yytext()); }
+	"continue" { return symbol(Java7Sym.CONTINUE, yytext()); }
+	"try" { return symbol(Java7Sym.TRY, yytext()); }
+	"catch" { return symbol(Java7Sym.CATCH, yytext()); }
+	"finally" { return symbol(Java7Sym.FINALLY, yytext()); }
+	"throw" { return symbol(Java7Sym.THROW, yytext()); }
+	"throws" { return symbol(Java7Sym.THROWS, yytext()); }
 	
 	
 	/* modifiers */
-	"public" { return symbol(Java7Sym.PUBLIC); }
-	"protected" { return symbol(Java7Sym.PROTECTED); }
-	"private" { return symbol(Java7Sym.PRIVATE); }
-	"static" { return symbol(Java7Sym.STATIC); }
-	"abstract" { return symbol(Java7Sym.ABSTRACT); }
-	"final" { return symbol(Java7Sym.FINAL); }
-	"native" { return symbol(Java7Sym.NATIVE); }
-	"synchronized" { return symbol(Java7Sym.SYNCHRONIZED); }
-	"transient" { return symbol(Java7Sym.TRANSIENT); }
-	"volatile" { return symbol(Java7Sym.VOLATILE); }
-	"strictfp" { return symbol(Java7Sym.STRICTFP); }
+	"public" { return symbol(Java7Sym.PUBLIC, yytext()); }
+	"protected" { return symbol(Java7Sym.PROTECTED, yytext()); }
+	"private" { return symbol(Java7Sym.PRIVATE, yytext()); }
+	"static" { return symbol(Java7Sym.STATIC, yytext()); }
+	"abstract" { return symbol(Java7Sym.ABSTRACT, yytext()); }
+	"final" { return symbol(Java7Sym.FINAL, yytext()); }
+	"native" { return symbol(Java7Sym.NATIVE, yytext()); }
+	"synchronized" { return symbol(Java7Sym.SYNCHRONIZED, yytext()); }
+	"transient" { return symbol(Java7Sym.TRANSIENT, yytext()); }
+	"volatile" { return symbol(Java7Sym.VOLATILE, yytext()); }
+	"strictfp" { return symbol(Java7Sym.STRICTFP, yytext()); }
 	
 	
 	/* literals */
@@ -168,67 +168,67 @@ white = {eol}|[ \t]
 	
 	
 	/* operators */
-	">=" { return symbol(Java7Sym.GE); }
-	"<=" { return symbol(Java7Sym.LE); }
-	"==" { return symbol(Java7Sym.EQUALS); }
-	"!=" { return symbol(Java7Sym.NOT_EQUALS); }
-	"||" { return symbol(Java7Sym.DOUBLE_OR); }
-	"&&" { return symbol(Java7Sym.DOUBLE_AND); }
-	"<<" { return symbol(Java7Sym.SHIFT_LEFT); }
-	">>" { return symbol(Java7Sym.SHIFT_RIGHT); }
-	">>>" { return symbol(Java7Sym.SHIFT_RIGHT_ARITHM); }
-	"++" { return symbol(Java7Sym.INC); }
-	"--" { return symbol(Java7Sym.DEC); }
+	">=" { return symbol(Java7Sym.GE, yytext()); }
+	"<=" { return symbol(Java7Sym.LE, yytext()); }
+	"==" { return symbol(Java7Sym.EQUALS, yytext()); }
+	"!=" { return symbol(Java7Sym.NOT_EQUALS, yytext()); }
+	"||" { return symbol(Java7Sym.DOUBLE_OR, yytext()); }
+	"&&" { return symbol(Java7Sym.DOUBLE_AND, yytext()); }
+	"<<" { return symbol(Java7Sym.SHIFT_LEFT, yytext()); }
+	">>" { return symbol(Java7Sym.SHIFT_RIGHT, yytext()); }
+	">>>" { return symbol(Java7Sym.SHIFT_RIGHT_ARITHM, yytext()); }
+	"++" { return symbol(Java7Sym.INC, yytext()); }
+	"--" { return symbol(Java7Sym.DEC, yytext()); }
 	
 	
-	"+" { return symbol(Java7Sym.PLUS); }
-	"-" { return symbol(Java7Sym.MINUS); }
-	"*" { return symbol(Java7Sym.TIMES); }
-	"/" { return symbol(Java7Sym.DIVIDE); }
-	"!" { return symbol(Java7Sym.NOT); }
-	"&" { return symbol(Java7Sym.AND); }
-	"|" { return symbol(Java7Sym.OR); }
-	"^" { return symbol(Java7Sym.XOR); }
-	"%" { return symbol(Java7Sym.MOD); }
-	"~" { return symbol(Java7Sym.BITWISE_NOT); }
+	"+" { return symbol(Java7Sym.PLUS, yytext()); }
+	"-" { return symbol(Java7Sym.MINUS, yytext()); }
+	"*" { return symbol(Java7Sym.TIMES, yytext()); }
+	"/" { return symbol(Java7Sym.DIVIDE, yytext()); }
+	"!" { return symbol(Java7Sym.NOT, yytext()); }
+	"&" { return symbol(Java7Sym.AND, yytext()); }
+	"|" { return symbol(Java7Sym.OR, yytext()); }
+	"^" { return symbol(Java7Sym.XOR, yytext()); }
+	"%" { return symbol(Java7Sym.MOD, yytext()); }
+	"~" { return symbol(Java7Sym.BITWISE_NOT, yytext()); }
 		
 	
-	"#" { return symbol(Java7Sym.HASH); }
+	"#" { return symbol(Java7Sym.HASH, yytext()); }
 	
 	/* assignments */
-	"+=" { return symbol(Java7Sym.PLUS_EQUALS); }
-	"-=" { return symbol(Java7Sym.MINUS_EQUALS); }
-	"*=" { return symbol(Java7Sym.TIMES_EQUALS); }
-	"/=" { return symbol(Java7Sym.DIV_EQUALS); }
-	"&=" { return symbol(Java7Sym.AND_EQUALS); }
-	"|=" { return symbol(Java7Sym.OR_EQUALS); }
-	"^=" { return symbol(Java7Sym.XOR_EQUALS); }
-	"%=" { return symbol(Java7Sym.MOD_EQUALS); }
-	"<<=" { return symbol(Java7Sym.SHIFT_LEFT_EQUALS); }
-	">>=" { return symbol(Java7Sym.SHIFT_RIGHT_EQUALS); }
-	">>>=" { return symbol(Java7Sym.SHIFT_RIGHT_ARITHM_EQUALS); }
-	"=" { return symbol(Java7Sym.BECOMES); }
+	"+=" { return symbol(Java7Sym.PLUS_EQUALS, yytext()); }
+	"-=" { return symbol(Java7Sym.MINUS_EQUALS, yytext()); }
+	"*=" { return symbol(Java7Sym.TIMES_EQUALS, yytext()); }
+	"/=" { return symbol(Java7Sym.DIV_EQUALS, yytext()); }
+	"&=" { return symbol(Java7Sym.AND_EQUALS, yytext()); }
+	"|=" { return symbol(Java7Sym.OR_EQUALS, yytext()); }
+	"^=" { return symbol(Java7Sym.XOR_EQUALS, yytext()); }
+	"%=" { return symbol(Java7Sym.MOD_EQUALS, yytext()); }
+	"<<=" { return symbol(Java7Sym.SHIFT_LEFT_EQUALS, yytext()); }
+	">>=" { return symbol(Java7Sym.SHIFT_RIGHT_EQUALS, yytext()); }
+	">>>=" { return symbol(Java7Sym.SHIFT_RIGHT_ARITHM_EQUALS, yytext()); }
+	"=" { return symbol(Java7Sym.BECOMES, yytext()); }
 	
 	    
 	/* delimiters */
-	"(" { return symbol(Java7Sym.LPAREN); }
-	")" { return symbol(Java7Sym.RPAREN); }
-	"[" { return symbol(Java7Sym.LBRACKET); }
-	"]" { return symbol(Java7Sym.RBRACKET); }
-	"{" { return symbol(Java7Sym.LBRACE); }
-	"}" { return symbol(Java7Sym.RBRACE); }
-	"<" { return symbol(Java7Sym.LT); }
-	">" { return symbol(Java7Sym.GT); }
+	"(" { return symbol(Java7Sym.LPAREN, yytext()); }
+	")" { return symbol(Java7Sym.RPAREN, yytext()); }
+	"[" { return symbol(Java7Sym.LBRACKET, yytext()); }
+	"]" { return symbol(Java7Sym.RBRACKET, yytext()); }
+	"{" { return symbol(Java7Sym.LBRACE, yytext()); }
+	"}" { return symbol(Java7Sym.RBRACE, yytext()); }
+	"<" { return symbol(Java7Sym.LT, yytext()); }
+	">" { return symbol(Java7Sym.GT, yytext()); }
 	
 	
 	/* punctuation */
-	"..." { return symbol(Java7Sym.ELLIPSIS); }
-	"." { return symbol(Java7Sym.DOT); }
-	"," { return symbol(Java7Sym.COMMA); }
-	":" { return symbol(Java7Sym.COLON); }
-	";" { return symbol(Java7Sym.SEMICOLON); }
-	"?" { return symbol(Java7Sym.QUESTION); }
-	"@" { return symbol(Java7Sym.AT); }
+	"..." { return symbol(Java7Sym.ELLIPSIS, yytext()); }
+	"." { return symbol(Java7Sym.DOT, yytext()); }
+	"," { return symbol(Java7Sym.COMMA, yytext()); }
+	":" { return symbol(Java7Sym.COLON, yytext()); }
+	";" { return symbol(Java7Sym.SEMICOLON, yytext()); }
+	"?" { return symbol(Java7Sym.QUESTION, yytext()); }
+	"@" { return symbol(Java7Sym.AT, yytext()); }
 	
 	/* identifiers */
 	{letter} ({letter}|{digit}|_)* { return symbol(Java7Sym.IDENTIFIER, yytext()); }

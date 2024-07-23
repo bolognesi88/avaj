@@ -341,21 +341,21 @@ PackageDeclaration::= Annotations PACKAGE QualifiedIdentifier SEMICOLON {: RESUL
 				PACKAGE QualifiedIdentifier SEMICOLON {: RESULT = "PackageDeclaration-2"; :}
 				;
 
-QualifiedIdentifier::= Identifier 
+QualifiedIdentifier::= Identifier {: RESULT = "QualifiedIdentifier-1"; :}
  				|
-				QualifiedIdentifier DOT Identifier
+				QualifiedIdentifier DOT Identifier	{: RESULT = "QualifiedIdentifier-2"; :}
 				;
 
-Annotations::= Annotation 
-				|
-				Annotations Annotation
+Annotations::= Annotation 					{: RESULT = "Annotations-1"; :}
+				|	
+				Annotations Annotation		{: RESULT = "Annotations-2"; :}
 				;   
 
-Annotation::= AT QualifiedIdentifier LPAREN AnnotationElement RPAREN
+Annotation::= AT QualifiedIdentifier LPAREN AnnotationElement RPAREN		{: RESULT = "Annotation-1"; :}
 				|
-				AT QualifiedIdentifier LPAREN RPAREN
+				AT QualifiedIdentifier LPAREN RPAREN						{: RESULT = "Annotation-2"; :}
 				|
-				AT QualifiedIdentifier				
+				AT QualifiedIdentifier										{: RESULT = "Annotation-3"; :}
 				;
 
 AnnotationElement::=
@@ -400,62 +400,63 @@ ElementValues ::= ElementValue
 				
 				
 				
-ImportDeclarations ::= ImportDeclaration
+ImportDeclarations ::= ImportDeclaration				{: RESULT = "ImportDeclarations-1"; :}
 				|
-				ImportDeclarations ImportDeclaration
+				ImportDeclarations ImportDeclaration	{: RESULT = "ImportDeclarations-2"; :}
 				;					
 					
-ImportDeclaration::= IMPORT STATIC QualifiedIdentifier DOT TIMES SEMICOLON
+ImportDeclaration::= IMPORT STATIC QualifiedIdentifier DOT TIMES SEMICOLON			{: RESULT = "ImportDeclaration-1"; :}
 				|
-				IMPORT STATIC QualifiedIdentifier SEMICOLON
+				IMPORT STATIC QualifiedIdentifier SEMICOLON							{: RESULT = "ImportDeclaration-2"; :}
 				|
-				IMPORT QualifiedIdentifier DOT TIMES SEMICOLON
+				IMPORT QualifiedIdentifier DOT TIMES SEMICOLON						{: RESULT = "ImportDeclaration-3"; :}
 				|
-				IMPORT QualifiedIdentifier SEMICOLON
+				IMPORT QualifiedIdentifier SEMICOLON								{: RESULT = "ImportDeclaration-4"; :}
 				;
 
-TypeDeclarations::= TypeDeclaration
+TypeDeclarations::= TypeDeclaration						{: RESULT = "TypeDeclarations-1"; :}
 				|
-				TypeDeclarations TypeDeclaration
+				TypeDeclarations TypeDeclaration		{: RESULT = "TypeDeclarations-2"; :}	
 				;
 
-TypeDeclaration::= Modifiers ClassOrInterfaceDeclaration
+TypeDeclaration::= Modifiers ClassOrInterfaceDeclaration	{: RESULT = "TypeDeclaration-1"; :}
 				|
-				ClassOrInterfaceDeclaration
+				ClassOrInterfaceDeclaration					{: RESULT = "TypeDeclaration-2"; :}
 				;
 
 ClassOrInterfaceDeclaration::=  
-				ClassDeclaration 
+				ClassDeclaration 	{: RESULT = "ClassOrInterfaceDeclaration-1"; :}
 				| 
-				InterfaceDeclaration
+				InterfaceDeclaration {: RESULT = "ClassOrInterfaceDeclaration-2"; :}
 				;
 
-Modifiers::= Modifier Modifiers
+Modifiers::= Modifier Modifiers			{: RESULT = "Modifiers-1"; :}
 			|
-			Modifier;
+			Modifier					{: RESULT = "Modifiers-2"; :}
+			;
 
 Modifier::=
-    Annotations
-    | PUBLIC
-    | PROTECTED
-    | PRIVATE
-    | STATIC 
-    | ABSTRACT
-    | FINAL
-    | NATIVE
-    | SYNCHRONIZED
-    | TRANSIENT
-    | VOLATILE
-    | STRICTFP
+    Annotations:i {: RESULT = i; :}
+    | PUBLIC:i {: RESULT = i; :}
+    | PROTECTED:i {: RESULT = i; :}
+    | PRIVATE:i {: RESULT = i; :}
+    | STATIC:i {: RESULT = i; :}
+    | ABSTRACT:i {: RESULT = i; :}
+    | FINAL:i {: RESULT = i; :}
+    | NATIVE:i {: RESULT = i; :}
+    | SYNCHRONIZED:i {: RESULT = i; :}
+    | TRANSIENT:i {: RESULT = i; :}
+    | VOLATILE:i {: RESULT = i; :}
+    | STRICTFP:i {: RESULT = i; :}
     ;
 
 
 
 
 
-ClassDeclaration::= NormalClassDeclaration
+ClassDeclaration::= NormalClassDeclaration		{: RESULT = "ClassDeclaration-1"; :}
 				|
-			    EnumDeclaration
+			    EnumDeclaration					{: RESULT = "ClassDeclaration-2"; :}
 			    ;
 
 
@@ -465,21 +466,21 @@ InterfaceDeclaration::= NormalInterfaceDeclaration
 			    ;
 			    
 			    
-NormalClassDeclaration::= CLASS Identifier TypeParameters EXTENDS Type IMPLEMENTS TypeList ClassBody
+NormalClassDeclaration::= CLASS Identifier TypeParameters EXTENDS Type IMPLEMENTS TypeList ClassBody		{: RESULT = "NormalClassDeclaration-1"; :}
 				|
-				CLASS Identifier EXTENDS Type IMPLEMENTS TypeList ClassBody
+				CLASS Identifier EXTENDS Type IMPLEMENTS TypeList ClassBody								{: RESULT = "NormalClassDeclaration-2"; :}
 				|
-				CLASS Identifier TypeParameters IMPLEMENTS TypeList ClassBody
+				CLASS Identifier TypeParameters IMPLEMENTS TypeList ClassBody							{: RESULT = "NormalClassDeclaration-3"; :}
 				|
-				CLASS Identifier TypeParameters EXTENDS Type ClassBody
+				CLASS Identifier TypeParameters EXTENDS Type ClassBody									{: RESULT = "NormalClassDeclaration-4"; :}
 				|
-				CLASS Identifier IMPLEMENTS TypeList ClassBody
+				CLASS Identifier IMPLEMENTS TypeList ClassBody											{: RESULT = "NormalClassDeclaration-5"; :}
 				|
-				CLASS Identifier EXTENDS Type ClassBody
+				CLASS Identifier EXTENDS Type ClassBody													{: RESULT = "NormalClassDeclaration-6"; :}
 				|
-				CLASS Identifier TypeParameters ClassBody
+				CLASS Identifier TypeParameters ClassBody												{: RESULT = "NormalClassDeclaration-7"; :}
 				|
-				CLASS Identifier ClassBody
+				CLASS Identifier ClassBody																{: RESULT = "NormalClassDeclaration-8"; :}
 				;
 
 EnumDeclaration::= ENUM Identifier IMPLEMENTS TypeList EnumBody
@@ -510,13 +511,13 @@ EmptyArrays::= EmptyArray
 EmptyArray::= LBRACKET RBRACKET;
 				
 Type::=
-    BasicType EmptyArrays
+    BasicType EmptyArrays			{: RESULT = "Type-1"; :}
     |
-    ReferenceType EmptyArrays
+    ReferenceType EmptyArrays		{: RESULT = "Type-2"; :}
     |
-    BasicType 
+    BasicType 						{: RESULT = "Type-3"; :}
     |
-    ReferenceType 
+    ReferenceType 					{: RESULT = "Type-4"; :}
     ;
 
 BasicType::= 
@@ -537,35 +538,37 @@ BasicType::=
     BOOLEAN
     ;
 
-ReferenceType::=  Identifier TypeArguments DOT ReferenceType
+ReferenceType::=  Identifier TypeArguments DOT ReferenceType		{: RESULT = "ReferenceType-1"; :}
 			|
-			Identifier DOT ReferenceType
+			Identifier DOT ReferenceType							{: RESULT = "ReferenceType-2"; :}
 			|
-			Identifier TypeArguments 
+			Identifier TypeArguments 								{: RESULT = "ReferenceType-3"; :}
 			|
-			Identifier
+			Identifier												{: RESULT = "ReferenceType-4"; :}
 			;
 
 
-TypeArguments ::= LT TypeArgumentList GT;
+TypeArguments ::= LT TypeArgumentList GT						{: RESULT = "TypeArguments-1"; :}
+			;
 
-TypeArgumentList ::= TypeArgument
+TypeArgumentList ::= TypeArgument							{: RESULT = "TypeArgumentList-1"; :}
 			|
-			TypeArgumentList COMMA TypeArgument
+			TypeArgumentList COMMA TypeArgument				{: RESULT = "TypeArgumentList-2"; :}
 			;
 
 
-TypeArgument::=  QUESTION EXTENDS ReferenceType
+TypeArgument::=  QUESTION EXTENDS ReferenceType				{: RESULT = "TypeArgument-1"; :}
 			|
-			ReferenceType
+			ReferenceType									{: RESULT = "TypeArgument-2"; :}	
 			;
 
 
-NonWildcardTypeArguments::= GT TypeList LT;
+NonWildcardTypeArguments::= GT TypeList LT				{: RESULT = "NonWildcardTypeArguments-1"; :}
+			;
 
-TypeList::=  ReferenceType
+TypeList::=  ReferenceType				{: RESULT = "TypeList-1"; :}
 			|
-			COMMA TypeList
+			COMMA TypeList				{: RESULT = "TypeList2-1"; :}
 			;
 
 TypeArgumentsOrDiamond::=
@@ -581,23 +584,24 @@ NonWildcardTypeArgumentsOrDiamond::=
     ;
 
 
-TypeParameters::= LT TypeParameterList GT    	;
+TypeParameters::= LT TypeParameterList GT    			{: RESULT = "TypeParameters-1"; :}
+		;
 
-TypeParameterList::= TypeParameter
+TypeParameterList::= TypeParameter						{: RESULT = "TypeParameterList-1"; :}
 			|
-			TypeParameterList COMMA TypeParameter
+			TypeParameterList COMMA TypeParameter		{: RESULT = "TypeParameterList-2"; :}	
 			;
 
-TypeParameter::=
-    Identifier EXTENDS Bound
+TypeParameter::=			
+    Identifier EXTENDS Bound		{: RESULT = "TypeParameter-1"; :}
     |
-    Identifier
+    Identifier						{: RESULT = "TypeParameter-2"; :}
     ;
 
 Bound::=  
-    ReferenceType
+    ReferenceType			{: RESULT = "Bound-1"; :}
     | 
-	AND Bound
+	AND Bound				{: RESULT = "Bound-2"; :}	
 	;
 
 
@@ -722,14 +726,14 @@ ConstantDeclarator::= Identifier ConstantDeclaratorRest;
 
 
 VariableInitializer::=
-    ArrayInitializer
+    ArrayInitializer			{: RESULT = "VariableInitializer-1"; :}
     |
-    Expression
+    Expression					{: RESULT = "VariableInitializer-2"; :}
     ;
 
-VariableInitializerList::= VariableInitializer
+VariableInitializerList::= VariableInitializer			{: RESULT = "VariableInitializerList-1"; :}
 	|
-	VariableInitializerList COMMA VariableInitializer
+	VariableInitializerList COMMA VariableInitializer			{: RESULT = "VariableInitializerList-2"; :}
 	;
 
 
@@ -745,29 +749,29 @@ Expression::= Expression1		{: RESULT = "Expression-1"; :}
 		;
 
 AssignmentOperator::= 
-    BECOMES
+    BECOMES:i {: RESULT = i; :}
     | 
-    PLUS_EQUALS
+    PLUS_EQUALS:i {: RESULT = i; :}
     |
-    MINUS_EQUALS
+    MINUS_EQUALS:i {: RESULT = i; :}
     |
-    TIMES_EQUALS
+    TIMES_EQUALS:i {: RESULT = i; :}
     |
-    DIV_EQUALS
+    DIV_EQUALS:i {: RESULT = i; :}
     |
-    AND_EQUALS
+    AND_EQUALS:i {: RESULT = i; :}
     |
-    OR_EQUALS
+    OR_EQUALS:i {: RESULT = i; :}
     |
-    XOR_EQUALS
+    XOR_EQUALS:i {: RESULT = i; :}
     |
-    MOD_EQUALS
+    MOD_EQUALS:i {: RESULT = i; :}
     |
-	SHIFT_LEFT_EQUALS
+	SHIFT_LEFT_EQUALS:i {: RESULT = i; :}
 	|
-	SHIFT_RIGHT_EQUALS
+	SHIFT_RIGHT_EQUALS:i {: RESULT = i; :}
 	|
-	SHIFT_RIGHT_ARITHM_EQUALS
+	SHIFT_RIGHT_ARITHM_EQUALS:i {: RESULT = i; :}
 	;
 	
 	
@@ -1131,9 +1135,9 @@ VariableModifierList ::= /* empty */
 	
 
 VariableModifier::=
-    FINAL
+    FINAL:i {: RESULT = i; :}
     |
-    Annotation
+    Annotation:i {: RESULT = i; :}
     ;
 
 FormalParameterDeclsRest::= 
