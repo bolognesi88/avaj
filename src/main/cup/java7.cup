@@ -127,7 +127,6 @@ terminal	LBRACE	;
 terminal	RBRACE	;
 terminal	LT	;
 terminal	GT	;
-terminal	QUOTE	;
 		
 		
 /* punctuation */		
@@ -294,7 +293,9 @@ nonterminal InterfaceMethodDeclaratorRest;
 nonterminal VoidInterfaceMethodDeclaratorRest;
 nonterminal InterfaceGenericMethodDecl;
 nonterminal InterfaceBodyDeclarationList;
-
+nonterminal CreatedName;
+nonterminal ClassCreatorRest;
+nonterminal ArrayCreatorRest;
 
 
 
@@ -326,18 +327,18 @@ precedence left LPAREN, RPAREN, LBRACE, RBRACE, NEW, DOT; 		/*LEVEL 16, + METHOD
 
 /* Productions */
 
-CompilationUnit::= PackageDeclaration ImportDeclarations TypeDeclarations
+CompilationUnit::= PackageDeclaration ImportDeclarations TypeDeclarations {: RESULT = "CompilationUnit-1"; :}
 				|
-				PackageDeclaration TypeDeclarations
+				PackageDeclaration TypeDeclarations {: RESULT = "CompilationUnit-2"; :}
+				| 
+				ImportDeclarations TypeDeclarations {: RESULT = "CompilationUnit-3"; :}
 				|
-				ImportDeclarations TypeDeclarations
-				|
-				TypeDeclarations
+				TypeDeclarations	{: RESULT = "CompilationUnit-4"; :}
 				;
 
-PackageDeclaration::= Annotations PACKAGE QualifiedIdentifier SEMICOLON
+PackageDeclaration::= Annotations PACKAGE QualifiedIdentifier SEMICOLON {: RESULT = "PackageDeclaration-1"; :}
 				|
-				PACKAGE QualifiedIdentifier SEMICOLON
+				PACKAGE QualifiedIdentifier SEMICOLON {: RESULT = "PackageDeclaration-2"; :}
 				;
 
 QualifiedIdentifier::= Identifier 
@@ -738,12 +739,12 @@ ArrayInitializer::=
     LBRACE VariableInitializerList RBRACE
 	;
 
-Expression::= Expression1
+Expression::= Expression1		{: RESULT = "Expression-1"; :}	
 		|
-		Expression1 AssignmentOperator Expression1
+		Expression1 AssignmentOperator Expression1 {: RESULT = "Expression-2"; :}
 		;
 
-AssignmentOperator::=
+AssignmentOperator::= 
     BECOMES
     | 
     PLUS_EQUALS
@@ -771,25 +772,27 @@ AssignmentOperator::=
 	
 	
 Expression1::=
-    Expression2 Expression1Rest
+    Expression2 Expression1Rest  	{: RESULT = "Expression1-1"; :}
     |
-    Expression2
+    Expression2		{: RESULT = "Expression1-1"; :}
     ;
 
-Expression1Rest::= QUESTION Expression COLON Expression1;	
+Expression1Rest::= QUESTION Expression COLON Expression1 {: RESULT = "Expression1Rest-1"; :}
+	;	
 
-Expression2::= Expression3 Expression2Rest;
+Expression2::= Expression3 Expression2Rest {: RESULT = "Expression2-1"; :}
+	;
 
-Expression2Rest::= /* empty */
+Expression2Rest::= /* empty */	{: RESULT = "Expression2Rest-1"; :}
 	|
-    Expression3List
+    Expression3List	{: RESULT = "Expression2Rest-2"; :}
     |
-    INSTANCEOF Type	
+    INSTANCEOF Type	{: RESULT = "Expression2Rest-3"; :}	
     ;
     
-Expression3List::= InfixOp Expression3 
+Expression3List::= InfixOp Expression3 	{: RESULT = "Expression3List-1"; :}
 	|
-	Expression3List InfixOp Expression3
+	Expression3List InfixOp Expression3	{: RESULT = "Expression3List-2"; :}
 	;
     
 InfixOp::=
@@ -835,55 +838,55 @@ InfixOp::=
 
 Expression3::=
 	/* FIXME
-    PrefixOp Expression3
+    PrefixOp Expression3	{: RESULT = "Expression3-1"; :}
     |
     */
-    LPAREN Expression RPAREN Expression3
+    LPAREN Expression RPAREN Expression3	{: RESULT = "Expression3-2"; :}
     |
-    LPAREN Type RPAREN Expression3
+    LPAREN Type RPAREN Expression3	{: RESULT = "Expression3-3"; :}
     |
-    Primary Selector PostfixOp
+    Primary Selector PostfixOp	{: RESULT = "Expression3-4"; :}
     |
-    Primary Selector
+    Primary Selector	{: RESULT = "Expression3-5"; :}
     |
-	Primary PostfixOp
+	Primary PostfixOp	{: RESULT = "Expression3-6"; :}
 	|
-	Primary
+	Primary				{: RESULT = "Expression3-7"; :}
 	;
 
 			
-Primary::= 
-    Literal
+Primary::= 				
+    Literal				{: RESULT = "Primary-1"; :}
     |
-    ParExpression
+    ParExpression		{: RESULT = "Primary-2"; :}
     |
-    THIS
+    THIS				{: RESULT = "Primary-3"; :}
     |
-    THIS Arguments
+    THIS Arguments		{: RESULT = "Primary-4"; :}
     |
-    SUPER SuperSuffix
+    SUPER SuperSuffix	{: RESULT = "Primary-5"; :}	
     |   
-    NEW Creator
+    NEW Creator			{: RESULT = "Primary-6"; :}
     |    
-    NonWildcardTypeArguments LPAREN ExplicitGenericInvocationSuffix RPAREN
+    NonWildcardTypeArguments LPAREN ExplicitGenericInvocationSuffix RPAREN		{: RESULT = "Primary-7"; :}
     |
-    NonWildcardTypeArguments LPAREN THIS Arguments RPAREN
+    NonWildcardTypeArguments LPAREN THIS Arguments RPAREN		{: RESULT = "Primary-8"; :}
     |
-    ChainedIdentifier IdentifierSuffix
+    ChainedIdentifier IdentifierSuffix		{: RESULT = "Primary-8"; :}
 	|   
-	ChainedIdentifier
+	ChainedIdentifier						{: RESULT = "Primary-10"; :}
 	|   	
-	BasicType EmptyArrays DOT CLASS
+	BasicType EmptyArrays DOT CLASS			{: RESULT = "Primary-11"; :}
     |
-    BasicType DOT CLASS
+    BasicType DOT CLASS						{: RESULT = "Primary-12"; :}
     |
-    VOID DOT CLASS
+    VOID DOT CLASS							{: RESULT = "Primary-13"; :}	
     ;
 
 
-ChainedIdentifier::= Identifier
+ChainedIdentifier::= Identifier						{: RESULT = "ChainedIdentifier-1"; :}
 			|
-			ChainedIdentifier DOT Identifier
+			ChainedIdentifier DOT Identifier		{: RESULT = "ChainedIdentifier-2"; :}
 			;
 
 
@@ -1447,7 +1450,44 @@ InterfaceGenericMethodDecl::=
 	TypeParameters VOID Identifier InterfaceMethodDeclaratorRest
 	;
 
+Creator::=
+    NonWildcardTypeArguments CreatedName ClassCreatorRest
+    |
+    CreatedName ClassCreatorRest
+    |
+    CreatedName ArrayCreatorRest
+	;
+	
+CreatedName::=   
+    CreatedName DOT Identifier TypeArgumentsOrDiamond
+    |
+    CreatedName DOT Identifier
+    |
+    Identifier TypeArgumentsOrDiamond
+    |
+    Identifier
+    ;
 
+ClassCreatorRest::=
+    Arguments ClassBody
+    |
+    Arguments
+	;
+
+/* FIXME */
+ArrayCreatorRest::=      
+     LBRACE RBRACE EmptyArrays ArrayInitializer  
+    |  
+     LBRACE Expression RBRACE EmptyArrays 
+    ;
+    
+    
+InnerCreator::=  
+    Identifier NonWildcardTypeArgumentsOrDiamond ClassCreatorRest
+    |
+    Identifier ClassCreatorRest
+    ;
+    
 
 
 Identifier::= IDENTIFIER;
