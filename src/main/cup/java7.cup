@@ -293,6 +293,7 @@ nonterminal InterfaceMethodOrFieldRest;
 nonterminal InterfaceMethodDeclaratorRest;	
 nonterminal VoidInterfaceMethodDeclaratorRest;
 nonterminal InterfaceGenericMethodDecl;
+nonterminal InterfaceBodyDeclarationList;
 
 
 
@@ -1385,13 +1386,19 @@ Finally::=
 
 InterfaceBody::= LBRACE RBRACE
 	|
-	LBRACE InterfaceBodyDeclaration RBRACE
+	LBRACE InterfaceBodyDeclarationList RBRACE
 	;
+	
+InterfaceBodyDeclarationList::= InterfaceBodyDeclarationList InterfaceBodyDeclaration
+	|
+	InterfaceBodyDeclaration
+	;	
+	
 	
 InterfaceBodyDeclaration ::=  
 	SEMICOLON
 	|
-    Modifier InterfaceMemberDecl
+    Modifiers InterfaceMemberDecl
     |
     InterfaceMemberDecl
     ;
@@ -1429,6 +1436,8 @@ InterfaceMethodDeclaratorRest::=
 	
 VoidInterfaceMethodDeclaratorRest::=
 	FormalParameters THROWS QualifiedIdentifierList SEMICOLON
+	|
+	FormalParameters
 	;
 
 

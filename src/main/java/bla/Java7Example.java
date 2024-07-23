@@ -80,11 +80,14 @@ abstract class Classe2 implements Classe3 {
 }
 
 interface Classe3 {
-	
+	;;;;;
 }
 
 interface Class4 extends java.util.List<Integer> {
 
+	public void metodo();
+	public void metodo(java.lang.String mutatisMutandis);
+	void troublesome() throws Throwable;
 }
 
 class Class5 extends Java7Example {
