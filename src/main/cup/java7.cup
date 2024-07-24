@@ -1186,12 +1186,10 @@ BlockStatement::=
     LocalVariableDeclarationStatement
     |
     Statement
-/*    
     |
     ClassOrInterfaceDeclaration
     |
     Identifier COLON Statement
-   */ 
     ;
 
 LocalVariableDeclarationStatement::= VariableModifierList Type VariableDeclarators SEMICOLON {: RESULT = "LocalVariableDeclarationStatement-1"; :}
