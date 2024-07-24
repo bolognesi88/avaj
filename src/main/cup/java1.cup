@@ -208,7 +208,6 @@ nonterminal	StaticInitializer	;
 nonterminal	ConstructorDeclaration	;
 nonterminal	ConstructorDeclarator	;
 nonterminal	ConstructorBody	;
-nonterminal	ExplicitConstructorInvocation_opt	;
 nonterminal	BlockStatements_opt	;
 nonterminal	ExplicitConstructorInvocation	;
 nonterminal	InterfaceDeclaration	;
@@ -221,7 +220,6 @@ nonterminal	InterfaceMemberDeclaration	;
 nonterminal	ConstantDeclaration	;
 nonterminal	AbstractMethodDeclaration	;
 nonterminal	ArrayInitializer	;
-nonterminal	VariableInitializers_opt	;
 nonterminal	Comma_opt	;
 nonterminal	VariableInitializers	;
 nonterminal	Block	;
@@ -242,8 +240,6 @@ nonterminal	IfThenElseStatement	;
 nonterminal	IfThenElseStatementNoShortIf	;
 nonterminal	SwitchStatement	;
 nonterminal	SwitchBlock	;
-nonterminal	SwitchBlockStatementGroups_opt	;
-nonterminal	SwitchLabels_opt	;
 nonterminal	SwitchBlockStatementGroups	;
 nonterminal	SwitchBlockStatementGroup	;
 nonterminal	SwitchLabels	;
@@ -704,18 +700,14 @@ ConstructorDeclarator::=
     	;
 
 ConstructorBody::=
-    	LBRACE ExplicitConstructorInvocation_opt BlockStatements_opt RBRACE
+    	LBRACE ExplicitConstructorInvocation BlockStatements RBRACE
+    	|
+    	LBRACE BlockStatements RBRACE
+    	|
+    	LBRACE ExplicitConstructorInvocation RBRACE
+    	|
+    	LBRACE RBRACE    	
     	;
-    	
-ExplicitConstructorInvocation_opt::=		/* empty */			{: RESULT = "ExplicitConstructorInvocation_opt (empty)"; :}
-		|
-		ExplicitConstructorInvocation							{: RESULT = "ExplicitConstructorInvocation_opt"; :}
-		;
-
-BlockStatements_opt::=		/* empty */							{: RESULT = "BlockStatements_opt (empty)"; :}
-		|
-		BlockStatements											{: RESULT = "BlockStatements_opt"; :}
-		; 
     	
 
 ExplicitConstructorInvocation::=
@@ -788,13 +780,10 @@ AbstractMethodDeclaration::=
 /* 19.10 Productions from §10: Arrays */
 
 ArrayInitializer::=
-    	LBRACE VariableInitializers_opt Comma_opt RBRACE
+    	LBRACE VariableInitializers Comma_opt RBRACE
+    	|
+    	LBRACE Comma_opt RBRACE
     	;
-    	
-VariableInitializers_opt::=
-		|
-		VariableInitializers
-		;    	
     	
 Comma_opt::=
 	|
@@ -813,6 +802,11 @@ Block::=
     	LBRACE BlockStatements_opt RBRACE
     	;
     	
+    	
+BlockStatements_opt::=
+		|
+		BlockStatements
+		;    	
 
 BlockStatements::=
     	BlockStatement
@@ -933,18 +927,14 @@ SwitchStatement::=
     	;
 
 SwitchBlock::=
-    	LBRACE SwitchBlockStatementGroups_opt SwitchLabels_opt RBRACE
+    	LBRACE SwitchBlockStatementGroups SwitchLabels RBRACE
+    	|
+    	LBRACE SwitchBlockStatementGroups  RBRACE
+    	|
+    	LBRACE SwitchLabels RBRACE
+    	|
+    	LBRACE RBRACE
     	;
-
-SwitchBlockStatementGroups_opt::=
-		|
-		SwitchBlockStatementGroups
-		; 
-
-SwitchLabels_opt::=
-		|
-		SwitchLabels
-		; 
 
 SwitchBlockStatementGroups::=
     	SwitchBlockStatementGroup
