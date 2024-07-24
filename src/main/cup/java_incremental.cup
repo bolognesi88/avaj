@@ -508,7 +508,9 @@ ImportDeclaration::=
     	;
 
 SingleTypeImportDeclaration::=
-    	IMPORT Name:i SEMICOLON					{: RESULT = "SingleTypeImportDeclaration "+i; :}
+    	IMPORT STATIC Name:i SEMICOLON					{: RESULT = "SingleTypeImportDeclaration-1 "+i; :}
+    	|
+    	IMPORT Name:i SEMICOLON					{: RESULT = "SingleTypeImportDeclaration-2 "+i; :}
     	;		
 
 TypeImportOnDemandDeclaration::=
