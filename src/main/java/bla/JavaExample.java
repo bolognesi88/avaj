@@ -125,3 +125,10 @@ enum Merassaum2 {
 		this.descricao = t;
 	}
 }
+
+@interface Anotacao2 {
+	String[] value();	
+	int outro() default 10;
+	public static final int MAX = 20;
+	public static final int MIN = -20;
+}

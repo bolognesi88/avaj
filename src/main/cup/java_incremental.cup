@@ -327,6 +327,21 @@ nonterminal EnumBodyDeclarations;
 
 
 
+nonterminal AnnotationTypeDeclaration; 
+nonterminal AnnotationTypeBody;
+nonterminal AnnotationTypeElementDeclarations;
+nonterminal AnnotationTypeElementDeclaration;
+nonterminal AnnotationTypeElementRest;
+nonterminal AnnotationMethodOrConstantRest;
+nonterminal AnnotationMethodRest;
+nonterminal ConstantDeclaratorRest;
+
+
+
+
+
+
+
 /* Precedence declarations */
 /* The last precedence declaration give its terminals the highest precedence */
 /* https://introcs.cs.princeton.edu/java/11precedence/ */
@@ -532,6 +547,8 @@ TypeDeclaration::=
     	InterfaceDeclaration					{: RESULT = "TypeDeclaration-2"; :}
     	|
 		EnumDeclaration							{: RESULT = "TypeDeclaration-3"; :}
+		|
+		AnnotationTypeDeclaration				{: RESULT = "TypeDeclaration-4"; :}
     	;
 
 /* 19.7 Productions Used Only in the LALR(1) Grammar */
@@ -1473,3 +1490,68 @@ EnumBodyDeclarations::=
     ;
 
 												
+												
+												
+/** Annotation declaration **/												
+
+AnnotationTypeDeclaration::= 
+		AT INTERFACE Identifier:i AnnotationTypeBody 				{: RESULT = "AnnotationTypeDeclaration "+i; :}
+		;
+		
+
+AnnotationTypeBody::=
+    LBRACE AnnotationTypeElementDeclarations RBRACE					{: RESULT = "AnnotationTypeBody-1"; :}
+    |
+    LBRACE RBRACE													{: RESULT = "AnnotationTypeBody-2"; :}
+    ;
+
+AnnotationTypeElementDeclarations::=
+    AnnotationTypeElementDeclaration
+    |
+    AnnotationTypeElementDeclarations AnnotationTypeElementDeclaration
+    ;
+
+AnnotationTypeElementDeclaration::=
+    Modifiers_opt AnnotationTypeElementRest
+    ;
+
+AnnotationTypeElementRest::=
+    Type Identifier AnnotationMethodOrConstantRest SEMICOLON
+    |
+    EnumDeclaration  
+    |
+    AnnotationTypeDeclaration
+    /*
+    |
+    ClassDeclaration
+    |
+    InterfaceDeclaration
+
+
+    */
+    ;
+
+AnnotationMethodOrConstantRest::=
+    AnnotationMethodRest
+    |
+    ConstantDeclaratorRest 
+    ;
+
+AnnotationMethodRest::=
+    LPAREN RPAREN LBRACKET RBRACKET DEFAULT ElementValue		{: RESULT = "AnnotationMethodRest-1"; :}
+    |
+    LPAREN RPAREN DEFAULT ElementValue		{: RESULT = "AnnotationMethodRest-2"; :}
+    |
+    LPAREN RPAREN LBRACKET RBRACKET		{: RESULT = "AnnotationMethodRest-3"; :}
+    |
+    LPAREN RPAREN 		{: RESULT = "AnnotationMethodRest-4"; :}
+    ;
+    
+
+ConstantDeclaratorRest::=
+    LBRACKET RBRACKET BECOMES VariableInitializer								{: RESULT = "ConstantDeclaratorRest-1"; :}
+    |
+    BECOMES VariableInitializer													{: RESULT = "ConstantDeclaratorRest-2"; :}
+    ;
+
+
