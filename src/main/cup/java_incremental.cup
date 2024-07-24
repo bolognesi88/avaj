@@ -1094,19 +1094,21 @@ Primary::=
     	;
 
 PrimaryNoNewArray::=
-    	Literal
+    	Literal								{: RESULT = "PrimaryNoNewArray-1"; :}
 		|
-    	THIS
+    	THIS								{: RESULT = "PrimaryNoNewArray-2"; :}
+		|	
+    	LPAREN Expression RPAREN			{: RESULT = "PrimaryNoNewArray-3"; :}
 		|
-    	LPAREN Expression RPAREN
+    	ClassInstanceCreationExpression		{: RESULT = "PrimaryNoNewArray-4"; :}
 		|
-    	ClassInstanceCreationExpression
+    	FieldAccess							{: RESULT = "PrimaryNoNewArray-5"; :}
 		|
-    	FieldAccess
+    	MethodInvocation					{: RESULT = "PrimaryNoNewArray-6"; :}
 		|
-    	MethodInvocation
-		|
-    	ArrayAccess
+    	ArrayAccess							{: RESULT = "PrimaryNoNewArray-7"; :}
+    	|
+    	VOID DOT CLASS						{: RESULT = "PrimaryNoNewArray-8"; :}
     	;
 
 

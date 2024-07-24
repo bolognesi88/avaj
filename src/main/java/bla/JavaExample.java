@@ -82,6 +82,8 @@ public class JavaExample extends Classe2c implements Classe3c {
 }
 
 abstract class Classe2c implements Classe3c {
+	public Class c = void.class;
+	
 	private static final int TWO = 1+1;
 	
 	public static String sure = (1+1 == TWO) ? "True" : "False";
