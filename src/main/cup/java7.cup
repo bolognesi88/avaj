@@ -369,7 +369,7 @@ ElementValuePairs::= ElementValuePair
 			ElementValuePairs COMMA ElementValuePair
 			;
 
-ElementValuePair::= Identifier BECOMES ElementValue
+ElementValuePair::= Identifier BECOMES ElementValue									{: RESULT = "ElementValuePair-1"; :}
 			;
     
 ElementValue::=  Annotation
@@ -432,11 +432,11 @@ ClassOrInterfaceDeclaration::=
 
 Modifiers::= Modifier Modifiers			{: RESULT = "Modifiers-1"; :}
 			|
-			Modifier					{: RESULT = "Modifiers-2"; :}
+			Modifier:i					{: RESULT = "Modifiers-2 "+i; :}
 			;
 
 Modifier::=
-    Annotations:i {: RESULT = i; :}
+    Annotations:i 		{: RESULT = i; :}
     | PUBLIC:i {: RESULT = i; :}
     | PROTECTED:i {: RESULT = i; :}
     | PRIVATE:i {: RESULT = i; :}
@@ -503,48 +503,52 @@ NormalInterfaceDeclaration::=  INTERFACE Identifier TypeParameters EXTENDS TypeL
 
 AnnotationTypeDeclaration::= AT INTERFACE Identifier AnnotationTypeBody ;
 				
-EmptyArrays::= EmptyArray
+EmptyArrays::= EmptyArray				{: RESULT = "EmptyArrays-1"; :}
 			|
-			EmptyArrays EmptyArray
+			EmptyArrays EmptyArray		{: RESULT = "EmptyArrays-2"; :}
 			;				
 
 EmptyArray::= LBRACKET RBRACKET;
 				
 Type::=
-    BasicType EmptyArrays			{: RESULT = "Type-1"; :}
+    BasicType:i EmptyArrays			{: RESULT = "Type-1 "+i+"[]"; :}
     |
-    ReferenceType EmptyArrays		{: RESULT = "Type-2"; :}
+    ReferenceType:i EmptyArrays		{: RESULT = "Type-2 "+i+"[]"; :}
     |
-    BasicType 						{: RESULT = "Type-3"; :}
+    BasicType:i 						{: RESULT = "Type-3 "+i; :}
     |
-    ReferenceType 					{: RESULT = "Type-4"; :}
+    ReferenceType:i 					{: RESULT = "Type-4 "+i; :}
     ;
 
 BasicType::= 
-    BYTE
+    BYTE:i 		{: RESULT = i; :}
     |
-    SHORT
+    SHORT:i 		{: RESULT = i; :}
     |
-    CHAR
+    CHAR:i 		{: RESULT = i; :}
     |
-    INT
+    INT:i 		{: RESULT = i; :}
     |
-    LONG
+    LONG:i 		{: RESULT = i; :}
     |
-    FLOAT
+    FLOAT:i 		{: RESULT = i; :}
     |
-    DOUBLE
+    DOUBLE:i 		{: RESULT = i; :}
     |
-    BOOLEAN
+    BOOLEAN:i 		{: RESULT = i; :}
     ;
 
-ReferenceType::=  Identifier TypeArguments DOT ReferenceType		{: RESULT = "ReferenceType-1"; :}
+ReferenceType::=
+/*  FIXME
+			ReferenceType DOT ChainedIdentifier TypeArguments		{: RESULT = "ReferenceType-1"; :}			
 			|
-			Identifier DOT ReferenceType							{: RESULT = "ReferenceType-2"; :}
+			ReferenceType DOT ChainedIdentifier							{: RESULT = "ReferenceType-2"; :}
 			|
-			Identifier TypeArguments 								{: RESULT = "ReferenceType-3"; :}
-			|
-			Identifier												{: RESULT = "ReferenceType-4"; :}
+	*/		
+			ChainedIdentifier TypeArguments 								{: RESULT = "ReferenceType-3"; :}			
+			|		
+			ChainedIdentifier												{: RESULT = "ReferenceType-4"; :}
+			
 			;
 
 
@@ -701,13 +705,13 @@ AnnotationMethodOrConstantRest::=
     ;
 
 AnnotationMethodRest::=
-    LPAREN RPAREN LBRACKET RBRACKET DEFAULT ElementValue
+    LPAREN RPAREN LBRACKET RBRACKET DEFAULT ElementValue		{: RESULT = "AnnotationMethodRest-1"; :}
     |
-    LPAREN RPAREN DEFAULT ElementValue
+    LPAREN RPAREN DEFAULT ElementValue		{: RESULT = "AnnotationMethodRest-2"; :}
     |
-    LPAREN RPAREN LBRACKET RBRACKET
+    LPAREN RPAREN LBRACKET RBRACKET		{: RESULT = "AnnotationMethodRest-3"; :}
     |
-    LPAREN RPAREN 
+    LPAREN RPAREN 		{: RESULT = "AnnotationMethodRest-4"; :}
     ;
     
 ConstantDeclaratorsRest::=
@@ -717,12 +721,13 @@ ConstantDeclaratorsRest::=
     ;
 
 ConstantDeclaratorRest::=
-    LBRACKET RBRACKET BECOMES VariableInitializer
+    LBRACKET RBRACKET BECOMES VariableInitializer								{: RESULT = "ConstantDeclaratorRest-1"; :}
     |
-    BECOMES VariableInitializer
+    BECOMES VariableInitializer													{: RESULT = "ConstantDeclaratorRest-2"; :}
     ;
 
-ConstantDeclarator::= Identifier ConstantDeclaratorRest;
+ConstantDeclarator::= Identifier ConstantDeclaratorRest							{: RESULT = "ConstantDeclarator-1"; :}
+		;
 
 
 VariableInitializer::=
@@ -743,10 +748,16 @@ ArrayInitializer::=
     LBRACE VariableInitializerList RBRACE
 	;
 
-Expression::= Expression1		{: RESULT = "Expression-1"; :}	
-		|
-		Expression1 AssignmentOperator Expression1 {: RESULT = "Expression-2"; :}
+Expression::= Expression1 AssignmentOperator Expression1 {: RESULT = "Expression-1"; :}
+		|		
+		Expression1		{: RESULT = "Expression-2"; :}	
 		;
+		
+Expression1::=
+    Expression2 Expression1Rest  	{: RESULT = "Expression1-1"; :}
+    |
+    Expression2		{: RESULT = "Expression1-2"; :}
+    ;		
 
 AssignmentOperator::= 
     BECOMES:i {: RESULT = i; :}
@@ -775,11 +786,7 @@ AssignmentOperator::=
 	;
 	
 	
-Expression1::=
-    Expression2 Expression1Rest  	{: RESULT = "Expression1-1"; :}
-    |
-    Expression2		{: RESULT = "Expression1-1"; :}
-    ;
+
 
 Expression1Rest::= QUESTION Expression COLON Expression1 {: RESULT = "Expression1Rest-1"; :}
 	;	
@@ -787,7 +794,7 @@ Expression1Rest::= QUESTION Expression COLON Expression1 {: RESULT = "Expression
 Expression2::= Expression3 Expression2Rest {: RESULT = "Expression2-1"; :}
 	;
 
-Expression2Rest::= /* empty */	{: RESULT = "Expression2Rest-1"; :}
+Expression2Rest::= /* empty */	{: RESULT = "Expression2Rest-1 (empty)"; :}
 	|
     Expression3List	{: RESULT = "Expression2Rest-2"; :}
     |
@@ -800,43 +807,43 @@ Expression3List::= InfixOp Expression3 	{: RESULT = "Expression3List-1"; :}
 	;
     
 InfixOp::=
-	DOUBLE_OR
+	DOUBLE_OR:i 		{: RESULT = i; :}
 	|
-	DOUBLE_AND
+	DOUBLE_AND:i 		{: RESULT = i; :}
 	|
-	AND
+	AND:i 		{: RESULT = i; :}
 	|
-	OR
+	OR:i 		{: RESULT = i; :}
 	|
-	XOR
+	XOR:i 		{: RESULT = i; :}
 	|
-	EQUALS
+	EQUALS:i 		{: RESULT = i; :}
 	|
-	NOT_EQUALS
+	NOT_EQUALS:i 		{: RESULT = i; :}
 	|
-	LT
+	LT:i 		{: RESULT = i; :}
 	|
-	GT    
+	GT    :i 		{: RESULT = i; :}
 	|
-	GE
+	GE:i 		{: RESULT = i; :}
 	|
-	LE
+	LE:i 		{: RESULT = i; :}
 	|
-	SHIFT_LEFT
+	SHIFT_LEFT:i 		{: RESULT = i; :}
 	|
-	SHIFT_RIGHT
+	SHIFT_RIGHT:i 		{: RESULT = i; :}
 	|
-	SHIFT_RIGHT_ARITHM
+	SHIFT_RIGHT_ARITHM:i 		{: RESULT = i; :}
 	|
-	PLUS
+	PLUS:i 		{: RESULT = i; :}
 	|
-	MINUS
+	MINUS:i 		{: RESULT = i; :}
 	|
-	TIMES
+	TIMES:i 		{: RESULT = i; :}
 	|
-	DIVIDE
+	DIVIDE:i 		{: RESULT = i; :}
 	|
-	MOD
+	MOD:i 		{: RESULT = i; :}
 	;
 
 
@@ -895,38 +902,38 @@ ChainedIdentifier::= Identifier						{: RESULT = "ChainedIdentifier-1"; :}
 
 
 PrefixOp::= 
-		PostfixOp
+		PostfixOp:i 		{: RESULT = i; :}
 		|
-		NOT
+		NOT:i 		{: RESULT = i; :}
 		|
-		BITWISE_NOT
+		BITWISE_NOT:i 		{: RESULT = i; :}
 		|
-		PLUS
+		PLUS:i 		{: RESULT = i; :}
 		|
-		MINUS
+		MINUS:i 		{: RESULT = i; :}
 		;
     
 
 PostfixOp::=
-			INC
+			INC:i 		{: RESULT = i; :}
 			|
-			DEC
+			DEC:i 		{: RESULT = i; :}
 			;
 			
 	
-IdentifierSuffix::=  Arguments
+IdentifierSuffix::=  Arguments {: RESULT = "IdentifierSuffix-1"; :}
 	|
-	DOT CLASS
+	DOT CLASS	{: RESULT = "IdentifierSuffix-2"; :}
 	|
-	DOT ExplicitGenericInvocation
+	DOT ExplicitGenericInvocation		{: RESULT = "IdentifierSuffix-3"; :}
 	|
-	DOT THIS
+	DOT THIS					{: RESULT = "IdentifierSuffix-4"; :}
 	|
-	DOT SUPER Arguments
+	DOT SUPER Arguments			{: RESULT = "IdentifierSuffix-5"; :}	
 	|
-	DOT NEW NonWildcardTypeArguments InnerCreator
+	DOT NEW NonWildcardTypeArguments InnerCreator		{: RESULT = "IdentifierSuffix-6"; :}
 	|
-	DOT NEW InnerCreator
+	DOT NEW InnerCreator	{: RESULT = "IdentifierSuffix-7"; :}
 	;
 	/* FIXME
 	[ ({[]} . class | Expression) ]
@@ -936,17 +943,17 @@ IdentifierSuffix::=  Arguments
 	*/
 	
 Literal::=
-    IntegerLiteral
+    IntegerLiteral:i 		{: RESULT = "Literal- "+i; :}
     |
-    FloatingPointLiteral
+    FloatingPointLiteral:i 		{: RESULT = "Literal- "+i; :}
     |
-    CharacterLiteral 
+    CharacterLiteral :i 		{: RESULT = "Literal- "+i; :}
     |
-    StringLiteral 
+    StringLiteral :i 		{: RESULT = "Literal- "+i; :}
     |
-    BooleanLiteral
+    BooleanLiteral:i 		{: RESULT = "Literal- "+i; :}
     |
-    NullLiteral
+    NullLiteral:i 		{: RESULT = "Literal- "+i; :}
     ;
 
 IntegerLiteral::= INTEGER_LITERAL;
@@ -962,32 +969,34 @@ NullLiteral::= NULL;
 FloatingPointLiteral ::= FLOATING_POINT_LITERAL;
 
 
-ParExpression::= LPAREN Expression RPAREN;
+ParExpression::= LPAREN Expression RPAREN			{: RESULT = "ParExpression-1"; :}	
+	;
 
-ExpressionList::= Expression
+ExpressionList::= Expression						{: RESULT = "ExpressionList-1"; :}
 		|
-		ExpressionList COMMA Expression
+		ExpressionList COMMA Expression				{: RESULT = "ExpressionList-2"; :}
 		;
 		
-Arguments::=  LPAREN ExpressionList RPAREN;
+Arguments::=  LPAREN ExpressionList RPAREN			{: RESULT = "Arguments-1"; :}
+		;
 
 
 Selector::=
-    DOT Identifier
+    DOT Identifier								{: RESULT = "Selector-1"; :}
     |
-    DOT Identifier Arguments
+    DOT Identifier Arguments					{: RESULT = "Selector-2"; :}
     |
-    DOT ExplicitGenericInvocation
+    DOT ExplicitGenericInvocation				{: RESULT = "Selector-3"; :}
     |
-    DOT THIS
+    DOT THIS									{: RESULT = "Selector-4"; :}
     |
-    DOT SUPER SuperSuffix
+    DOT SUPER SuperSuffix						{: RESULT = "Selector-5"; :}
     |
-    DOT NEW NonWildcardTypeArguments InnerCreator
+    DOT NEW NonWildcardTypeArguments InnerCreator					{: RESULT = "Selector-6"; :}
     |
-    DOT NEW InnerCreator
+    DOT NEW InnerCreator						{: RESULT = "Selector-7"; :}
     |
-    Expression
+    Expression									{: RESULT = "Selector-8"; :}
 	;
 
 SuperSuffix::=
@@ -1008,48 +1017,50 @@ ExplicitGenericInvocationSuffix::=
 
 		
 			
-ClassBody::= LBRACE ClassBodyDeclarationList RBRACE;
+ClassBody::= LBRACE ClassBodyDeclarationList RBRACE 					{: RESULT = "ClassBody-1"; :}
+		;
 
 
-ClassBodyDeclarationList::= /* empty */
+ClassBodyDeclarationList::= /* empty */									{: RESULT = "ClassBodyDeclarationList-1 (empty)"; :}
 			|
-			ClassBodyDeclarationList ClassBodyDeclaration
+			ClassBodyDeclarationList ClassBodyDeclaration				{: RESULT = "ClassBodyDeclarationList-2"; :}
 			;
 			
-ClassBodyDeclaration::=     SEMICOLON
+ClassBodyDeclaration::=     SEMICOLON						{: RESULT = "ClassBodyDeclaration-1"; :}
 	|
-    Modifiers MemberDecl
+    Modifiers MemberDecl					{: RESULT = "ClassBodyDeclaration-2"; :}
     |
-    MemberDecl
+    MemberDecl								{: RESULT = "ClassBodyDeclaration-3"; :}
     |
-    STATIC Block			
+    STATIC Block							{: RESULT = "ClassBodyDeclaration-4"; :}
     |
-    Block
+    Block									{: RESULT = "ClassBodyDeclaration-5"; :}
     ;
 
 
 MemberDecl::=
-    MethodOrFieldDecl
+    MethodOrFieldDecl							{: RESULT = "MemberDecl-1"; :}		
     |
-    VOID Identifier VoidMethodDeclaratorRest
+    VOID Identifier VoidMethodDeclaratorRest						{: RESULT = "MemberDecl-2"; :}
     |
-    Identifier ConstructorDeclaratorRest
+    Identifier ConstructorDeclaratorRest						{: RESULT = "MemberDecl-3"; :}
     |
-    GenericMethodOrConstructorDecl
+    GenericMethodOrConstructorDecl						{: RESULT = "MemberDecl-4"; :}
     |
-    ClassDeclaration
+    ClassDeclaration						{: RESULT = "MemberDecl-5"; :}
     |
-    InterfaceDeclaration
+    InterfaceDeclaration						{: RESULT = "MemberDecl-6"; :}
     ;
 
 
 
-MethodOrFieldDecl::= Type Identifier MethodOrFieldRest;
+MethodOrFieldDecl::= Type Identifier MethodOrFieldRest 					{: RESULT = "MethodOrFieldDecl-1"; :}
+	;
 
 MethodOrFieldRest::=  
-    FieldDeclaratorsRest SEMICOLON
+    FieldDeclaratorsRest SEMICOLON							{: RESULT = "MethodOrFieldRest-1"; :}
     |
-    MethodDeclaratorRest
+    MethodDeclaratorRest						{: RESULT = "MethodOrFieldRest-2"; :}
     ;
 
 FieldDeclaratorsRest::=  
@@ -1058,13 +1069,13 @@ FieldDeclaratorsRest::=
     FieldDeclaratorsRest COMMA VariableDeclarator
     ;
 
-VariableDeclaratorRest::=	/* empty */
+VariableDeclaratorRest::=	/* empty */			{: RESULT = "VariableDeclaratorRest-1 (empty)"; :}
 	|
-	EmptyArrays BECOMES VariableInitializer
+	EmptyArrays BECOMES VariableInitializer		{: RESULT = "VariableDeclaratorRest-2"; :}
 	|
-	EmptyArrays
+	EmptyArrays						{: RESULT = "VariableDeclaratorRest-3"; :}
 	|
-	BECOMES VariableInitializer
+	BECOMES VariableInitializer		{: RESULT = "VariableDeclaratorRest-4"; :}
 	;
 
 
@@ -1076,32 +1087,32 @@ ArrayInitializer::=
     ;
 	
 
-OptionalThrowsQualifiedIdentifierList::= /* empty */
+OptionalThrowsQualifiedIdentifierList::= /* empty */{: RESULT = "OptionalThrowsQualifiedIdentifierList-1 (empty)"; :}
 	|
-	THROWS QualifiedIdentifierList
+	THROWS QualifiedIdentifierList {: RESULT = "OptionalThrowsQualifiedIdentifierList-2"; :}
 	;
 
 QualifiedIdentifierList::=
-    QualifiedIdentifier 
+    QualifiedIdentifier 	{: RESULT = "QualifiedIdentifierList-1"; :}
     |
-    QualifiedIdentifierList COMMA QualifiedIdentifier
+    QualifiedIdentifierList COMMA QualifiedIdentifier	{: RESULT = "QualifiedIdentifierList-2"; :}
 	;
 
 
 MethodDeclaratorRest::=
-    FormalParameters EmptyArrays OptionalThrowsQualifiedIdentifierList Block
+    FormalParameters EmptyArrays OptionalThrowsQualifiedIdentifierList Block	{: RESULT = "MethodDeclaratorRest-1"; :}
     |
-    FormalParameters EmptyArrays OptionalThrowsQualifiedIdentifierList SEMICOLON
+    FormalParameters EmptyArrays OptionalThrowsQualifiedIdentifierList SEMICOLON	{: RESULT = "MethodDeclaratorRest-2"; :}
 	|
-    FormalParameters OptionalThrowsQualifiedIdentifierList Block
+    FormalParameters OptionalThrowsQualifiedIdentifierList Block	{: RESULT = "MethodDeclaratorRest-3"; :}
     |
-    FormalParameters OptionalThrowsQualifiedIdentifierList SEMICOLON
+    FormalParameters OptionalThrowsQualifiedIdentifierList SEMICOLON	{: RESULT = "MethodDeclaratorRest-4"; :}
     ;
 
 VoidMethodDeclaratorRest::=
-    FormalParameters OptionalThrowsQualifiedIdentifierList Block
+    FormalParameters OptionalThrowsQualifiedIdentifierList Block	{: RESULT = "VoidMethodDeclaratorRest-1"; :}
     |
-    FormalParameters OptionalThrowsQualifiedIdentifierList SEMICOLON
+    FormalParameters OptionalThrowsQualifiedIdentifierList SEMICOLON	{: RESULT = "VoidMethodDeclaratorRest-2"; :}
     ;
 
 
@@ -1120,18 +1131,22 @@ GenericMethodOrConstructorRest::= VOID Identifier MethodDeclaratorRest
     ;
 
 
-FormalParameters::= LPAREN RPAREN
+FormalParameters::= LPAREN RPAREN				{: RESULT = "FormalParameters-1"; :}
 	| 
-    LPAREN FormalParameterDecls RPAREN
+    LPAREN FormalParameterDecls RPAREN		{: RESULT = "FormalParameters-2"; :}
     ;
 
 FormalParameterDecls::= 
-    VariableModifierList Type FormalParameterDeclsRest;
+    VariableModifierList Type FormalParameterDeclsRest	{: RESULT = "FormalParameterDecls-1"; :}
+    |
+    Type FormalParameterDeclsRest		{: RESULT = "FormalParameterDecls-2"; :}
+    ;
 
-VariableModifierList ::= /* empty */
-	|
-	VariableModifierList VariableModifier
-	; 	
+VariableModifierList ::=
+			VariableModifierList VariableModifier	{: RESULT = "VariableModifierList-1"; :} 
+			|
+			VariableModifier 		{: RESULT = "VariableModifierList-2"; :}
+			; 	
 	
 
 VariableModifier::=
@@ -1179,55 +1194,61 @@ BlockStatement::=
    */ 
     ;
 
-LocalVariableDeclarationStatement::= VariableModifierList Type VariableDeclarators SEMICOLON ; 
+LocalVariableDeclarationStatement::= VariableModifierList Type VariableDeclarators SEMICOLON {: RESULT = "LocalVariableDeclarationStatement-1"; :}
+	|
+	Type VariableDeclarators SEMICOLON {: RESULT = "LocalVariableDeclarationStatement-2"; :}
+	; 
 
 Statement::=
-    RETURN Expression SEMICOLON
+    RETURN Expression SEMICOLON	 {: RESULT = "Statement-1"; :}
     |
-    RETURN SEMICOLON    
+    RETURN SEMICOLON    	 {: RESULT = "Statement-2"; :}
     |
-    Block
+    Block	 {: RESULT = "Statement-3"; :}
     |    
-    SEMICOLON
+    SEMICOLON	 {: RESULT = "Statement-4"; :}
     |
-    IF ParExpression Statement ELSE Statement
+    IF ParExpression Statement ELSE Statement	 {: RESULT = "Statement-5"; :}
     |
-    IF ParExpression Statement
+    IF ParExpression Statement	 {: RESULT = "Statement-6"; :}
     |
-    TRY Block Finally
+    TRY Block Finally	 {: RESULT = "Statement-7"; :}
     |
-    TRY Block Catches Finally
+    TRY Block Catches Finally	 {: RESULT = "Statement-8"; :}
     |
-    TRY Block Catches
+    TRY Block Catches	 {: RESULT = "Statement-9"; :}
     |
-    THROW Expression SEMICOLON
+    THROW Expression SEMICOLON	 {: RESULT = "Statement-10"; :}
     |
-    SYNCHRONIZED ParExpression Block
+    SYNCHRONIZED ParExpression Block	 {: RESULT = "Statement-11"; :}
  	|
- 	WHILE ParExpression Statement
+ 	WHILE ParExpression Statement	 {: RESULT = "Statement-12"; :}
  	| 
-    DO Statement WHILE ParExpression SEMICOLON
+    DO Statement WHILE ParExpression SEMICOLON	 {: RESULT = "Statement-13"; :}
     |
-    BREAK Identifier SEMICOLON
+    BREAK Identifier SEMICOLON	 {: RESULT = "Statement-14"; :}
     |
-    BREAK SEMICOLON
+    BREAK SEMICOLON	 {: RESULT = "Statement-15"; :}
     |
-    CONTINUE Identifier SEMICOLON
+    CONTINUE Identifier SEMICOLON	 {: RESULT = "Statement-16"; :}
     |
-    CONTINUE SEMICOLON         
+    CONTINUE SEMICOLON         	 {: RESULT = "Statement-17"; :}
     |     
-    ASSERT Expression COLON Expression SEMICOLON
+    ASSERT Expression COLON Expression SEMICOLON	 {: RESULT = "Statement-18"; :}
     |
-    ASSERT Expression SEMICOLON  
+    ASSERT Expression SEMICOLON  	 {: RESULT = "Statement-19"; :}
     |
-    TRY ResourceSpecification Block Catches Finally
+    TRY ResourceSpecification Block Catches Finally	 {: RESULT = "Statement-20"; :}
     |
-    TRY ResourceSpecification Block Catches
+    TRY ResourceSpecification Block Catches	 {: RESULT = "Statement-21"; :}
     |
-    TRY ResourceSpecification Block Finally
+    TRY ResourceSpecification Block Finally	 {: RESULT = "Statement-22"; :}
     |        
-    TRY ResourceSpecification Block
+    TRY ResourceSpecification Block	 {: RESULT = "Statement-23"; :}
     
+    
+    
+        
     /*
     
     |
@@ -1236,14 +1257,26 @@ Statement::=
     FOR LPAREN ForControl RPAREN Statement
     |
     Identifier COLON Statement
+
+
+
+
+
+    
     |
     StatementExpression SEMICOLON
+    
+    
+
+
+
+
 
     */
     
     ;
 
-StatementExpression::=
+StatementExpression::=			 {: RESULT = "StatementExpression-1"; :}
     Expression
     ;
 
@@ -1290,6 +1323,8 @@ ForControl::=
 
 ForVarControl::=
     VariableModifierList Type VariableDeclaratorId  ForVarControlRest
+    |
+    Type VariableDeclaratorId  ForVarControlRest
     ;
 
 ForVarControlRest::=
@@ -1304,11 +1339,12 @@ ForVarControlRest::=
     COLON Expression
     ;
 
-ForVariableDeclaratorsRest::=  OptionalVariableInitializer VariableDeclaratorList;
+ForVariableDeclaratorsRest::=  OptionalVariableInitializer VariableDeclaratorList
+	;
 
-OptionalVariableInitializer::= /* empty */
+OptionalVariableInitializer::= /* empty */		{: RESULT = "OptionalVariableInitializer-1"; :}
 	|
-	BECOMES VariableInitializer
+	BECOMES VariableInitializer					{: RESULT = "OptionalVariableInitializer-2"; :}
 	;
 	
 
@@ -1331,9 +1367,9 @@ ForUpdate::=
     
     
 ResourceSpecification::=
-    LPAREN Resources SEMICOLON RPAREN
+    LPAREN Resources SEMICOLON RPAREN 		{: RESULT = "ResourceSpecification-1"; :}
     |
-    LPAREN Resources RPAREN
+    LPAREN Resources RPAREN 		{: RESULT = "ResourceSpecification-2"; :}
     ;
 
 Resources::=
@@ -1343,7 +1379,9 @@ Resources::=
     ;
 
 Resource::=
-    VariableModifierList ReferenceType VariableDeclaratorId BECOMES Expression
+    VariableModifierList ReferenceType VariableDeclaratorId BECOMES Expression {: RESULT = "Resource-1"; :}
+    |
+    ReferenceType VariableDeclaratorId BECOMES Expression {: RESULT = "Resource-2"; :}
     ; 
 
 
@@ -1367,7 +1405,9 @@ Catches::=
     ;
 
 CatchClause::=  
-    CATCH LPAREN VariableModifierList CatchType Identifier RPAREN Block
+    CATCH LPAREN VariableModifierList CatchType Identifier RPAREN Block  		{: RESULT = "CatchClause-1"; :}
+    |
+    CATCH LPAREN CatchType Identifier RPAREN Block  		{: RESULT = "CatchClause-2"; :}
     ;
 
 CatchType::=
@@ -1494,4 +1534,5 @@ InnerCreator::=
     
 
 
-Identifier::= IDENTIFIER;
+Identifier::= IDENTIFIER:i {: RESULT="Identifier "+i; :} 
+	;
