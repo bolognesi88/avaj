@@ -117,7 +117,9 @@ enum Merassaum2 {
 	VALOR1("a"),	
 	VALOR2("b");
 	
+	String descricao;
+	
 	private Merassaum2(String t) {
-		
+		this.descricao = t;
 	}
 }
