@@ -60,8 +60,9 @@ public class Java7Test{
 	            			{
 	            			  debug_message("Symbol #" + 
 	            					((Symbol)stack.elementAt(i)).sym
-	            			  		+ " " +((Symbol)stack.elementAt(i)).value +
-	            					" State: " + ((Symbol)stack.elementAt(i)).parse_state);
+	            			  		+ " " +((Symbol)stack.elementAt(i)).value 
+	            					//+ " State: " + ((Symbol)stack.elementAt(i)).parse_state)
+	            			  			);
 	            			}
 	            		      debug_message("==========================================");
 	            		    
