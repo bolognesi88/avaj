@@ -1,0 +1,1361 @@
+package Parser;
+
+import java.util.*;
+import java_cup.runtime.*;
+
+
+/* Terminals (tokens returned by the scanner) */
+/* declarations */		
+terminal	PACKAGE	;
+terminal	IMPORT	;
+terminal	CLASS	;
+terminal	ENUM	;
+terminal	INTERFACE	;
+terminal	EXTENDS	;
+terminal	IMPLEMENTS	;
+terminal	INSTANCEOF;
+		
+		
+/* types */		
+terminal	BYTE	;
+terminal	SHORT	;
+terminal	CHAR	;
+terminal	INT	;
+terminal	LONG	;
+terminal	FLOAT	;
+terminal	DOUBLE	;
+terminal	BOOLEAN	;
+		
+		
+terminal	VOID	;
+terminal	THIS	;
+terminal	SUPER	;
+terminal	NEW	;
+terminal	TRUE	;
+terminal	FALSE	;
+terminal	NULL	;
+		
+		
+/* control flow */		
+terminal	IF	;
+terminal	ELSE	;
+terminal	FOR	;
+terminal	WHILE	;
+terminal	RETURN	;
+terminal	DO	;
+terminal	ASSERT	;
+terminal	SWITCH	;
+terminal	CASE	;
+terminal	DEFAULT	;
+terminal	BREAK	;
+terminal	CONTINUE	;
+terminal	TRY	;
+terminal	CATCH	;
+terminal	FINALLY	;
+terminal	THROW	;
+terminal	THROWS	;
+		
+		
+/* modifiers */		
+terminal	PUBLIC	;
+terminal	PROTECTED	;
+terminal	PRIVATE	;
+terminal	STATIC	;
+terminal	ABSTRACT	;
+terminal	FINAL	;
+terminal	NATIVE	;
+terminal	SYNCHRONIZED	;
+terminal	TRANSIENT	;
+terminal	VOLATILE	;
+terminal	STRICTFP	;
+		
+		
+/* literals */		
+terminal	INTEGER_LITERAL	;
+terminal    STRING_LITERAL;
+terminal 	CHARACTER_LITERAL;
+terminal	FLOATING_POINT_LITERAL;
+		
+/* operators */		
+terminal	GE	;
+terminal	LE	;
+terminal	EQUALS	;
+terminal	NOT_EQUALS	;
+terminal	DOUBLE_OR	;
+terminal	DOUBLE_AND	;
+terminal	SHIFT_LEFT	;
+terminal	SHIFT_RIGHT	;
+terminal	SHIFT_RIGHT_ARITHM	;
+terminal	INC	;
+terminal	DEC	;
+		
+		
+terminal	PLUS	;
+terminal	MINUS	;
+terminal	TIMES	;
+terminal	DIVIDE	;
+terminal	NOT	;
+terminal	AND	;
+terminal	OR	;
+terminal	XOR	;
+terminal	MOD	;
+terminal	BITWISE_NOT	;		
+terminal	HASH	;
+terminal	BACKSLASH	;
+		
+/* assignments */		
+terminal	PLUS_EQUALS	;
+terminal	MINUS_EQUALS	;
+terminal	TIMES_EQUALS	;
+terminal	DIV_EQUALS	;
+terminal	AND_EQUALS	;
+terminal	OR_EQUALS	;
+terminal	XOR_EQUALS	;
+terminal	MOD_EQUALS	;
+terminal	SHIFT_LEFT_EQUALS	;
+terminal	SHIFT_RIGHT_EQUALS	;
+terminal	SHIFT_RIGHT_ARITHM_EQUALS	;
+terminal	BECOMES	;
+		
+    		
+/* delimiters */		
+terminal	LPAREN	;
+terminal	RPAREN	;
+terminal	LBRACKET	;
+terminal	RBRACKET	;
+terminal	LBRACE	;
+terminal	RBRACE	;
+terminal	LT	;
+terminal	GT	;
+		
+		
+/* punctuation */		
+terminal    ELLIPSIS;
+terminal	DOT	;
+terminal	COMMA	;
+terminal	SEMICOLON	;
+terminal	COLON	;
+terminal	QUESTION	;
+terminal    AT ; 
+
+/* identifiers */		
+terminal	IDENTIFIER	;
+
+
+/* Nonterminals */
+nonterminal	Goal	;
+nonterminal	Literal	;
+nonterminal	IntegerLiteral	;
+nonterminal	FloatingPointLiteral	;
+nonterminal	BooleanLiteral	;
+nonterminal	CharacterLiteral	;
+nonterminal	StringLiteral	;
+nonterminal	NullLiteral	;
+nonterminal	Type	;
+nonterminal	PrimitiveType	;
+nonterminal	NumericType	;
+nonterminal	IntegralType	;
+nonterminal	FloatingPointType	;
+nonterminal	ReferenceType	;
+nonterminal	ClassOrInterfaceType	;
+nonterminal	ClassType	;
+nonterminal	InterfaceType	;
+nonterminal	ArrayType	;
+nonterminal	Name	;
+nonterminal	SimpleName	;
+nonterminal	QualifiedName	;
+nonterminal	CompilationUnit	;
+nonterminal	PackageDeclaration_opt	;
+nonterminal	ImportDeclarations_opt	;
+nonterminal	TypeDeclarations_opt	;
+nonterminal	ImportDeclarations	;
+nonterminal	TypeDeclarations	;
+nonterminal	PackageDeclaration	;
+nonterminal	ImportDeclaration	;
+nonterminal	SingleTypeImportDeclaration	;
+nonterminal	TypeImportOnDemandDeclaration	;
+nonterminal	TypeDeclaration	;
+nonterminal	Modifiers	;
+nonterminal	Modifier	;
+nonterminal	ClassDeclaration	;
+nonterminal	Modifiers_opt	;
+nonterminal	Super_opt	;
+nonterminal	Interfaces_opt	;
+nonterminal	Super	;
+nonterminal	Interfaces	;
+nonterminal	InterfaceTypeList	;
+nonterminal	ClassBody	;
+nonterminal	ClassBodyDeclarations_opt	;
+nonterminal	ClassBodyDeclarations	;
+nonterminal	ClassBodyDeclaration	;
+nonterminal	ClassMemberDeclaration	;
+nonterminal	FieldDeclaration	;
+nonterminal	VariableDeclarators	;
+nonterminal	VariableDeclarator	;
+nonterminal	VariableDeclaratorId	;
+nonterminal	VariableInitializer	;
+nonterminal	MethodDeclaration	;
+nonterminal	MethodHeader	;
+nonterminal	Throws_opt	;
+nonterminal	MethodDeclarator	;
+nonterminal	FormalParameterList_opt	;
+nonterminal	FormalParameterList	;
+nonterminal	FormalParameter	;
+nonterminal	Throws	;
+nonterminal	ClassTypeList	;
+nonterminal	MethodBody	;
+nonterminal	StaticInitializer	;
+nonterminal	ConstructorDeclaration	;
+nonterminal	ConstructorDeclarator	;
+nonterminal	ConstructorBody	;
+nonterminal	ExplicitConstructorInvocation_opt	;
+nonterminal	BlockStatements_opt	;
+nonterminal	ExplicitConstructorInvocation	;
+nonterminal	InterfaceDeclaration	;
+nonterminal	ExtendsInterfaces_opt	;
+nonterminal	ExtendsInterfaces	;
+nonterminal	InterfaceBody	;
+nonterminal	InterfaceMemberDeclarations_opt	;
+nonterminal	InterfaceMemberDeclarations	;
+nonterminal	InterfaceMemberDeclaration	;
+nonterminal	ConstantDeclaration	;
+nonterminal	AbstractMethodDeclaration	;
+nonterminal	ArrayInitializer	;
+nonterminal	VariableInitializers_opt	;
+nonterminal	Comma_opt	;
+nonterminal	VariableInitializers	;
+nonterminal	Block	;
+nonterminal	BlockStatements	;
+nonterminal	BlockStatement	;
+nonterminal	LocalVariableDeclarationStatement	;
+nonterminal	LocalVariableDeclaration	;
+nonterminal	Statement	;
+nonterminal	StatementNoShortIf	;
+nonterminal	StatementWithoutTrailingSubstatement	;
+nonterminal	EmptyStatement	;
+nonterminal	LabeledStatement	;
+nonterminal	LabeledStatementNoShortIf	;
+nonterminal	ExpressionStatement	;
+nonterminal	StatementExpression	;
+nonterminal	IfThenStatement	;
+nonterminal	IfThenElseStatement	;
+nonterminal	IfThenElseStatementNoShortIf	;
+nonterminal	SwitchStatement	;
+nonterminal	SwitchBlock	;
+nonterminal	SwitchBlockStatementGroups_opt	;
+nonterminal	SwitchLabels_opt	;
+nonterminal	SwitchBlockStatementGroups	;
+nonterminal	SwitchBlockStatementGroup	;
+nonterminal	SwitchLabels	;
+nonterminal	SwitchLabel	;
+nonterminal	WhileStatement	;
+nonterminal	WhileStatementNoShortIf	;
+nonterminal	DoStatement	;
+nonterminal	ForStatement	;
+nonterminal	ForStatementNoShortIf	;
+nonterminal	ForInit_opt	;
+nonterminal	Expression_opt	;
+nonterminal	ForUpdate_opt	;
+nonterminal	ForInit	;
+nonterminal	ForUpdate	;
+nonterminal	StatementExpressionList	;
+nonterminal	BreakStatement	;
+nonterminal Identifier_opt	;
+nonterminal	ContinueStatement	;
+nonterminal	ReturnStatement	;
+nonterminal	ThrowStatement	;
+nonterminal	SynchronizedStatement	;
+nonterminal	TryStatement	;
+nonterminal	Catches_opt	;
+nonterminal	Catches	;
+nonterminal	CatchClause	;
+nonterminal	Finally	;
+nonterminal	Primary	;
+nonterminal	PrimaryNoNewArray	;
+nonterminal	ClassInstanceCreationExpression	;
+nonterminal	ArgumentList_opt	;
+nonterminal	ArgumentList	;
+nonterminal	ArrayCreationExpression	;
+nonterminal	Dims_opt	;
+nonterminal	DimExprs	;
+nonterminal	DimExpr	;
+nonterminal	Dims	;
+nonterminal	FieldAccess	;
+nonterminal	MethodInvocation	;
+nonterminal	ArrayAccess	;
+nonterminal	PostfixExpression	;
+nonterminal	PostIncrementExpression	;
+nonterminal	PostDecrementExpression	;
+nonterminal	UnaryExpression	;
+nonterminal	PreIncrementExpression	;
+nonterminal	PreDecrementExpression	;
+nonterminal	UnaryExpressionNotPlusMinus	;
+nonterminal	CastExpression	;
+nonterminal	MultiplicativeExpression	;
+nonterminal	AdditiveExpression	;
+nonterminal	ShiftExpression	;
+nonterminal	RelationalExpression	;
+nonterminal	EqualityExpression	;
+nonterminal	AndExpression	;
+nonterminal	ExclusiveOrExpression	;
+nonterminal	InclusiveOrExpression	;
+nonterminal	ConditionalAndExpression	;
+nonterminal	ConditionalOrExpression	;
+nonterminal	ConditionalExpression	;
+nonterminal	AssignmentExpression	;
+nonterminal	Assignment	;
+nonterminal	LeftHandSide	;
+nonterminal	AssignmentOperator	;
+nonterminal	Expression	;
+nonterminal	ConstantExpression	;
+nonterminal Identifier;
+
+
+
+/* Precedence declarations */
+/* The last precedence declaration give its terminals the highest precedence */
+/* https://introcs.cs.princeton.edu/java/11precedence/ */
+
+/* precedence right lambda -> */
+precedence right BECOMES, PLUS_EQUALS, MINUS_EQUALS, TIMES_EQUALS, DIV_EQUALS, MOD_EQUALS, AND_EQUALS, XOR_EQUALS, OR_EQUALS, SHIFT_LEFT_EQUALS, SHIFT_RIGHT_EQUALS, SHIFT_RIGHT_ARITHM_EQUALS; /* level 1*/
+precedence left QUESTION, COLON; 		/* level 2*/
+precedence left DOUBLE_OR; 				/* level 3*/
+precedence left DOUBLE_AND; 			/* level 4*/
+precedence left OR; 					/* level 5*/
+precedence left XOR; 					/* level 6*/
+precedence left AND; 					/* level 7*/
+precedence left EQUALS, NOT_EQUALS; 	/* LEVEL 8 */
+precedence left LT, GT, LE, GE, INSTANCEOF;   					/* LEVEL 9 */
+precedence left SHIFT_LEFT, SHIFT_RIGHT, SHIFT_RIGHT_ARITHM;   	/* LEVEL 10 */
+precedence left PLUS, MINUS; 			/* LEVEL 11 */
+precedence left TIMES, DIVIDE, MOD; 	/* LEVEL 12 */
+precedence right NOT, BITWISE_NOT;		/* LEVEL 14 + UNARY PLUS MINUS PREINC, PREDEC */
+precedence nonassoc AT, ELSE;					/* ? */
+precedence left INC, DEC; 				/* LEVEL 15*/
+precedence left LPAREN, RPAREN, LBRACE, RBRACE, NEW, DOT; 		/*LEVEL 16, + METHOD REFERENCE :: */
+
+
+
+start with Goal;
+
+
+
+/* Productions */
+/* 19.2 Productions from §2.3: The Syntactic Grammar */
+
+Goal::=
+    	CompilationUnit:i  		{: RESULT = i; :}
+    	;
+
+/* 19.3 Productions from §3: Lexical Structure */
+Literal::=
+	    IntegerLiteral:i 		{: RESULT = "Literal- "+i; :}
+	    |
+	    FloatingPointLiteral:i 	{: RESULT = "Literal- "+i; :}
+	    |
+	    BooleanLiteral:i 		{: RESULT = "Literal- "+i; :}
+	    |
+	    CharacterLiteral :i 	{: RESULT = "Literal- "+i; :}
+	    |
+	    StringLiteral :i 		{: RESULT = "Literal- "+i; :}
+	    |
+	    NullLiteral:i 			{: RESULT = "Literal- "+i; :}
+	    ;
+
+IntegerLiteral::= INTEGER_LITERAL;
+
+FloatingPointLiteral ::= FLOATING_POINT_LITERAL;
+
+BooleanLiteral::= TRUE | FALSE;
+
+CharacterLiteral::= CHARACTER_LITERAL;
+
+StringLiteral::= STRING_LITERAL;
+
+NullLiteral::= NULL;
+
+
+
+
+/* 19.4 Productions from §4: Types, Values, and Variables */
+
+Type::=
+    	PrimitiveType		{: RESULT = "Type-1"; :}
+		|
+    	ReferenceType		{: RESULT = "Type-2"; :}
+    	;
+
+PrimitiveType::=
+    	NumericType:i 		{: RESULT = "PrimitiveType-1 ("+i+")"; :}
+		|
+    	BOOLEAN:i 			{: RESULT = "PrimitiveType-2 ("+i+")"; :}
+    	;
+
+NumericType::=
+		|
+    	IntegralType:i 				{: RESULT = "NumericType-1 ("+i+")"; :}
+		|
+    	FloatingPointType:i 		{: RESULT = "NumericType-2 ("+i+")"; :}
+    	;
+
+IntegralType::=
+    BYTE:i 		{: RESULT = i; :}
+    |
+    SHORT:i 	{: RESULT = i; :}    
+    |
+    INT:i 		{: RESULT = i; :}
+    |
+    LONG:i 		{: RESULT = i; :}
+    |
+    CHAR:i 		{: RESULT = i; :}
+    ;
+    
+FloatingPointType::=
+    FLOAT:i 		{: RESULT = i; :}
+    |
+    DOUBLE:i 		{: RESULT = i; :}
+    ;
+
+ReferenceType::=
+    	ClassOrInterfaceType
+		|
+    	ArrayType
+    	;
+
+ClassOrInterfaceType::=
+    	Name
+    	;
+
+ClassType::=
+    	ClassOrInterfaceType
+    	;
+
+InterfaceType::=
+    	ClassOrInterfaceType
+    	;
+
+ArrayType::=
+    	PrimitiveType LBRACKET RBRACKET
+    	|
+    	Name LBRACKET RBRACKET
+    	|
+    	ArrayType LBRACKET RBRACKET
+    	;
+
+/* 19.5 Productions from §6: Names */
+
+Name::=
+    	SimpleName
+		|
+    	QualifiedName
+    	;
+
+SimpleName::=
+    	Identifier:i 					{: RESULT = "SimpleName "+i; :}
+    	;
+
+QualifiedName::=
+    	Name:n DOT Identifier:i 		{: RESULT = "QualifiedName "+n+"."+i; :}
+    	;
+
+
+/* 19.6 Productions from §7: Packages */
+
+CompilationUnit::=
+    	PackageDeclaration_opt ImportDeclarations_opt TypeDeclarations_opt	{: RESULT = "CompilationUnit"; :}
+    	;
+    	
+PackageDeclaration_opt::= /* empty */			{: RESULT = "PackageDeclaration_opt (empty)"; :}
+		|
+		PackageDeclaration						{: RESULT = "PackageDeclaration_opt"; :}
+		;
+		 
+ImportDeclarations_opt::= /* empty */			{: RESULT = "ImportDeclarations_opt (empty)"; :}
+		|
+		ImportDeclarations						{: RESULT = "ImportDeclarations_opt"; :}
+		;
+		 
+TypeDeclarations_opt::= /* empty */				{: RESULT = "TypeDeclarations_opt (empty)"; :}
+		|   	
+		TypeDeclarations						{: RESULT = "TypeDeclarations_opt"; :}
+		;
+
+ImportDeclarations::=
+    	ImportDeclaration						{: RESULT = "ImportDeclaration-1"; :}
+		|
+    	ImportDeclarations ImportDeclaration	{: RESULT = "ImportDeclaration-2"; :}
+    	;
+
+TypeDeclarations::=
+    	TypeDeclaration							{: RESULT = "TypeDeclarations-1"; :}
+		|
+    	TypeDeclarations TypeDeclaration		{: RESULT = "TypeDeclarations-2"; :}
+    	;
+
+PackageDeclaration::=
+    	PACKAGE Name:i SEMICOLON				{: RESULT = "PackageDeclaration "+i; :}
+    	;
+
+ImportDeclaration::=
+    	SingleTypeImportDeclaration				{: RESULT = "ImportDeclaration-1"; :}
+		|
+    	TypeImportOnDemandDeclaration			{: RESULT = "ImportDeclaration-2"; :}
+    	;
+
+SingleTypeImportDeclaration::=
+    	IMPORT Name:i SEMICOLON					{: RESULT = "SingleTypeImportDeclaration "+i; :}
+    	;		
+
+TypeImportOnDemandDeclaration::=
+    	IMPORT Name:i DOT TIMES SEMICOLON		{: RESULT = "TypeImportOnDemandDeclaration "+i; :}
+    	;
+
+TypeDeclaration::=
+    	ClassDeclaration						{: RESULT = "TypeDeclaration-1"; :}
+    	|
+    	InterfaceDeclaration					{: RESULT = "TypeDeclaration-2"; :}
+    	;
+
+/* 19.7 Productions Used Only in the LALR(1) Grammar */
+
+Modifiers::=
+    	Modifier			{: RESULT = "Modifiers-1"; :}
+		|
+    	Modifiers Modifier	{: RESULT = "Modifiers-2"; :}
+		;
+		
+		
+Modifier::=
+	    PUBLIC:i 			{: RESULT = "Modifier- "+i; :}
+	    | PROTECTED:i 		{: RESULT = "Modifier- "+i; :}
+	    | PRIVATE:i 		{: RESULT = "Modifier- "+i; :}
+	    | STATIC:i 			{: RESULT = "Modifier- "+i; :}
+	    | ABSTRACT:i 		{: RESULT = "Modifier- "+i; :}
+	    | FINAL:i 			{: RESULT = "Modifier- "+i; :}
+	    | NATIVE:i 			{: RESULT = "Modifier- "+i; :}
+	    | SYNCHRONIZED:i 	{: RESULT = "Modifier- "+i; :}
+	    | TRANSIENT:i 		{: RESULT = "Modifier- "+i; :}
+	    | VOLATILE:i 		{: RESULT = "Modifier- "+i; :}
+	    | STRICTFP:i 		{: RESULT = "Modifier- "+i; :}
+	    ;
+
+/* 19.8 Productions from §8: Classes */
+/* 19.8.1 Productions from §8.1: Class Declaration */
+
+ClassDeclaration::=
+    	Modifiers_opt CLASS Identifier Super_opt Interfaces_opt ClassBody {: RESULT = "ClassDeclaration"; :}
+    	;
+
+Modifiers_opt::=		 /* empty */				{: RESULT = "Modifiers_opt (empty)"; :}
+		|
+		Modifiers									{: RESULT = "Modifiers_opt"; :}
+		;
+		 
+Super_opt::=			 /* empty */				{: RESULT = "Super_opt (empty)"; :}
+		|
+		Super										{: RESULT = "Super_opt"; :}
+		;
+		 
+Interfaces_opt::=		 /* empty */				{: RESULT = "Interfaces_opt (empty)"; :}
+		|
+		Interfaces									{: RESULT = "Interfaces_opt"; :}
+		;
+
+Super::=
+    	EXTENDS ClassType							{: RESULT = "Super"; :}
+    	;
+
+Interfaces::=
+    	IMPLEMENTS InterfaceTypeList				{: RESULT = "Interfaces"; :}
+    	;
+
+InterfaceTypeList::=
+    	InterfaceType								{: RESULT = "InterfaceTypeList-1"; :}
+		|
+    	InterfaceTypeList COMMA InterfaceType		{: RESULT = "InterfaceTypeList-2"; :}
+    	;
+
+ClassBody::=
+    	LBRACE ClassBodyDeclarations_opt RBRACE		{: RESULT = "ClassBody-1"; :}
+    	;
+
+ClassBodyDeclarations_opt::=	/* empty */			{: RESULT = "ClassBodyDeclarations_opt (empty)"; :}
+		|
+		ClassBodyDeclarations						{: RESULT = "ClassBodyDeclarations_opt"; :}
+		;
+
+ClassBodyDeclarations::=
+    	ClassBodyDeclaration						{: RESULT = "ClassBodyDeclarations-1"; :}
+		|
+    	ClassBodyDeclarations ClassBodyDeclaration	{: RESULT = "ClassBodyDeclarations-2"; :}
+    	;
+
+ClassBodyDeclaration::=
+    	ClassMemberDeclaration						{: RESULT = "ClassBodyDeclaration-1"; :}
+		|
+    	StaticInitializer							{: RESULT = "ClassBodyDeclaration-2"; :}
+		|
+    	ConstructorDeclaration						{: RESULT = "ClassBodyDeclaration-3"; :}
+		;
+
+ClassMemberDeclaration::=
+    	FieldDeclaration		{: RESULT = "ClassMemberDeclaration-1"; :}
+		|		
+    	MethodDeclaration		{: RESULT = "ClassMemberDeclaration-2"; :}
+    	;
+
+/* 19.8.2 Productions from §8.3: Field Declarations */
+
+FieldDeclaration::=
+    	Modifiers_opt Type VariableDeclarators SEMICOLON	{: RESULT = "FieldDeclaration-1"; :}
+    	;
+    	
+VariableDeclarators::=
+    	VariableDeclarator								{: RESULT = "VariableDeclarators-1"; :}
+		|
+    	VariableDeclarators COMMA VariableDeclarator	{: RESULT = "VariableDeclarators-2"; :}
+    	;
+
+VariableDeclarator::=
+    	VariableDeclaratorId							 {: RESULT = "VariableDeclarator-1"; :}
+		|
+    	VariableDeclaratorId BECOMES VariableInitializer {: RESULT = "VariableDeclarator-2"; :}
+    	;
+
+VariableDeclaratorId::=
+    	Identifier										{: RESULT = "VariableDeclaratorId-1"; :}
+		|
+    	VariableDeclaratorId LBRACKET RBRACKET			{: RESULT = "VariableDeclaratorId-2"; :}
+    	;
+
+VariableInitializer::=
+    	Expression			{: RESULT = "VariableInitializer-1"; :}
+		|
+    	ArrayInitializer	{: RESULT = "VariableInitializer-2"; :}
+    	;
+
+/* 19.8.3 Productions from §8.4: Method Declarations */
+
+MethodDeclaration::=
+    	MethodHeader MethodBody		{: RESULT = "MethodDeclaration-1"; :}
+    	;
+
+MethodHeader::=
+    	Modifiers_opt Type MethodDeclarator Throws_opt	{: RESULT = "MethodHeader-1"; :}
+		|
+    	Modifiers_opt VOID MethodDeclarator Throws_opt	{: RESULT = "MethodHeader-2"; :}
+    	;
+
+Throws_opt::=	/* empty */			{: RESULT = "Throws_opt (empty)"; :}
+		|
+		Throws						{: RESULT = "Throws_opt"; :}
+		;    	
+
+MethodDeclarator::=
+    	Identifier LPAREN FormalParameterList_opt RPAREN	{: RESULT = "MethodDeclarator-1"; :}
+		|
+    	MethodDeclarator LBRACKET RBRACKET					{: RESULT = "MethodDeclarator-2"; :}
+    	;
+    	
+FormalParameterList_opt::=	/* empty */			{: RESULT = "FormalParameterList_opt (empty)"; :}
+		|	
+		FormalParameterList						{: RESULT = "FormalParameterList_opt"; :}
+		;		    	
+
+FormalParameterList::=
+    	FormalParameter								{: RESULT = "FormalParameterList-1"; :}
+		|
+    	FormalParameterList COMMA FormalParameter	{: RESULT = "FormalParameterList-2"; :}
+    	;
+
+FormalParameter::=
+    	Type VariableDeclaratorId				{: RESULT = "FormalParameter-1"; :}
+    	;
+
+Throws::=
+    	THROWS ClassTypeList					{: RESULT = "Throws-1"; :}
+    	;
+
+ClassTypeList::=
+    	ClassType								{: RESULT = "ClassTypeList-1"; :}
+		|
+    	ClassTypeList COMMA ClassType			{: RESULT = "ClassTypeList-2"; :}
+    	;
+
+MethodBody::=
+    	Block 		{: RESULT = "MethodBody-1"; :}
+		|
+    	SEMICOLON	{: RESULT = "MethodBody-2"; :}
+    	;
+
+/* 19.8.4 Productions from §8.5: Static Initializers */
+
+StaticInitializer::= 
+    	STATIC Block	{: RESULT = "StaticInitializer-1"; :}
+    	;
+
+/* 19.8.5 Productions from §8.6: Constructor Declarations */
+
+ConstructorDeclaration::=
+    	Modifiers_opt ConstructorDeclarator Throws_opt ConstructorBody	{: RESULT = "ConstructorDeclaration-1"; :}
+    	;
+
+ConstructorDeclarator::=
+    	SimpleName LPAREN FormalParameterList_opt RPAREN				{: RESULT = "ConstructorDeclarator-1"; :}
+    	;
+
+ConstructorBody::=
+    	LBRACE ExplicitConstructorInvocation_opt BlockStatements_opt RBRACE
+    	;
+    	
+ExplicitConstructorInvocation_opt::=		/* empty */			{: RESULT = "ExplicitConstructorInvocation_opt (empty)"; :}
+		|
+		ExplicitConstructorInvocation							{: RESULT = "ExplicitConstructorInvocation_opt"; :}
+		;
+
+BlockStatements_opt::=		/* empty */							{: RESULT = "BlockStatements_opt (empty)"; :}
+		|
+		BlockStatements											{: RESULT = "BlockStatements_opt"; :}
+		; 
+    	
+
+ExplicitConstructorInvocation::=
+    	THIS LPAREN ArgumentList_opt RPAREN SEMICOLON		{: RESULT = "ExplicitConstructorInvocation-1"; :}
+		|
+    	SUPER LPAREN ArgumentList_opt RPAREN SEMICOLON		{: RESULT = "ExplicitConstructorInvocation-2"; :}
+    	;
+
+/* 19.9 Productions from §9: Interfaces */
+/* 19.9.1 Productions from §9.1: Interface Declarations */
+
+InterfaceDeclaration::=
+    	Modifiers_opt INTERFACE Identifier ExtendsInterfaces_opt InterfaceBody		{: RESULT = "InterfaceDeclaration-1"; :}
+    	;
+
+ExtendsInterfaces_opt::=		/* empty */			{: RESULT = "ExtendsInterfaces_opt (empty)"; :}
+		|
+		ExtendsInterfaces							{: RESULT = "ExtendsInterfaces_opt"; :}
+		;
+
+ExtendsInterfaces::=
+    	EXTENDS InterfaceType						{: RESULT = "ExtendsInterfaces-1"; :}
+		|
+    	ExtendsInterfaces COMMA InterfaceType		{: RESULT = "ExtendsInterfaces-2"; :}
+    	;
+
+InterfaceBody::=
+    	LBRACE InterfaceMemberDeclarations_opt RBRACE	{: RESULT = "InterfaceBody-1"; :}
+    	;
+
+InterfaceMemberDeclarations_opt::=		/* empty */			{: RESULT = "InterfaceMemberDeclarations_opt (empty)"; :}
+		|
+		InterfaceMemberDeclarations							{: RESULT = "InterfaceMemberDeclarations_opt"; :}
+		;
+
+InterfaceMemberDeclarations::=
+    	InterfaceMemberDeclaration								{: RESULT = "InterfaceMemberDeclarations-1"; :}
+		|
+    	InterfaceMemberDeclarations InterfaceMemberDeclaration	{: RESULT = "InterfaceMemberDeclarations-2"; :}
+    	;
+
+InterfaceMemberDeclaration::=
+    	ConstantDeclaration			{: RESULT = "InterfaceMemberDeclaration-1"; :}
+		|
+    	AbstractMethodDeclaration	{: RESULT = "InterfaceMemberDeclaration-2"; :}
+    	;
+
+ConstantDeclaration::=	
+    	FieldDeclaration			{: RESULT = "ConstantDeclaration-1"; :}
+    	;
+
+AbstractMethodDeclaration::=
+    	MethodHeader SEMICOLON		{: RESULT = "AbstractMethodDeclaration-1"; :}
+    	;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* 19.10 Productions from §10: Arrays */
+
+ArrayInitializer::=
+    	LBRACE VariableInitializers_opt Comma_opt RBRACE
+    	;
+    	
+VariableInitializers_opt::=
+		|
+		VariableInitializers
+		;    	
+    	
+Comma_opt::=
+	|
+	COMMA
+	;    	
+
+VariableInitializers::=
+    	VariableInitializer
+		|
+    	VariableInitializers COMMA VariableInitializer
+    	;
+
+/* 19.11 Productions from §14: Blocks and Statements */
+
+Block::=
+    	LBRACE BlockStatements_opt RBRACE
+    	;
+    	
+
+BlockStatements::=
+    	BlockStatement
+		|
+    	BlockStatements BlockStatement
+    	;
+
+BlockStatement::=
+    	LocalVariableDeclarationStatement
+		|
+    	Statement
+    	;
+
+LocalVariableDeclarationStatement::=	
+    	LocalVariableDeclaration SEMICOLON
+    	;
+
+LocalVariableDeclaration::=
+    	Type VariableDeclarators
+    	;
+
+Statement::=
+    	StatementWithoutTrailingSubstatement
+		|
+    	LabeledStatement
+		|
+    	IfThenStatement
+		|
+    	IfThenElseStatement
+		|
+    	WhileStatement
+		|
+    	ForStatement
+    	;
+
+StatementNoShortIf::=
+    	StatementWithoutTrailingSubstatement
+		|
+    	LabeledStatementNoShortIf
+		|
+    	IfThenElseStatementNoShortIf
+		|
+    	WhileStatementNoShortIf
+		|
+    	ForStatementNoShortIf
+    	;
+
+StatementWithoutTrailingSubstatement::=
+    	Block
+		|
+    	EmptyStatement
+		|
+    	ExpressionStatement
+		|
+    	SwitchStatement
+		|
+    	DoStatement
+		|
+    	BreakStatement
+		|
+    	ContinueStatement
+		|
+    	ReturnStatement
+		|
+    	SynchronizedStatement
+		|
+    	ThrowStatement
+		|
+    	TryStatement
+    	;
+
+EmptyStatement::=
+		SEMICOLON
+    	;
+
+LabeledStatement::=
+    	Identifier COLON Statement
+    	;
+
+LabeledStatementNoShortIf::=
+    	Identifier COLON StatementNoShortIf
+    	;
+
+ExpressionStatement::=
+    	StatementExpression SEMICOLON
+    	;
+
+StatementExpression::=
+    	Assignment
+		|
+    	PreIncrementExpression
+		|
+    	PreDecrementExpression
+		|
+    	PostIncrementExpression
+		|
+    	PostDecrementExpression
+		|
+    	MethodInvocation
+		|
+    	ClassInstanceCreationExpression
+		;
+		
+IfThenStatement::=
+    	IF LPAREN Expression RPAREN Statement
+    	;
+
+IfThenElseStatement::=
+    	IF LPAREN Expression RPAREN StatementNoShortIf ELSE Statement
+    	;
+
+IfThenElseStatementNoShortIf::=
+    	IF LPAREN Expression RPAREN StatementNoShortIf ELSE StatementNoShortIf
+		;
+		
+SwitchStatement::=
+    	SWITCH LPAREN Expression RPAREN SwitchBlock
+    	;
+
+SwitchBlock::=
+    	LBRACE SwitchBlockStatementGroups_opt SwitchLabels_opt RBRACE
+    	;
+
+SwitchBlockStatementGroups_opt::=
+		|
+		SwitchBlockStatementGroups
+		; 
+
+SwitchLabels_opt::=
+		|
+		SwitchLabels
+		; 
+
+SwitchBlockStatementGroups::=
+    	SwitchBlockStatementGroup
+		|
+    	SwitchBlockStatementGroups SwitchBlockStatementGroup
+    	;
+
+SwitchBlockStatementGroup::=
+    	SwitchLabels BlockStatements
+    	;
+
+SwitchLabels::=
+    	SwitchLabel
+		|
+    	SwitchLabels SwitchLabel
+    	;
+
+SwitchLabel::=
+    	CASE ConstantExpression COLON
+		|
+    	DEFAULT COLON
+    	;
+
+WhileStatement::=
+    	WHILE LPAREN Expression RPAREN Statement
+    	;
+
+WhileStatementNoShortIf::=
+    	WHILE LPAREN Expression RPAREN StatementNoShortIf
+    	;
+
+DoStatement::=
+    	DO Statement WHILE LPAREN Expression RPAREN SEMICOLON
+    	;
+
+ForStatement::=
+    	FOR LPAREN ForInit_opt SEMICOLON Expression_opt SEMICOLON ForUpdate_opt RPAREN Statement
+    	;
+
+ForStatementNoShortIf::=
+    	FOR LPAREN ForInit_opt SEMICOLON Expression_opt SEMICOLON ForUpdate_opt RPAREN StatementNoShortIf
+    	;
+
+
+ForInit_opt::=
+	|
+	ForInit 
+	;
+	 
+Expression_opt::=
+	|
+	Expression 
+	; 
+	
+ForUpdate_opt::=
+	|
+	ForUpdate
+	;
+
+
+ForInit::=
+    	StatementExpressionList
+		|
+    	LocalVariableDeclaration
+    	;
+
+ForUpdate::=
+    	StatementExpressionList
+    	;
+
+StatementExpressionList::=
+    	StatementExpression
+		|
+    	StatementExpressionList COMMA StatementExpression
+    	;
+
+BreakStatement::=
+    	BREAK Identifier_opt SEMICOLON
+    	;
+
+Identifier_opt::=
+		|
+		Identifier
+		;
+
+ContinueStatement::=
+    	CONTINUE Identifier_opt SEMICOLON
+    	;
+
+ReturnStatement::=
+    	RETURN Expression_opt SEMICOLON
+    	;
+
+ThrowStatement::=
+    	THROWS Expression SEMICOLON
+    	;
+
+SynchronizedStatement::=
+    	SYNCHRONIZED LPAREN Expression RPAREN Block
+    	;
+
+TryStatement::=
+    	TRY Block Catches
+		|
+    	TRY Block Catches_opt Finally
+    	;
+
+Catches_opt::=
+		|
+		Catches
+		;
+
+Catches::=
+    	CatchClause
+		|
+    	Catches CatchClause
+    	;
+
+CatchClause::=
+    	CATCH LPAREN FormalParameter RPAREN Block
+    	;
+
+Finally::=
+    	FINALLY Block
+    	;
+
+/* 19.12 Productions from §15: Expressions */
+
+Primary::=
+    	PrimaryNoNewArray
+		|
+    	ArrayCreationExpression
+    	;
+
+PrimaryNoNewArray::=
+    	Literal
+		|
+    	THIS
+		|
+    	LPAREN Expression RPAREN
+		|
+    	ClassInstanceCreationExpression
+		|
+    	FieldAccess
+		|
+    	MethodInvocation
+		|
+    	ArrayAccess
+    	;
+
+
+ClassInstanceCreationExpression::=
+    	NEW ClassType LPAREN ArgumentList_opt RPAREN
+    	;
+    	
+ArgumentList_opt::=
+		|
+		ArgumentList
+		;    	
+
+ArgumentList::=
+    	Expression
+		|
+    	ArgumentList COMMA Expression
+    	;
+
+ArrayCreationExpression::=
+    	NEW PrimitiveType DimExprs Dims_opt
+		|
+    	NEW ClassOrInterfaceType DimExprs Dims_opt
+    	;
+
+Dims_opt::=
+		|
+		Dims
+		;
+		
+
+DimExprs::=
+    	DimExpr
+		|
+    	DimExprs DimExpr
+    	;
+
+DimExpr::=
+    	LBRACKET Expression RBRACKET
+    	;
+
+Dims::=
+    	LBRACKET RBRACKET
+		|
+    	Dims LBRACKET RBRACKET
+		;
+		
+FieldAccess::=
+    	Primary DOT Identifier
+		|
+    	SUPER DOT Identifier
+    	;
+
+MethodInvocation::=
+    	Name LPAREN ArgumentList_opt RPAREN
+		|
+    	Primary DOT Identifier LPAREN ArgumentList_opt RPAREN
+		|
+    	SUPER DOT Identifier LPAREN ArgumentList_opt RPAREN
+    	;
+
+ArrayAccess::=
+    	Name LBRACKET Expression RBRACKET
+		|
+    	PrimaryNoNewArray RBRACKET Expression RBRACKET
+    	;
+
+PostfixExpression::=
+    	Primary
+		|
+    	Name
+		|
+    	PostIncrementExpression
+		|
+    	PostDecrementExpression
+    	;
+
+PostIncrementExpression::=
+    	PostfixExpression INC
+		;
+		
+PostDecrementExpression::=
+    	PostfixExpression DEC
+    	;
+
+UnaryExpression::=
+    	PreIncrementExpression
+		|
+    	PreDecrementExpression
+		|
+    	PLUS UnaryExpression
+		|
+    	MINUS UnaryExpression
+		|
+    	UnaryExpressionNotPlusMinus
+    	;
+
+PreIncrementExpression::=
+    	INC UnaryExpression
+    	;
+
+PreDecrementExpression::=
+    	DEC UnaryExpression
+    	;
+
+UnaryExpressionNotPlusMinus::=
+    	PostfixExpression
+		|
+    	BITWISE_NOT UnaryExpression
+		|
+    	NOT UnaryExpression
+    	|
+    	CastExpression
+    	;
+
+CastExpression::=
+    	LPAREN PrimitiveType Dims_opt RPAREN UnaryExpression
+		|
+    	LPAREN Expression RPAREN UnaryExpressionNotPlusMinus
+		|
+    	LPAREN Name Dims RPAREN UnaryExpressionNotPlusMinus
+    	;
+
+MultiplicativeExpression::=
+    	UnaryExpression
+		|
+    	MultiplicativeExpression TIMES UnaryExpression
+		|
+    	MultiplicativeExpression DIVIDE UnaryExpression
+		|
+    	MultiplicativeExpression MOD UnaryExpression
+    	;
+
+AdditiveExpression::=
+    	MultiplicativeExpression
+		|
+    	AdditiveExpression PLUS MultiplicativeExpression
+		|
+    	AdditiveExpression MINUS MultiplicativeExpression
+    	;
+
+ShiftExpression::=
+    	AdditiveExpression
+		|
+    	ShiftExpression SHIFT_LEFT AdditiveExpression
+		|
+    	ShiftExpression SHIFT_RIGHT AdditiveExpression
+		|
+    	ShiftExpression SHIFT_RIGHT_ARITHM AdditiveExpression
+    	;
+
+RelationalExpression::=
+    	ShiftExpression
+		|
+    	RelationalExpression LT ShiftExpression
+		|
+    	RelationalExpression GT ShiftExpression
+		|
+    	RelationalExpression LE ShiftExpression
+		|
+    	RelationalExpression GE ShiftExpression
+		|
+    	RelationalExpression INSTANCEOF ReferenceType
+    	;
+
+EqualityExpression::=
+    	RelationalExpression
+		|
+    	EqualityExpression EQUALS RelationalExpression
+		|
+    	EqualityExpression NOT_EQUALS RelationalExpression
+    	;
+
+AndExpression::=
+    	EqualityExpression
+		|
+    	AndExpression AND EqualityExpression
+    	;
+
+ExclusiveOrExpression::=
+    	AndExpression
+		|
+    	ExclusiveOrExpression XOR AndExpression
+    	;
+
+InclusiveOrExpression::=
+    	ExclusiveOrExpression
+		|
+    	InclusiveOrExpression OR ExclusiveOrExpression
+    	;
+
+ConditionalAndExpression::=
+    	InclusiveOrExpression
+		|
+    	ConditionalAndExpression DOUBLE_AND InclusiveOrExpression
+    	;
+
+ConditionalOrExpression::=
+    	ConditionalAndExpression
+		|
+    	ConditionalOrExpression DOUBLE_OR ConditionalAndExpression
+    	;
+
+ConditionalExpression::=
+    	ConditionalOrExpression
+		|
+    	ConditionalOrExpression QUESTION Expression COLON ConditionalExpression
+    	;
+
+AssignmentExpression::=
+    	ConditionalExpression
+		|
+    	Assignment
+    	;
+
+Assignment::=
+    	LeftHandSide AssignmentOperator AssignmentExpression
+    	;
+
+LeftHandSide::=
+	   	Name
+		|
+    	FieldAccess
+		|
+    	ArrayAccess
+    	;
+
+AssignmentOperator::= 
+	    BECOMES:i 		{: RESULT = i; :}
+	    | 
+	    PLUS_EQUALS:i 	{: RESULT = i; :}
+	    |
+	    MINUS_EQUALS:i 	{: RESULT = i; :}
+	    |
+	    TIMES_EQUALS:i 	{: RESULT = i; :}
+	    |
+	    DIV_EQUALS:i 	{: RESULT = i; :}
+	    |
+	    AND_EQUALS:i 	{: RESULT = i; :}
+	    |
+	    OR_EQUALS:i 	{: RESULT = i; :}
+	    |
+	    XOR_EQUALS:i 	{: RESULT = i; :}
+	    |
+	    MOD_EQUALS:i 	{: RESULT = i; :}
+	    |
+		SHIFT_LEFT_EQUALS:i 	{: RESULT = i; :}
+		|
+		SHIFT_RIGHT_EQUALS:i 	{: RESULT = i; :}
+		|
+		SHIFT_RIGHT_ARITHM_EQUALS:i {: RESULT = i; :}
+		;
+		
+
+
+Expression::=
+    	AssignmentExpression
+    	;
+
+ConstantExpression::=
+    	Expression
+    	;
+
+Identifier::=
+		IDENTIFIER
+		;
