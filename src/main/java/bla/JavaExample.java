@@ -111,3 +111,13 @@ class Class5c extends JavaExample {
 	private double x;
 	
 }
+
+enum Merassaum2 {
+	@Anotacao("String Literal Z")
+	VALOR1("a"),	
+	VALOR2("b");
+	
+	private Merassaum2(String t) {
+		
+	}
+}

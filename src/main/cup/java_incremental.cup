@@ -318,6 +318,15 @@ nonterminal ElementValues;
 
 
 
+nonterminal EnumDeclaration;
+nonterminal EnumBody;
+nonterminal EnumConstants;
+nonterminal EnumConstant;
+nonterminal Annotations_opt;
+nonterminal EnumBodyDeclarations;
+
+
+
 /* Precedence declarations */
 /* The last precedence declaration give its terminals the highest precedence */
 /* https://introcs.cs.princeton.edu/java/11precedence/ */
@@ -521,6 +530,8 @@ TypeDeclaration::=
     	ClassDeclaration						{: RESULT = "TypeDeclaration-1"; :}
     	|
     	InterfaceDeclaration					{: RESULT = "TypeDeclaration-2"; :}
+    	|
+		EnumDeclaration							{: RESULT = "TypeDeclaration-3"; :}
     	;
 
 /* 19.7 Productions Used Only in the LALR(1) Grammar */
@@ -1414,4 +1425,49 @@ ElementValues ::= ElementValue					{: RESULT = "ElementValues-1"; :}
 						
 						
  
+/** enum declaration **/
+
+EnumDeclaration::= ENUM Identifier IMPLEMENTS InterfaceTypeList EnumBody		{: RESULT = "EnumDeclaration-1"; :} 
+				|
+				ENUM Identifier EnumBody										{: RESULT = "EnumDeclaration-2"; :}
+				;
+				
+EnumBody::=			/* fixme */
+    LBRACE EnumConstants COMMA EnumBodyDeclarations RBRACE
+    |
+    LBRACE EnumConstants EnumBodyDeclarations RBRACE
+    |
+    LBRACE EnumConstants RBRACE
+    |
+    LBRACE EnumBodyDeclarations RBRACE
+    |
+    LBRACE RBRACE
+    ;
+
+EnumConstants::=
+    EnumConstant						{: RESULT = "EnumConstants-1"; :}
+    |
+    EnumConstants COMMA EnumConstant	{: RESULT = "EnumConstants-2"; :}
+    ;
+
+EnumConstant::=
+    Annotations_opt Identifier:i LPAREN ArgumentList RPAREN ClassBody	{: RESULT = "EnumConstant-1 "+i; :}
+    |
+    Annotations_opt Identifier:i LPAREN ArgumentList RPAREN				{: RESULT = "EnumConstant-2 "+i; :}	
+    |
+    Annotations_opt Identifier:i ClassBody								{: RESULT = "EnumConstant-3 "+i; :}
+    |
+    Annotations_opt Identifier:i    									{: RESULT = "EnumConstant-4 "+i; :}
+    ;
+
+
+Annotations_opt::=
+	|
+	Annotations_opt Annotation
+	;
+
+EnumBodyDeclarations::=
+	SEMICOLON ClassBodyDeclarations_opt
+    ;
+
 												
