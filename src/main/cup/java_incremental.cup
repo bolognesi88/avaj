@@ -305,7 +305,7 @@ nonterminal	AssignmentOperator	;
 nonterminal	Expression	;
 nonterminal	ConstantExpression	;
 nonterminal Identifier;
-
+nonterminal AssertStatement;
 
 
 nonterminal Annotation;
@@ -881,6 +881,14 @@ Statement::=
     	WhileStatement
 		|
     	ForStatement
+    	|
+    	AssertStatement
+    	;
+    	
+AssertStatement::=    	
+    	ASSERT Expression COLON Expression SEMICOLON	 {: RESULT = "AssertStatement-1"; :}
+    	|
+    	ASSERT Expression SEMICOLON  	 {: RESULT = "AssertStatement-2"; :}
     	;
 
 StatementNoShortIf::=

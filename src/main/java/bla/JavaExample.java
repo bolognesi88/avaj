@@ -62,6 +62,9 @@ public class JavaExample extends Classe2c implements Classe3c {
 			// nada
 		}
 		
+		assert x < 1000;
+		
+		assert "".isEmpty() : x < 1000;
 		
 		return (int) (y / 1 - x * 1);
 	}
