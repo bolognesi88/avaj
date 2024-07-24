@@ -27,6 +27,8 @@ public class Java1Example extends Classe2b implements Classe3b {
 			
 			int[][] matriz = {{1,2,3}, {4,5,6}, {7,8,9}};
 			
+			matriz[0][0]=0;
+			
 			if (matriz[1+1].length==44) break;
 		}
 		while (false);
