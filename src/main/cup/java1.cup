@@ -1145,8 +1145,9 @@ MethodInvocation::=
 
 ArrayAccess::=
     	Name LBRACKET Expression RBRACKET
+    	/* FIXME
 		|
-    	PrimaryNoNewArray RBRACKET Expression RBRACKET
+    	PrimaryNoNewArray RBRACKET Expression RBRACKET */
     	;
 
 PostfixExpression::=

@@ -16,14 +16,18 @@ public class Java1Example extends Classe2b implements Classe3b {
 			// bloco vazio :-)
 		}
 		
-		final int inteiroMuitoMuitoNegativo = -2147483648;
+		int inteiroMuitoMuitoNegativo = -2147483648;
 		
 		do {
 			int[] vetor = {1,2,3};
 			
+			vetor[1] = 4;
+			
+			vetor[2] = vetor[3-3] + 4;;
+			
 			int[][] matriz = {{1,2,3}, {4,5,6}, {7,8,9}};
 			
-			if (true) break;
+			if (matriz[1+1].length==44) break;
 		}
 		while (false);
 		
@@ -31,10 +35,12 @@ public class Java1Example extends Classe2b implements Classe3b {
 		Java1Example um;
 		um = new Java1Example();
 		um.hum();
+		
+		this.x(inteiroMuitoMuitoNegativo, dois());
 	}
 	
 	protected int hum() {
-		final long x = 1;
+		long x = 1;
 		
 		int y = 2;
 		
@@ -50,7 +56,6 @@ public class Java1Example extends Classe2b implements Classe3b {
 			// nada
 		}
 		
-		assert x < 1000;
 		
 		return (int) (y / 1 - x * 1);
 	}
@@ -64,15 +69,12 @@ public class Java1Example extends Classe2b implements Classe3b {
 		return 2;
 	}
 
-	@Override
 	public float metodo() {
 		return (float) Java1Example.PI;
 	}
 }
 
 abstract class Classe2b implements Classe3b {
-	public Class c = void.class;
-	
 	private static final int TWO = 1+1;
 	
 	public static String sure = (1+1 == TWO) ? "True" : "False";
@@ -81,7 +83,7 @@ abstract class Classe2b implements Classe3b {
 }
 
 interface Classe3b {
-	;;;;;
+	
 }
 
 interface Class4b extends java.util.List{
