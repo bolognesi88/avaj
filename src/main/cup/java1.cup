@@ -392,7 +392,6 @@ PrimitiveType::=
     	;
 
 NumericType::=
-		|
     	IntegralType:i 				{: RESULT = "NumericType-1 ("+i+")"; :}
 		|
     	FloatingPointType:i 		{: RESULT = "NumericType-2 ("+i+")"; :}
@@ -1040,7 +1039,7 @@ ReturnStatement::=
     	;
 
 ThrowStatement::=
-    	THROWS Expression SEMICOLON
+    	THROW Expression SEMICOLON
     	;
 
 SynchronizedStatement::=
