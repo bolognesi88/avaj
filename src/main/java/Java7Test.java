@@ -12,7 +12,7 @@ import java.util.*;
 public class Java7Test{
 	
     public static void main(String [] args) {
-    	final String FILE = "C:\\Java\\eclipse-workspace\\avaj\\src\\main\\java\\bla\\Java1Example.java";
+    	final String FILE = "C:\\Java\\eclipse-workspace\\avaj\\src\\main\\java\\bla\\JavaExample.java";
     	
     	Java7Parser p=null;
         try {
