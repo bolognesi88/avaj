@@ -27,7 +27,7 @@ public class JavaExample extends Classe2c implements Classe3c {
 		
 		int inteiroMuitoMuitoNegativo = -2147483648;
 		
-		do {
+		lacinho: do {
 			int[] vetor = {1,2,3};
 			
 			vetor[1] = 4;
@@ -37,6 +37,13 @@ public class JavaExample extends Classe2c implements Classe3c {
 			int[][] matriz = {{1,2,3}, {4,5,6}, {7,8,9}};
 			
 			matriz[0][0]=0;
+			
+			
+			if (vetor[1] == vetor[2]) continue;
+			
+			if (vetor[1] == vetor[3]) break lacinho;
+			
+			if (vetor[0] == vetor[3]) continue lacinho;
 			
 			if (matriz[1+1].length==44) break;
 		}
