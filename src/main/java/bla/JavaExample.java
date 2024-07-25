@@ -1,6 +1,7 @@
 package bla;
 
 import java.util.*;
+import static java.lang.System.*;
 import static java.lang.Math.abs;
 import javax.annotation.concurrent.Immutable;
 import javax.xml.bind.annotation.XmlTransient;
@@ -18,6 +19,10 @@ public class JavaExample extends Classe2c implements Classe3c {
 	public void	x(int i, int j) throws Throwable, NullPointerException {
 		synchronized (this) {
 			// bloco vazio :-)
+		}
+
+		{
+			int a = 2, b = 3;
 		}
 		
 		int inteiroMuitoMuitoNegativo = -2147483648;
@@ -64,7 +69,7 @@ public class JavaExample extends Classe2c implements Classe3c {
 		
 		assert x < 1000;
 		
-		assert "".isEmpty() : x < 1000;
+		assert x > 0 : "X não pode ser negativo";
 		
 		return (int) (y / 1 - x * 1);
 	}

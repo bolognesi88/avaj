@@ -304,6 +304,7 @@ nonterminal	LeftHandSide	;
 nonterminal	AssignmentOperator	;
 nonterminal	Expression	;
 nonterminal	ConstantExpression	;
+
 nonterminal Identifier;
 nonterminal AssertStatement;
 
@@ -538,7 +539,9 @@ SingleTypeImportDeclaration::=
     	;		
 
 TypeImportOnDemandDeclaration::=
-    	IMPORT Name:i DOT TIMES SEMICOLON		{: RESULT = "TypeImportOnDemandDeclaration "+i; :}
+    	IMPORT STATIC Name:i DOT TIMES SEMICOLON		{: RESULT = "TypeImportOnDemandDeclaration-1 "+i; :}
+    	|
+    	IMPORT Name:i DOT TIMES SEMICOLON		{: RESULT = "TypeImportOnDemandDeclaration-2 "+i; :}
     	;
 
 TypeDeclaration::=
