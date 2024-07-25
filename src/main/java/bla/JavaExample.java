@@ -119,7 +119,13 @@ class Class5c extends JavaExample {
 	
 	@SuppressWarnings("unused")
 	private double x;
-	
+		
+	public void metodo(int i, String...vals) {
+		System.out.println(i+" is ");
+		for (String v: vals) {
+			System.out.println("\t"+v);
+		}
+	}
 }
 
 enum Merassaum2 {

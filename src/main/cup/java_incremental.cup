@@ -307,6 +307,9 @@ nonterminal	ConstantExpression	;
 
 nonterminal Identifier;
 nonterminal AssertStatement;
+nonterminal ForVarControl;
+
+
 
 
 nonterminal Annotation;
@@ -709,6 +712,8 @@ FormalParameterList::=
 
 FormalParameter::=
     	Type VariableDeclaratorId				{: RESULT = "FormalParameter-1"; :}
+    	|
+    	Type ELLIPSIS VariableDeclaratorId				{: RESULT = "FormalParameter-2"; :}
     	;
 
 Throws::=
@@ -1023,12 +1028,18 @@ DoStatement::=
     	;
 
 ForStatement::=
-    	FOR LPAREN ForInit_opt SEMICOLON Expression_opt SEMICOLON ForUpdate_opt RPAREN Statement
+    	FOR LPAREN ForVarControl RPAREN Statement
     	;
 
 ForStatementNoShortIf::=
-    	FOR LPAREN ForInit_opt SEMICOLON Expression_opt SEMICOLON ForUpdate_opt RPAREN StatementNoShortIf
+    	FOR LPAREN ForVarControl RPAREN StatementNoShortIf
     	;
+
+ForVarControl::=
+		ForInit_opt SEMICOLON Expression_opt SEMICOLON ForUpdate_opt
+		|
+		LocalVariableDeclaration COLON Expression
+		;
 
 
 ForInit_opt::=
