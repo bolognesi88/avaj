@@ -137,7 +137,11 @@ class Class5c extends JavaExample {
 
 enum Merassaum2 {
 	@Anotacao("String Literal Z")
-	VALOR1("a"),	
+	VALOR1("a"){
+		public String getDescricao() {
+			return "what a bizarre flick!";
+		}
+	},	
 	VALOR2("b");
 	
 	String descricao;
