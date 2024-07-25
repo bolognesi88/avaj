@@ -110,6 +110,12 @@ interface Classe3c {
 	default int fazer() {
 		return -0;
 	}
+	
+	/* not yet
+	static String shortenByOneSymbol(String input) {
+        return input.substring(1);
+    }
+    */
 }
 
 interface Class4c extends java.util.List{

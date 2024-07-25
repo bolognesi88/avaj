@@ -817,6 +817,7 @@ AbstractMethodDeclaration::=
 
 DefaultMethodDeclararation::=
 		DEFAULT MethodDeclaration
+		/* TODO | STATIC MethodDeclaration */
 		;
 
 
