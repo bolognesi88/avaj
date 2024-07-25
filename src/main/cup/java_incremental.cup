@@ -308,7 +308,7 @@ nonterminal	ConstantExpression	;
 nonterminal Identifier;
 nonterminal AssertStatement;
 nonterminal ForVarControl;
-
+nonterminal DefaultMethodDeclararation;
 
 
 
@@ -802,6 +802,8 @@ InterfaceMemberDeclaration::=
     	ConstantDeclaration			{: RESULT = "InterfaceMemberDeclaration-1"; :}
 		|
     	AbstractMethodDeclaration	{: RESULT = "InterfaceMemberDeclaration-2"; :}
+    	|
+    	DefaultMethodDeclararation  {: RESULT = "InterfaceMemberDeclaration-3"; :}
     	;
 
 ConstantDeclaration::=	
@@ -813,7 +815,9 @@ AbstractMethodDeclaration::=
     	;
 
 
-
+DefaultMethodDeclararation::=
+		DEFAULT MethodDeclaration
+		;
 
 
 

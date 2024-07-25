@@ -107,7 +107,9 @@ abstract class Classe2c implements Classe3c {
 }
 
 interface Classe3c {
-	
+	default int fazer() {
+		return -0;
+	}
 }
 
 interface Class4c extends java.util.List{
