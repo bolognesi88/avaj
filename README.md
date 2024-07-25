@@ -1,6 +1,11 @@
 # avaj
-alternative experimental syntaxes for java just for fun
 
+
+Recent java syntax enhancement were clearly made by compiler experts to masturbate other compiler experts.
+
+No one cares about the programmer.
+
+This project tries alternative experimental syntaxes for java just for fun.
 
 https://docs.oracle.com/javase/specs/jls/se7/html/jls-18.html
 
@@ -18,5 +23,16 @@ Further trials:
 * longer pipe chains (e.g.: method > method or method > variable > method)
 * null-safe method and attribute access
 
-Avaj was supposed to be a java superset, but now I don giv a fick anymore. It seems funnier just to keep the resemblance.
+Avaj was supposed to be a java superset, but now I don giv a fick anymore. It seems funnier and more productive just to keep the resemblance.
+
+Avaj is an acronym that stands for:
+
+A-vajisa  
+V-ery
+A-wesome
+J-avaextension.
+
+
+
+
  
