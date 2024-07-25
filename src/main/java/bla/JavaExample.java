@@ -148,6 +148,14 @@ enum Merassaum2 {
 	
 	private Merassaum2(String t) {
 		this.descricao = t;
+		
+		// not yet Merassaum2.runCalculation(Integer::sum);
+		// not yet Merassaum2.runCalculation((a,b) -> a+b);
+	}
+	
+	// A method which accepts an interface as a parameter
+	public static int runCalculation(Calculation calculation) {
+	    return calculation.calculate(1, 2);
 	}
 }
 
@@ -157,3 +165,11 @@ enum Merassaum2 {
 	public static final int MAX = 20;
 	public static final int MIN = -20;
 }
+
+
+//A functional interface
+@FunctionalInterface
+interface Calculation {
+	int calculate(int someNumber, int someOtherNumber);
+}
+
