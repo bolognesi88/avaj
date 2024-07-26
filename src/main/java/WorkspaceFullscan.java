@@ -7,13 +7,16 @@ import Scanner.Java7Scanner;
 public class WorkspaceFullscan{
 	
     public static void main(String [] args) {
-    	final String BASEDIR = "C:\\Java\\eclipse-workspace\\avaj\\src";
-    	parseDirectory(new File(BASEDIR));
-    	
-    	System.out.println();
-    	System.out.println("======================================");
-    	System.out.println("success: "+success);
-    	System.out.println("error: "+error);
+    	try {
+	    	final String BASEDIR = "C:\\Java\\eclipse-workspace";
+	    	parseDirectory(new File(BASEDIR));
+    	}
+    	finally {
+	    	System.out.println();
+	    	System.out.println("======================================");
+	    	System.out.println("success: "+success);
+	    	System.out.println("error: "+error);
+    	}
     }
     
     private static void parseDirectory(File f) {
