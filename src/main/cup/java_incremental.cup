@@ -452,8 +452,6 @@ Type::=
     	PrimitiveType		{: RESULT = "Type-1"; :}
 		|
     	ReferenceType		{: RESULT = "Type-2"; :}
-    	|
-    	ReferenceType TypeArguments		{: RESULT = "Type-3"; :}
     	;
 
 PrimitiveType::=
@@ -494,6 +492,8 @@ ReferenceType::=
 
 ClassOrInterfaceType::=
     	Name
+    	|
+    	Name TypeArgumentsOrDiamond
     	;
 
 ClassType::=
@@ -1231,8 +1231,6 @@ PrimaryNoNewArray::=
 
 ClassInstanceCreationExpression::=
     	NEW ClassType LPAREN ArgumentList_opt RPAREN	{: RESULT = "ClassInstanceCreationExpression-1"; :}
-    	|
-    	NEW ClassType TypeArgumentsOrDiamond LPAREN ArgumentList_opt RPAREN 	{: RESULT = "ClassInstanceCreationExpression-2"; :}
     	;
     	
 ArgumentList_opt::=		/* empty */			{: RESULT = "ArgumentList_opt-1 (empty)"; :}
