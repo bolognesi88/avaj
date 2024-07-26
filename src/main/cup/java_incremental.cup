@@ -365,6 +365,20 @@ nonterminal VariableModifier;
 
 
 
+
+nonterminal TypeArgumentsOrDiamond;
+nonterminal TypeArguments;
+nonterminal TypeArgumentList;
+nonterminal TypeArgument;
+nonterminal Wildcard;
+nonterminal WildcardBounds;
+
+
+
+
+
+
+
 /* Precedence declarations */
 /* The last precedence declaration give its terminals the highest precedence */
 /* https://introcs.cs.princeton.edu/java/11precedence/ */
@@ -437,6 +451,8 @@ Type::=
     	PrimitiveType		{: RESULT = "Type-1"; :}
 		|
     	ReferenceType		{: RESULT = "Type-2"; :}
+    	|
+    	ReferenceType TypeArguments		{: RESULT = "Type-3"; :}
     	;
 
 PrimitiveType::=
@@ -1204,6 +1220,8 @@ PrimaryNoNewArray::=
 
 ClassInstanceCreationExpression::=
     	NEW ClassType LPAREN ArgumentList_opt RPAREN	{: RESULT = "ClassInstanceCreationExpression-1"; :}
+    	|
+    	NEW ClassType TypeArgumentsOrDiamond LPAREN ArgumentList_opt RPAREN 	{: RESULT = "ClassInstanceCreationExpression-2"; :}
     	;
     	
 ArgumentList_opt::=		/* empty */			{: RESULT = "ArgumentList_opt-1 (empty)"; :}
@@ -1658,3 +1676,42 @@ LambdaBody::=
     ;
     
     
+    
+    
+    
+/** Generics **/
+
+TypeArgumentsOrDiamond::=
+    TypeArguments
+    | 
+    LT GT
+    ;
+
+TypeArguments::=
+    LT TypeArgumentList GT
+    ;
+
+TypeArgumentList::=
+    TypeArgumentList COMMA TypeArgument
+    |
+    TypeArgument
+    ;
+
+TypeArgument::=
+    ReferenceType
+    | 
+    Wildcard
+    ;
+
+Wildcard::=
+    /* FIXME : annotation* '?' wildcardBounds? */
+    QUESTION
+    |
+    QUESTION WildcardBounds
+    ;
+
+WildcardBounds::=
+    EXTENDS ReferenceType
+    |
+    SUPER ReferenceType
+    ;    

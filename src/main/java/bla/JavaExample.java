@@ -114,9 +114,11 @@ abstract class Classe2c implements Classe3c {
 
 interface Classe3c {
 	default int fazer() {
-		List l = new ArrayList();
+		List<Object> l = new ArrayList<>();		
 		l.stream().filter(x -> x!=null).filter(x -> {return x==null;}).forEach(o -> { });
 		
+		
+		Map<String, ? extends Object> mapa = new HashMap<String, String>();
 		
 		// Isso é uma maneira muito bizarra de definir uma classe anônima que implementa uma interface!!!!!!!!!!!!!!!!!!!!!
 		//Calculation calc = (x,y) -> x^y;
