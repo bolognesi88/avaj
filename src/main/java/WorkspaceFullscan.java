@@ -11,6 +11,9 @@ public class WorkspaceFullscan{
 	    	final String BASEDIR = "C:\\Java\\eclipse-workspace";
 	    	parseDirectory(new File(BASEDIR));
     	}
+    	catch (Throwable t) {
+    		System.out.println("erro em "+lastFileName+" "+t);
+    	}
     	finally {
 	    	System.out.println();
 	    	System.out.println("======================================");
@@ -34,8 +37,11 @@ public class WorkspaceFullscan{
     
     private static int success=0;
     private static int error=0;
+    private static String lastFileName = null;
     
-    private static void parseFile(File f) {	
+    private static void parseFile(File f) {
+    	lastFileName = f.getAbsolutePath();
+    	
         try {
             // create a scanner on the input file
             Java7Scanner s = new Java7Scanner(new FileReader(f));        
