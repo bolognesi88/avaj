@@ -321,6 +321,7 @@ nonterminal DefaultMethodDeclararation;
 nonterminal TryResources;
 nonterminal Resource;
 nonterminal CatchTypes;
+nonterminal VariableModifiers;
 
 
 
@@ -621,6 +622,11 @@ VariableModifier::=
 		| 
 		FINAL:i 			{: RESULT = "VariableModifier-2" ; :}
 		;	    
+		
+VariableModifiers::= VariableModifier									{: RESULT = "VariableModifiers-1"; :}
+		|
+		VariableModifiers VariableModifier									{: RESULT = "VariableModifiers-2"; :}
+		;		
 
 /* 19.8 Productions from §8: Classes */
 /* 19.8.1 Productions from §8.1: Class Declaration */
@@ -633,6 +639,7 @@ Modifiers_opt::=		 /* empty */				{: RESULT = "Modifiers_opt (empty)"; :}
 		|
 		Modifiers									{: RESULT = "Modifiers_opt"; :}
 		;
+
 		 
 Super_opt::=			 /* empty */				{: RESULT = "Super_opt (empty)"; :}
 		|
@@ -845,6 +852,8 @@ InterfaceMemberDeclaration::=
     	AbstractMethodDeclaration	{: RESULT = "InterfaceMemberDeclaration-2"; :}
     	|
     	DefaultMethodDeclararation  {: RESULT = "InterfaceMemberDeclaration-3"; :}
+    	|
+    	SEMICOLON
     	;
 
 ConstantDeclaration::=	
@@ -921,6 +930,8 @@ LocalVariableDeclarationStatement::=
 
 LocalVariableDeclaration::=
     	Type VariableDeclarators			{: RESULT = "LocalVariableDeclaration-1"; :}
+    	|
+    	VariableModifiers Type VariableDeclarators			{: RESULT = "LocalVariableDeclaration-1"; :}
     	;
 
 Statement::=

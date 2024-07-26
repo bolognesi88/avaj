@@ -103,6 +103,7 @@ public class JavaExample extends Classe2c implements Classe3c {
 }
 
 abstract class Classe2c implements Classe3c {
+	@SuppressWarnings("rawtypes")
 	public Class c = void.class;
 	
 	private static final int TWO = 1+1;
@@ -118,6 +119,7 @@ interface Classe3c {
 		l.stream().filter(x -> x!=null).filter(x -> {return x==null;}).forEach(o -> { });
 		
 		
+		@SuppressWarnings("unused")
 		Map<String, ? extends Object> mapa = new HashMap<String, String>();
 		
 		// Isso é uma maneira muito bizarra de definir uma classe anônima que implementa uma interface!!!!!!!!!!!!!!!!!!!!!
