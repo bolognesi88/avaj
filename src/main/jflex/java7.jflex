@@ -81,7 +81,7 @@ white = {eol}|[ \t]
 	/* Token definitions */
 	
     /* comments */
-    {Comment}                      { /* ignore */ }
+    {Comment}                      { System.out.print("\n"+yytext());  /* ignore */ }
 	
 	
 	/* reserved words */
