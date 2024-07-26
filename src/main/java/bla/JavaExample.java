@@ -137,7 +137,7 @@ interface Classe3c {
     */
 }
 
-interface Class4c extends java.util.List{
+interface Class4c extends java.util.List<Integer>{
 
 	public void metodo();
 	public void metodo(java.lang.String mutatisMutandis);
