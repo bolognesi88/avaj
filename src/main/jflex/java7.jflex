@@ -86,7 +86,7 @@ white = {eol}|[ \t]
 	
 	
     /* comments */
-    {Comment}                      { System.out.print("\nInput line "+(yyline+1)+": comments "+yytext()); }
+    {Comment}                      { System.out.print("\nInput line "+(yyline+1)+": comments "+yytext().trim()); }
 	
 	
 	/* reserved words */
