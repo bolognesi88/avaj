@@ -7,6 +7,7 @@ import java.beans.XMLEncoder;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.Serializable;
 
 import static java.lang.Math.abs;
 import javax.annotation.concurrent.Immutable;
@@ -14,7 +15,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 @Immutable
 @java.lang.SuppressWarnings("serial")
-public class JavaExample extends Classe2c implements Classe3c {
+public class JavaExample extends Classe2c implements Classe3c, Serializable {
 	public static final double PI = 3.14;
 	
 	@XmlTransient
@@ -51,9 +52,9 @@ public class JavaExample extends Classe2c implements Classe3c {
 			if (vetor[1] == vetor[2]) continue;
 			
 			if (vetor[1] == vetor[3]) break lacinho;
-			
+
 			if (vetor[0] == vetor[3]) continue lacinho;
-			
+ 
 			if (matriz[1+1].length==44) break;
 		}
 		while (false);
@@ -226,6 +227,7 @@ enum Merassaum2 {
 @FunctionalInterface
 interface Calculation {
 	int calculate(int someNumber, int someOtherNumber);
+	
 	
 	public static final String[] FOLDERS = {
 //			"C:\\java\\",

@@ -52,6 +52,9 @@ eol = [\r\n]
 not_eol = [^\r\n]
 white = {eol}|[ \t]
 
+	EmptyLine = {eol} [ \t]* {eol}
+	
+
     /* comments from https://github.com/jflex-de/jflex/blob/master/docs/md/example.md */
     Comment = {TraditionalComment} | {EndOfLineComment} | {DocumentationComment}
 
@@ -80,8 +83,10 @@ white = {eol}|[ \t]
 	
 	/* Token definitions */
 	
+	{EmptyLine}					   { System.out.print("\nInput line "+(yyline+2)+": is empty"); }
+	
     /* comments */
-    {Comment}                      { System.out.print("\n"+yytext());  /* ignore */ }
+    {Comment}                      { System.out.print("\nInput line "+(yyline+1)+" comments:"+yytext()); }
 	
 	
 	/* reserved words */
