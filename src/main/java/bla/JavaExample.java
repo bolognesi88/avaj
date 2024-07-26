@@ -140,11 +140,19 @@ class Class5c extends JavaExample {
 		for (String v: vals) {
 			System.out.println("\t"+v);
 		}
+		
+		/* futuro
+		var result = switch (ch) {
+		    case 'A' -> Result.GREAT;
+		    case 'B', 'C' -> Result.FINE;
+		    default -> throw new ThisIsNoGoodException();
+		};
+		*/
 	}
 }
 
 enum Merassaum2 {
-	@Anotacao("String Literal Z")
+	@Anotacao2("String Literal Z")
 	VALOR1("a"){
 		public String getDescricao() {
 			return "what a bizarre flick!";
