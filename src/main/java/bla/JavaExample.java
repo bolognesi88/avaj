@@ -2,6 +2,12 @@ package bla;
 
 import java.util.*;
 import static java.lang.System.*;
+
+import java.beans.XMLEncoder;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
 import static java.lang.Math.abs;
 import javax.annotation.concurrent.Immutable;
 import javax.xml.bind.annotation.XmlTransient;
@@ -140,6 +146,25 @@ class Class5c extends JavaExample {
 		for (String v: vals) {
 			System.out.println("\t"+v);
 		}
+		
+		try (FileOutputStream fos = new FileOutputStream("c:\\temp\\arquivo.txt")) {
+			
+		} 
+		catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		try (FileOutputStream fos = new FileOutputStream("c:\\temp\\arquivo.txt"); XMLEncoder xEnc = new XMLEncoder(fos)) {
+			xEnc.writeObject(vals);
+		} 
+		catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 		
 		/* futuro
 		var result = switch (ch) {
