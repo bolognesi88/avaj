@@ -223,5 +223,10 @@ enum Merassaum2 {
 @FunctionalInterface
 interface Calculation {
 	int calculate(int someNumber, int someOtherNumber);
+	
+	public static final String[] FOLDERS = {
+//			"C:\\java\\",
+			"C:\\a\\",
+	};
 }
 

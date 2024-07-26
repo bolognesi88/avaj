@@ -256,7 +256,7 @@ white = {eol}|[ \t]
 
   \\r                            { string.append('\r'); }
   \\\"                           { string.append('\"'); }
-  \\                             { string.append('\\'); }
+  \\\\                           { string.append('\\'); }
 }
 
 /*    CharacterLiteral */
