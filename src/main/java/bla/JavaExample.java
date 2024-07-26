@@ -29,6 +29,9 @@ public class JavaExample extends Classe2c implements Classe3c {
 
 		{
 			int a = 2, b = 3;
+			a = abs(b);
+			b = abs(a);
+			out.print(b);
 		}
 		
 		int inteiroMuitoMuitoNegativo = -2147483648;
