@@ -166,6 +166,10 @@ white = {eol}|[ \t]
   	{DoubleLiteral}                { return symbol(Java7Sym.FLOATING_POINT_LITERAL, new Double(yytext())); }
   	{DoubleLiteral}[dD]            { return symbol(Java7Sym.FLOATING_POINT_LITERAL, new Double(yytext().substring(0,yylength()-1))); }
 	
+	/* novelties */
+	"->" { return symbol(Java7Sym.ARROW, yytext()); }
+	"::" { return symbol(Java7Sym.DOUBLE_COLON, yytext()); }
+	
 	
 	/* operators */
 	">=" { return symbol(Java7Sym.GE, yytext()); }

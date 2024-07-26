@@ -3,6 +3,8 @@ package Parser;
 import java.util.*;
 import java_cup.runtime.*;
 
+/* a good source of java grammars https://github.com/antlr/grammars-v4/tree/master/java */
+
 
 /* Terminals (tokens returned by the scanner) */
 /* declarations */		
@@ -140,6 +142,13 @@ terminal    AT ;
 
 /* identifiers */		
 terminal	IDENTIFIER	;
+
+
+
+/* novelties */
+terminal    ARROW;
+terminal    DOUBLE_COLON;
+
 
 
 /* Nonterminals */
@@ -346,6 +355,13 @@ nonterminal ConstantDeclaratorRest;
 
 
 
+nonterminal LambdaExpression;
+nonterminal LambdaParameters;
+nonterminal IdentifierList;	
+nonterminal LambdaBody;
+nonterminal VariableModifier;
+
+
 
 
 
@@ -354,6 +370,7 @@ nonterminal ConstantDeclaratorRest;
 /* https://introcs.cs.princeton.edu/java/11precedence/ */
 
 /* precedence right lambda -> */
+precedence right ARROW;
 precedence right BECOMES, PLUS_EQUALS, MINUS_EQUALS, TIMES_EQUALS, DIV_EQUALS, MOD_EQUALS, AND_EQUALS, XOR_EQUALS, OR_EQUALS, SHIFT_LEFT_EQUALS, SHIFT_RIGHT_EQUALS, SHIFT_RIGHT_ARITHM_EQUALS; /* level 1*/
 precedence left QUESTION, COLON; 		/* level 2*/
 precedence left DOUBLE_OR; 				/* level 3*/
@@ -570,19 +587,24 @@ Modifiers::=
 		
 		
 Modifier::=
-		Annotation 			{: RESULT = "Modifier-1 " ; :}
+		VariableModifier:i  {: RESULT = "Modifier- "+i; :}
 	    | PUBLIC:i 			{: RESULT = "Modifier- "+i; :}
 	    | PROTECTED:i 		{: RESULT = "Modifier- "+i; :}
 	    | PRIVATE:i 		{: RESULT = "Modifier- "+i; :}
 	    | STATIC:i 			{: RESULT = "Modifier- "+i; :}
-	    | ABSTRACT:i 		{: RESULT = "Modifier- "+i; :}
-	    | FINAL:i 			{: RESULT = "Modifier- "+i; :}
+	    | ABSTRACT:i 		{: RESULT = "Modifier- "+i; :}	    
 	    | NATIVE:i 			{: RESULT = "Modifier- "+i; :}
 	    | SYNCHRONIZED:i 	{: RESULT = "Modifier- "+i; :}
 	    | TRANSIENT:i 		{: RESULT = "Modifier- "+i; :}
 	    | VOLATILE:i 		{: RESULT = "Modifier- "+i; :}
 	    | STRICTFP:i 		{: RESULT = "Modifier- "+i; :}
 	    ;
+	    
+VariableModifier::=	    
+		Annotation 			{: RESULT = "VariableModifier-1" ; :}
+		| 
+		FINAL:i 			{: RESULT = "VariableModifier-2" ; :}
+		;	    
 
 /* 19.8 Productions from §8: Classes */
 /* 19.8.1 Productions from §8.1: Class Declaration */
@@ -1181,12 +1203,12 @@ PrimaryNoNewArray::=
 
 
 ClassInstanceCreationExpression::=
-    	NEW ClassType LPAREN ArgumentList_opt RPAREN
+    	NEW ClassType LPAREN ArgumentList_opt RPAREN	{: RESULT = "ClassInstanceCreationExpression-1"; :}
     	;
     	
-ArgumentList_opt::=
+ArgumentList_opt::=		/* empty */			{: RESULT = "ArgumentList_opt-1 (empty)"; :}
 		|
-		ArgumentList
+		ArgumentList						{: RESULT = "ArgumentList_opt-2"; :}
 		;    	
 
 ArgumentList::=
@@ -1432,7 +1454,9 @@ AssignmentOperator::=
 
 
 Expression::=
-    	AssignmentExpression
+		LambdaExpression
+		|
+    	AssignmentExpression    	
     	;
 
 ConstantExpression::=
@@ -1606,3 +1630,31 @@ ConstantDeclaratorRest::=
     ;
 
 
+
+
+/**     Lambdas  **/
+
+LambdaExpression::=
+    LambdaParameters ARROW LambdaBody
+    ;
+
+LambdaParameters::=
+    LPAREN RPAREN
+    LPAREN IdentifierList RPAREN
+    | Identifier    
+    ;
+
+	
+IdentifierList::=	
+	IdentifierList COMMA Identifier
+	|
+	Identifier
+	;	    
+
+LambdaBody::=
+    Expression
+    | 
+    Block
+    ;
+    
+    
