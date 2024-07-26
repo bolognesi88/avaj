@@ -20,12 +20,12 @@ public class Java7Test{
             Java7Scanner s = new Java7Scanner(new FileReader(FILE));          
             Symbol t = s.next_token();
             
-            Integer lastLeft =null;
+            int lastLeft = -1;
             
             while (t.sym != Java7Sym.EOF){ 
                 // print each token that we scan
             
-            	Integer currLeft = t.left;
+            	int currLeft = t.left;
             	if (currLeft!=lastLeft) {
             		System.out.print("\nInput line "+currLeft+": ");
             		lastLeft = currLeft;

@@ -52,7 +52,7 @@ eol = [\r\n]
 not_eol = [^\r\n]
 white = {eol}|[ \t]
 
-	EmptyLine = {eol} [ \t]* {eol}
+	EmptyLine = {eol} [ \t]* {eol} | {eol} {eol}
 	
 
     /* comments from https://github.com/jflex-de/jflex/blob/master/docs/md/example.md */
@@ -83,10 +83,10 @@ white = {eol}|[ \t]
 	
 	/* Token definitions */
 	
-	{EmptyLine}					   { System.out.print("\nInput line "+(yyline+2)+": is empty"); }
+	
 	
     /* comments */
-    {Comment}                      { System.out.print("\nInput line "+(yyline+1)+" comments:"+yytext()); }
+    {Comment}                      { System.out.print("\nInput line "+(yyline+1)+": comments "+yytext()); }
 	
 	
 	/* reserved words */
@@ -243,11 +243,16 @@ white = {eol}|[ \t]
 	{letter} ({letter}|{digit}|_)* { return symbol(Java7Sym.IDENTIFIER, yytext()); }
 	
 	
-	/* whitespace */
-	{white}+ { /* ignore whitespace */ }
-	
 	\"              { string.setLength(0); yybegin(STRING); }
 	\'              { string.setLength(0); yybegin(CHARLITERAL); }
+	
+	
+	/* whitespace */
+	{EmptyLine}					   { System.out.print("\nInput line "+(yyline+2)+": is empty"); }
+	
+	{white}+ { /* ignore whitespace */ }
+	
+	
 	
 }
 

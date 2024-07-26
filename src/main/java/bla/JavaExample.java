@@ -17,7 +17,9 @@ import javax.xml.bind.annotation.XmlTransient;
 @java.lang.SuppressWarnings("serial")
 public class JavaExample extends Classe2c implements Classe3c, Serializable {
 	public static final double PI = 3.14;
-	
+
+
+
 	@XmlTransient
 	private final float MEIO_PI = 1.6f;
 	
@@ -59,7 +61,7 @@ public class JavaExample extends Classe2c implements Classe3c, Serializable {
 		}
 		while (false);
 		
-		// ainda não foi hoje que consegui chamar um método.  
+		// foi hoje que consegui chamar um método.  
 		JavaExample um;
 		um = new JavaExample();
 		um.hum();
