@@ -311,6 +311,7 @@ nonterminal ForVarControl;
 nonterminal DefaultMethodDeclararation;
 nonterminal TryResources;
 nonterminal Resource;
+nonterminal CatchTypes;
 
 
 
@@ -1115,10 +1116,10 @@ TryStatement::=
     	|
     	TRY LPAREN TryResources RPAREN Block Catches_opt Finally	{: RESULT = "TryStatement-4"; :}
 		|
-		TRY LPAREN TryResources RPAREN Block
+		TRY LPAREN TryResources RPAREN Block						{: RESULT = "TryStatement-5"; :}
     	;
     	
-TryResources::= Resource				{: RESULT = "TryResources-1"; :}
+TryResources::= Resource						{: RESULT = "TryResources-1"; :}
 		|
 		TryResources SEMICOLON Resource			{: RESULT = "TryResources-2"; :}
 		; 
@@ -1140,8 +1141,13 @@ Catches::=
     	;
 
 CatchClause::=
-    	CATCH LPAREN FormalParameter RPAREN Block	{: RESULT = "CatchClause-1"; :}
+    	CATCH LPAREN CatchTypes VariableDeclaratorId RPAREN Block  		{: RESULT = "CatchClause-2"; :}
     	;
+
+CatchTypes::= Type
+		|
+		CatchTypes OR Type							{: RESULT = "CatchTypes-1"; :}
+		;  	
 
 Finally::=
     	FINALLY Block								{: RESULT = "Finally-1"; :}

@@ -159,9 +159,7 @@ class Class5c extends JavaExample {
 		try (FileOutputStream fos = new FileOutputStream("c:\\temp\\arquivo.txt"); XMLEncoder xEnc = new XMLEncoder(fos)) {
 			xEnc.writeObject(vals);
 		} 
-		catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
+		catch (RuntimeException | IOException e) {
 			e.printStackTrace();
 		}
 
