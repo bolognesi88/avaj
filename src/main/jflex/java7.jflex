@@ -46,13 +46,13 @@ import Throwables.*;
 %}
 
 /* Helper definitions */
-letter = [a-zA-Z]
-digit = [0-9]
-eol = [\r\n]
-not_eol = [^\r\n]
-white = {eol}|[ \t]
+	letter = [a-zA-Z]
+	digit = [0-9]
+	eol = [\r\n]
+	not_eol = [^\r\n]
+	white = {eol}|[ \t]
 
-	EmptyLine = {eol} [ \t]* {eol} | {eol} {eol}
+	EmptyLine = {eol} [ \t]*
 	
 
     /* comments from https://github.com/jflex-de/jflex/blob/master/docs/md/example.md */
@@ -248,9 +248,9 @@ white = {eol}|[ \t]
 	
 	
 	/* whitespace */
-	{EmptyLine}					   { System.out.print("\nInput line "+(yyline+2)+": is empty"); }
+	{EmptyLine}	$				   { System.out.print("\nInput line "+(yyline+2)+": is empty"); }
 	
-	{white}+ { /* ignore whitespace */ }
+	{white} { /* ignore whitespace */ }
 	
 	
 	
