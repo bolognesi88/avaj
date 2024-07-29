@@ -43,6 +43,25 @@ import Throwables.*;
     		return (Java7Sym.terminalNames[s.sym]);
     	}	
   }
+  
+    /** 
+   * assumes correct representation of a long value for 
+   * specified radix in scanner buffer from <code>start</code> 
+   * to <code>end</code> 
+   */
+  private long parseLong(int start, int end, int radix) {
+    long result = 0;
+    long digit;
+
+    for (int i = start; i < end; i++) {
+      digit  = Character.digit(yycharat(i),radix);
+      result*= radix;
+      result+= digit;
+    }
+
+    return result;
+  }
+  
 %}
 
 /* Helper definitions */
@@ -66,6 +85,19 @@ import Throwables.*;
 
 
 	/* floating point literals */        
+	/* from https://github.com/github-linguist/linguist/blob/master/samples/JFlex/java.jflex */
+	
+	DecIntegerLiteral = 0 | [1-9][0-9]*
+	DecLongLiteral    = {DecIntegerLiteral} [lL]
+	
+	HexIntegerLiteral = 0 [xX] 0* {HexDigit} {1,8}
+	HexLongLiteral    = 0 [xX] 0* {HexDigit} {1,16} [lL]
+	HexDigit          = [0-9a-fA-F]
+	
+	OctIntegerLiteral = 0+ [1-3]? {OctDigit} {1,15}
+	OctLongLiteral    = 0+ 1? {OctDigit} {1,21} [lL]
+	OctDigit          = [0-7]
+	
 	FloatLiteral  = ({FLit1}|{FLit2}|{FLit3}) {Exponent}? [fF]
 	DoubleLiteral = ({FLit1}|{FLit2}|{FLit3}) {Exponent}?
 	
@@ -160,11 +192,22 @@ import Throwables.*;
 	
 	
 	/* literals */
-	{digit}+ { return symbol(Java7Sym.INTEGER_LITERAL, new Integer(yytext())); }
 	
-	  /* This is matched together with the minus, because the number is too big to 
+	
+	 /* This is matched together with the minus, because the number is too big to 
      be represented by a positive integer. */
   	 "-2147483648"                  { return symbol(Java7Sym.INTEGER_LITERAL, new Integer(Integer.MIN_VALUE)); }
+	
+	
+	  {DecIntegerLiteral}            { return symbol(Java7Sym.INTEGER_LITERAL, new Integer(yytext())); }
+	  {DecLongLiteral}               { return symbol(Java7Sym.INTEGER_LITERAL, new Long(yytext().substring(0,yylength()-1))); }
+	  
+	  {HexIntegerLiteral}            { return symbol(Java7Sym.INTEGER_LITERAL, new Integer((int) parseLong(2, yylength(), 16))); }
+	  {HexLongLiteral}               { return symbol(Java7Sym.INTEGER_LITERAL, new Long(parseLong(2, yylength()-1, 16))); }
+	 
+	  {OctIntegerLiteral}            { return symbol(Java7Sym.INTEGER_LITERAL, new Integer((int) parseLong(0, yylength(), 8))); }  
+	  {OctLongLiteral}               { return symbol(Java7Sym.INTEGER_LITERAL, new Long(parseLong(0, yylength()-1, 8))); }
+	
 	
 	/*    FloatingPointLiteral	*/
 	{FloatLiteral}                 { return symbol(Java7Sym.FLOATING_POINT_LITERAL, new Float(yytext().substring(0,yylength()-1))); }

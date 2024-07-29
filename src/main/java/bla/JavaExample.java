@@ -234,7 +234,7 @@ enum Merassaum2 {
 			@WebParam(name="text") 			String text){
 		
 						
-		return 1000;
+		return 0x1L * 1000000L;
 	}
 }
 
