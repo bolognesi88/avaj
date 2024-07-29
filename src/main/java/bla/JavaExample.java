@@ -201,7 +201,7 @@ enum Merassaum2 {
 		}
 	},	
 	VALOR2("b");
-	
+		
 	String descricao;
 	
 	private Merassaum2(String t) {
@@ -235,8 +235,8 @@ interface Calculation {
 //			"C:\\java\\",
 			"C:\\a\\",
 	};
+	    
 	
-	
-	
+
 }
 
