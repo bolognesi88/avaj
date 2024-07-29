@@ -35,6 +35,11 @@ public class JavaExample extends Classe2c implements Classe3c, Serializable {
 			a = abs(b);
 			b = abs(a);
 			out.print(b);
+			
+			Class<?> clz = java.lang.Thread.class;
+			if (clz!=null) {
+				clz = Object.class;
+			}
 		}
 		
 		int inteiroMuitoMuitoNegativo = -2147483648;

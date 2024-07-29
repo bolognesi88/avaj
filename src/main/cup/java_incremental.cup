@@ -314,6 +314,7 @@ nonterminal	AssignmentOperator	;
 nonterminal	Expression	;
 nonterminal	ConstantExpression	;
 
+/* little aditions to old structures */
 nonterminal Identifier;
 nonterminal AssertStatement;
 nonterminal ForVarControl;
@@ -322,8 +323,9 @@ nonterminal TryResources;
 nonterminal Resource;
 nonterminal CatchTypes;
 nonterminal VariableModifiers;
+nonterminal ClassLiteral;
 
-
+/* new structures */
 
 nonterminal Annotation;
 nonterminal AnnotationElement;
@@ -485,23 +487,23 @@ FloatingPointType::=
     ;
 
 ReferenceType::=
-    	ClassOrInterfaceType
+    	ClassOrInterfaceType:i 		{: RESULT = i; :}
 		|
-    	ArrayType
+    	ArrayType:i 		{: RESULT = i; :}
     	;
 
 ClassOrInterfaceType::=
-    	Name
+    	Name:i 		{: RESULT = i; :}
     	|
-    	Name TypeArgumentsOrDiamond
+    	Name:i TypeArgumentsOrDiamond:j 		{: RESULT = i+" "+j; :}
     	;
 
 ClassType::=
-    	ClassOrInterfaceType
+    	ClassOrInterfaceType:i 		{: RESULT = i; :}
     	;
 
 InterfaceType::=
-    	ClassOrInterfaceType
+    	ClassOrInterfaceType:i 		{: RESULT = i; :}
     	;
 
 ArrayType::=
@@ -515,9 +517,9 @@ ArrayType::=
 /* 19.5 Productions from §6: Names */
 
 Name::=
-    	SimpleName
+    	SimpleName:i 		{: RESULT = i; :}
 		|
-    	QualifiedName
+    	QualifiedName:i 		{: RESULT = i; :}
     	;
 
 SimpleName::=
@@ -526,6 +528,8 @@ SimpleName::=
 
 QualifiedName::=
     	Name:n DOT Identifier:i 		{: RESULT = "QualifiedName "+n+"."+i; :}
+    	|
+    	Name:p DOT CLASS				{: RESULT = "QualifiedName "+p+".class"; :}
     	;
 
 
@@ -1135,9 +1139,9 @@ BreakStatement::=
     	BREAK Identifier_opt SEMICOLON
     	;
 
-Identifier_opt::=
+Identifier_opt::=	/* empty */		{: RESULT = "Identifier_opt-1 (empty)"; :}
 		|
-		Identifier
+		Identifier:i 				{: RESULT = "Identifier_opt-2 "+i; :}
 		;
 
 ContinueStatement::=
@@ -1225,9 +1229,12 @@ PrimaryNoNewArray::=
 		|
     	ArrayAccess							{: RESULT = "PrimaryNoNewArray-7"; :}
     	|
-    	VOID DOT CLASS						{: RESULT = "PrimaryNoNewArray-8"; :}
+    	ClassLiteral						{: RESULT = "PrimaryNoNewArray-8"; :}
     	;
 
+ClassLiteral::=	
+    VOID DOT CLASS					{: RESULT = "ClassLiteral-3"; :}
+    ;
 
 ClassInstanceCreationExpression::=
     	NEW ClassType LPAREN ArgumentList_opt RPAREN	{: RESULT = "ClassInstanceCreationExpression-1"; :}
@@ -1273,9 +1280,9 @@ Dims::=
 		;
 		
 FieldAccess::=
-    	Primary DOT Identifier
+    	Primary:p DOT Identifier:i 		{: RESULT = "FieldAccess "+p+"."+i; :}
 		|
-    	SUPER DOT Identifier
+    	SUPER DOT Identifier:i		{: RESULT = "FieldAccess super."+i; :}
     	;
 
 MethodInvocation::=
@@ -1487,11 +1494,11 @@ Expression::=
     	;
 
 ConstantExpression::=
-    	Expression
+    	Expression:i 		{: RESULT = i; :}
     	;
 
 Identifier::=
-		IDENTIFIER
+		IDENTIFIER:i 		{: RESULT = i; :}
 		;
 		
 		
