@@ -11,7 +11,11 @@ import java.io.Serializable;
 
 import static java.lang.Math.abs;
 import javax.annotation.concurrent.Immutable;
+import javax.jws.WebMethod;
+import javax.jws.WebParam;
+import javax.jws.WebResult;
 import javax.xml.bind.annotation.XmlTransient;
+
 
 @Immutable
 @java.lang.SuppressWarnings("serial")
@@ -219,6 +223,18 @@ enum Merassaum2 {
 	// A method which accepts an interface as a parameter
 	public static int runCalculation(Calculation calculation) {
 	    return calculation.calculate(1, 2);
+	}
+	
+	@WebMethod
+	@WebResult(name="id")
+	public long criarCiencia(
+			final int glub,
+			@WebParam(name="idfila") 		Integer idFila, 
+			@WebParam(name="subject") 		String subject, 
+			@WebParam(name="text") 			String text){
+		
+						
+		return 1000;
 	}
 }
 

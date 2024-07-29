@@ -763,9 +763,9 @@ FormalParameterList::=
     	;
 
 FormalParameter::=
-    	Type VariableDeclaratorId				{: RESULT = "FormalParameter-1"; :}
+    	Modifiers_opt Type VariableDeclaratorId				{: RESULT = "FormalParameter-1"; :}
     	|
-    	Type ELLIPSIS VariableDeclaratorId				{: RESULT = "FormalParameter-2"; :}
+    	Modifiers_opt Type ELLIPSIS VariableDeclaratorId				{: RESULT = "FormalParameter-2"; :}
     	;
 
 Throws::=
