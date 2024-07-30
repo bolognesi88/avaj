@@ -433,17 +433,20 @@ Literal::=
 	    NullLiteral:i 			{: RESULT = "Literal- "+i; :}
 	    ;
 
-IntegerLiteral::= INTEGER_LITERAL;
+IntegerLiteral::= INTEGER_LITERAL:i 						{: RESULT = ""+i; :};
 
-FloatingPointLiteral ::= FLOATING_POINT_LITERAL;
+FloatingPointLiteral ::= FLOATING_POINT_LITERAL:i 			{: RESULT = ""+i; :};
 
-BooleanLiteral::= TRUE | FALSE;
+BooleanLiteral::= 
+			TRUE:i 				{: RESULT = ""+i; :} 
+			| 
+			FALSE:i 			{: RESULT = ""+i; :};
 
-CharacterLiteral::= CHARACTER_LITERAL;
+CharacterLiteral::= CHARACTER_LITERAL:i 					{: RESULT = ""+i; :};
 
-StringLiteral::= STRING_LITERAL;
+StringLiteral::= STRING_LITERAL:i 							{: RESULT = ""+i; :};
 
-NullLiteral::= NULL;
+NullLiteral::= NULL:i 										{: RESULT = ""+i; :};
 
 
 
@@ -451,9 +454,9 @@ NullLiteral::= NULL;
 /* 19.4 Productions from §4: Types, Values, and Variables */
 
 Type::=
-    	PrimitiveType		{: RESULT = "Type-1"; :}
+    	PrimitiveType:i		{: RESULT = "Type-1 "+i; :}
 		|
-    	ReferenceType		{: RESULT = "Type-2"; :}
+    	ReferenceType:i		{: RESULT = "Type-2 "+i; :}
     	;
 
 PrimitiveType::=
@@ -507,17 +510,17 @@ InterfaceType::=
     	;
 
 ArrayType::=
-    	PrimitiveType LBRACKET RBRACKET
+    	PrimitiveType:i LBRACKET RBRACKET	{: RESULT = i+"[]"; :}
     	|
-    	Name LBRACKET RBRACKET
+    	Name:i LBRACKET RBRACKET			{: RESULT = i+"[]"; :}
     	|
-    	ArrayType LBRACKET RBRACKET
+    	ArrayType:i LBRACKET RBRACKET		{: RESULT = i+"[]"; :}
     	;
 
 /* 19.5 Productions from §6: Names */
 
 Name::=
-    	SimpleName:i 		{: RESULT = i; :}
+    	SimpleName:i 			{: RESULT = i; :}
 		|
     	QualifiedName:i 		{: RESULT = i; :}
     	;
@@ -536,28 +539,28 @@ QualifiedName::=
 /* 19.6 Productions from §7: Packages */
 
 CompilationUnit::=
-    	PackageDeclaration_opt ImportDeclarations_opt TypeDeclarations_opt	{: RESULT = "CompilationUnit"; :}
+    	PackageDeclaration_opt:p ImportDeclarations_opt:i TypeDeclarations_opt:t	{: RESULT = "CompilationUnit "+p+"\n"+i+"\n"+t; :}
     	;
     	
 PackageDeclaration_opt::= /* empty */			{: RESULT = "PackageDeclaration_opt (empty)"; :}
 		|
-		PackageDeclaration						{: RESULT = "PackageDeclaration_opt"; :}
+		PackageDeclaration:i						{: RESULT = ""+i; :}
 		;
 		 
 ImportDeclarations_opt::= /* empty */			{: RESULT = "ImportDeclarations_opt (empty)"; :}
 		|
-		ImportDeclarations						{: RESULT = "ImportDeclarations_opt"; :}
+		ImportDeclarations:i						{: RESULT = ""+i; :}
 		;
 		 
 TypeDeclarations_opt::= /* empty */				{: RESULT = "TypeDeclarations_opt (empty)"; :}
 		|   	
-		TypeDeclarations						{: RESULT = "TypeDeclarations_opt"; :}
+		TypeDeclarations:i						{: RESULT = ""+i; :}
 		;
 
 ImportDeclarations::=
-    	ImportDeclaration						{: RESULT = "ImportDeclaration-1"; :}
+    	ImportDeclaration:i						{: RESULT = new StringBuffer(); ((StringBuffer)RESULT).append(i); :}
 		|
-    	ImportDeclarations ImportDeclaration	{: RESULT = "ImportDeclaration-2"; :}
+    	ImportDeclarations:s ImportDeclaration:i	{: RESULT = s; ((StringBuffer)s).append(i); :}
     	;
 
 TypeDeclarations::=
@@ -567,19 +570,19 @@ TypeDeclarations::=
     	;
 
 PackageDeclaration::=
-    	PACKAGE Name:i SEMICOLON				{: RESULT = "PackageDeclaration "+i; :}
+    	PACKAGE Name:i SEMICOLON				{: RESULT = "package "+i+";\n"; :}
     	;
 
 ImportDeclaration::=
-    	SingleTypeImportDeclaration				{: RESULT = "ImportDeclaration-1"; :}
+    	SingleTypeImportDeclaration:i				{: RESULT = ""+i; :}
 		|
-    	TypeImportOnDemandDeclaration			{: RESULT = "ImportDeclaration-2"; :}
+    	TypeImportOnDemandDeclaration:i				{: RESULT = ""+i; :}
     	;
 
 SingleTypeImportDeclaration::=
-    	IMPORT STATIC Name:i SEMICOLON					{: RESULT = "SingleTypeImportDeclaration-1 "+i; :}
+    	IMPORT STATIC Name:i SEMICOLON					{: RESULT = "import static "+i+";\n"; :}
     	|
-    	IMPORT Name:i SEMICOLON					{: RESULT = "SingleTypeImportDeclaration-2 "+i; :}
+    	IMPORT Name:i SEMICOLON							{: RESULT = "import "+i+";\n"; :}
     	;		
 
 TypeImportOnDemandDeclaration::=
