@@ -469,9 +469,9 @@ ExtendsInterfaces_opt::= EXTENDS InterfaceTypeList:i	{: RESULT = " extends "+i; 
 		{: RESULT = ""; :}
 		;
 InterfaceTypeList::=
-    	InterfaceTypeList:i COMMA Name:n		{: RESULT = i+", "+n; :}
+    	InterfaceTypeList:i COMMA Type:n		{: RESULT = i+", "+n; :}
     	|
-    	Name:n									{: RESULT = n; :}
+    	Type:n									{: RESULT = n; :}
     	;
 Modifiers::=
 		Modifiers:m Modifier:n 			{: RESULT = m+" "+n; :}
@@ -536,6 +536,8 @@ ClassBodyDeclaration::=
 		Block:i										{: RESULT = i; :}
 		|
 		Type:t IDENTIFIER:i LPAREN FormalParameterList_opt:p RPAREN Throws_opt:e MethodBody:b {: RESULT = t+" "+i+"("+p+") "+e+" "+b; :}
+		|
+		Type:t IDENTIFIER:i BECOMES Expression:e SEMICOLON {: RESULT = t+" "+i+" = "+e+";"; :}
 		|
 		Type:t IDENTIFIER:i SEMICOLON {: RESULT = t+" "+i+";"; :}
 		;
@@ -603,5 +605,11 @@ Block::=
     	LBRACE  RBRACE		{: RESULT = "{ Code Block }"; :}    	
     	;
     	
+    	
+    	
+Expression::= IDENTIFIER:b   {: RESULT = b ; :} 
+			| 
+			INTEGER_LITERAL:b   {: RESULT = b ; :}
+			;    	
     	
     	

@@ -2,20 +2,33 @@
 public class AvajExample extends OutraClasse implements Face1, Face2, Face3 {
 	class Inner1{
 	}
+	
 	public static interface Inner2{
 	}
+	
 	static enum Inner3{
 	}
+	
 	static {
 	}
-	private int i;	
+	
+	public static final int MAX = 50;
+	
+	private int i;
+		
 	int[][] j;
+	
 	@XmlIgnore List<String> lista;
+	
+	@XmlIgnore List<List<String> > tabela;
+	
+	abstract void metd();
+	
 	public static void main(){
 	}
 	public static void main(String[] args){
 	}
-	public static void main(Integer param1, Long...paramN){
+	public static void main(Set<Integer> param1, java.lang.Long...paramN){
 	}
 }
 
