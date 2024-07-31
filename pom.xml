@@ -75,7 +75,7 @@
 			  <configuration>
 			    <className>Java7Parser</className>
 			    <symbolsName>Java7Sym</symbolsName>
-			    <cupDefinition>src/main/cup/java_incremental.cup</cupDefinition>
+			    <cupDefinition>src/main/cup/avaj.cup</cupDefinition>
 			  </configuration>
 			</plugin>
 	      

@@ -1,0 +1,607 @@
+package Parser;
+
+import java.util.*;
+import java_cup.runtime.*;
+
+/* a good source of java grammars https://github.com/antlr/grammars-v4/tree/master/java */
+
+
+/* Terminals (tokens returned by the scanner) */
+/* declarations */		
+terminal	PACKAGE	;
+terminal	IMPORT	;
+terminal	CLASS	;
+terminal	ENUM	;
+terminal	INTERFACE	;
+terminal	EXTENDS	;
+terminal	IMPLEMENTS	;
+terminal	INSTANCEOF;
+		
+		
+/* types */		
+terminal	BYTE	;
+terminal	SHORT	;
+terminal	CHAR	;
+terminal	INT	;
+terminal	LONG	;
+terminal	FLOAT	;
+terminal	DOUBLE	;
+terminal	BOOLEAN	;
+		
+		
+terminal	VOID	;
+terminal	THIS	;
+terminal	SUPER	;
+terminal	NEW	;
+terminal	TRUE	;
+terminal	FALSE	;
+terminal	NULL	;
+		
+		
+/* control flow */		
+terminal	IF	;
+terminal	ELSE	;
+terminal	FOR	;
+terminal	WHILE	;
+terminal	RETURN	;
+terminal	DO	;
+terminal	ASSERT	;
+terminal	SWITCH	;
+terminal	CASE	;
+terminal	DEFAULT	;
+terminal	BREAK	;
+terminal	CONTINUE	;
+terminal	TRY	;
+terminal	CATCH	;
+terminal	FINALLY	;
+terminal	THROW	;
+terminal	THROWS	;
+		
+		
+/* modifiers */		
+terminal	PUBLIC	;
+terminal	PROTECTED	;
+terminal	PRIVATE	;
+terminal	STATIC	;
+terminal	ABSTRACT	;
+terminal	FINAL	;
+terminal	NATIVE	;
+terminal	SYNCHRONIZED	;
+terminal	TRANSIENT	;
+terminal	VOLATILE	;
+terminal	STRICTFP	;
+		
+		
+/* literals */		
+terminal	INTEGER_LITERAL	;
+terminal    STRING_LITERAL;
+terminal 	CHARACTER_LITERAL;
+terminal	FLOATING_POINT_LITERAL;
+		
+/* operators */		
+terminal	GE	;
+terminal	LE	;
+terminal	EQUALS	;
+terminal	NOT_EQUALS	;
+terminal	DOUBLE_OR	;
+terminal	DOUBLE_AND	;
+terminal	SHIFT_LEFT	;
+terminal	SHIFT_RIGHT	;
+terminal	SHIFT_RIGHT_ARITHM	;
+terminal	INC	;
+terminal	DEC	;
+		
+		
+terminal	PLUS	;
+terminal	MINUS	;
+terminal	TIMES	;
+terminal	DIVIDE	;
+terminal	NOT	;
+terminal	AND	;
+terminal	OR	;
+terminal	XOR	;
+terminal	MOD	;
+terminal	BITWISE_NOT	;		
+terminal	HASH	;
+terminal	BACKSLASH	;
+		
+/* assignments */		
+terminal	PLUS_EQUALS	;
+terminal	MINUS_EQUALS	;
+terminal	TIMES_EQUALS	;
+terminal	DIV_EQUALS	;
+terminal	AND_EQUALS	;
+terminal	OR_EQUALS	;
+terminal	XOR_EQUALS	;
+terminal	MOD_EQUALS	;
+terminal	SHIFT_LEFT_EQUALS	;
+terminal	SHIFT_RIGHT_EQUALS	;
+terminal	SHIFT_RIGHT_ARITHM_EQUALS	;
+terminal	BECOMES	;
+		
+    		
+/* delimiters */		
+terminal	LPAREN	;
+terminal	RPAREN	;
+terminal	LBRACKET	;
+terminal	RBRACKET	;
+terminal	LBRACE	;
+terminal	RBRACE	;
+terminal	LT	;
+terminal	GT	;
+		
+		
+/* punctuation */		
+terminal    ELLIPSIS;
+terminal	DOT	;
+terminal	COMMA	;
+terminal	SEMICOLON	;
+terminal	COLON	;
+terminal	QUESTION	;
+terminal    AT ; 
+
+/* identifiers */		
+terminal	IDENTIFIER	;
+
+
+
+/* novelties */
+terminal    ARROW;
+terminal    DOUBLE_COLON;
+
+
+
+/* Nonterminals */
+nonterminal	Goal	;
+nonterminal	Literal	;
+nonterminal	IntegerLiteral	;
+nonterminal	FloatingPointLiteral	;
+nonterminal	BooleanLiteral	;
+nonterminal	CharacterLiteral	;
+nonterminal	StringLiteral	;
+nonterminal	NullLiteral	;
+nonterminal	Type	;
+nonterminal	PrimitiveType	;
+nonterminal	NumericType	;
+nonterminal	IntegralType	;
+nonterminal	FloatingPointType	;
+nonterminal	ReferenceType	;
+nonterminal	ClassOrInterfaceType	;
+nonterminal	ClassType	;
+nonterminal	InterfaceType	;
+nonterminal	ArrayType	;
+nonterminal	Name	;
+nonterminal	SimpleName	;
+nonterminal	QualifiedName	;
+nonterminal	CompilationUnit	;
+nonterminal	PackageDeclaration_opt	;
+nonterminal	ImportDeclarations_opt	;
+nonterminal	TypeDeclarations_opt	;
+nonterminal	ImportDeclarations	;
+nonterminal	TypeDeclarations	;
+nonterminal	PackageDeclaration	;
+nonterminal	ImportDeclaration	;
+nonterminal	SingleTypeImportDeclaration	;
+nonterminal	TypeImportOnDemandDeclaration	;
+nonterminal	TypeDeclaration	;
+nonterminal	Modifiers	;
+nonterminal	Modifier	;
+nonterminal	ClassDeclaration	;
+nonterminal	Modifiers_opt	;
+nonterminal	Super_opt	;
+nonterminal	Interfaces_opt	;
+nonterminal	Super	;
+nonterminal	Interfaces	;
+nonterminal	InterfaceTypeList	;
+nonterminal	ClassBody	;
+nonterminal	ClassBodyDeclarations_opt	;
+nonterminal	ClassBodyDeclarations	;
+nonterminal	ClassBodyDeclaration	;
+nonterminal	ClassMemberDeclaration	;
+nonterminal	FieldDeclaration	;
+nonterminal	VariableDeclarators	;
+nonterminal	VariableDeclarator	;
+nonterminal	VariableDeclaratorId	;
+nonterminal	VariableInitializer	;
+nonterminal	MethodDeclaration	;
+nonterminal	MethodHeader	;
+nonterminal	Throws_opt	;
+nonterminal	MethodDeclarator	;
+nonterminal	FormalParameterList_opt	;
+nonterminal	FormalParameterList	;
+nonterminal	FormalParameter	;
+nonterminal	Throws	;
+nonterminal	ClassTypeList	;
+nonterminal	MethodBody	;
+nonterminal	StaticInitializer	;
+nonterminal	ConstructorDeclaration	;
+nonterminal	ConstructorDeclarator	;
+nonterminal	ConstructorBody	;
+nonterminal	BlockStatements_opt	;
+nonterminal	ExplicitConstructorInvocation	;
+nonterminal	InterfaceDeclaration	;
+nonterminal	ExtendsInterfaces_opt	;
+nonterminal	ExtendsInterfaces	;
+nonterminal	InterfaceBody	;
+nonterminal	InterfaceMemberDeclarations_opt	;
+nonterminal	InterfaceMemberDeclarations	;
+nonterminal	InterfaceMemberDeclaration	;
+nonterminal	ConstantDeclaration	;
+nonterminal	AbstractMethodDeclaration	;
+nonterminal	ArrayInitializer	;
+nonterminal	Comma_opt	;
+nonterminal	VariableInitializers	;
+nonterminal	Block	;
+nonterminal	BlockStatements	;
+nonterminal	BlockStatement	;
+nonterminal	LocalVariableDeclarationStatement	;
+nonterminal	LocalVariableDeclaration	;
+nonterminal	Statement	;
+nonterminal	StatementNoShortIf	;
+nonterminal	StatementWithoutTrailingSubstatement	;
+nonterminal	EmptyStatement	;
+nonterminal	LabeledStatement	;
+nonterminal	LabeledStatementNoShortIf	;
+nonterminal	ExpressionStatement	;
+nonterminal	StatementExpression	;
+nonterminal	IfThenStatement	;
+nonterminal	IfThenElseStatement	;
+nonterminal	IfThenElseStatementNoShortIf	;
+nonterminal	SwitchStatement	;
+nonterminal	SwitchBlock	;
+nonterminal	SwitchBlockStatementGroups	;
+nonterminal	SwitchBlockStatementGroup	;
+nonterminal	SwitchLabels	;
+nonterminal	SwitchLabel	;
+nonterminal	WhileStatement	;
+nonterminal	WhileStatementNoShortIf	;
+nonterminal	DoStatement	;
+nonterminal	ForStatement	;
+nonterminal	ForStatementNoShortIf	;
+nonterminal	ForInit_opt	;
+nonterminal	Expression_opt	;
+nonterminal	ForUpdate_opt	;
+nonterminal	ForInit	;
+nonterminal	ForUpdate	;
+nonterminal	StatementExpressionList	;
+nonterminal	BreakStatement	;
+nonterminal Identifier_opt	;
+nonterminal	ContinueStatement	;
+nonterminal	ReturnStatement	;
+nonterminal	ThrowStatement	;
+nonterminal	SynchronizedStatement	;
+nonterminal	TryStatement	;
+nonterminal	Catches_opt	;
+nonterminal	Catches	;
+nonterminal	CatchClause	;
+nonterminal	Finally	;
+nonterminal	Primary	;
+nonterminal	PrimaryNoNewArray	;
+nonterminal	ClassInstanceCreationExpression	;
+nonterminal	ArgumentList_opt	;
+nonterminal	ArgumentList	;
+nonterminal	ArrayCreationExpression	;
+nonterminal	Dims_opt	;
+nonterminal	DimExprs	;
+nonterminal	DimExpr	;
+nonterminal	Dims	;
+nonterminal	FieldAccess	;
+nonterminal	MethodInvocation	;
+nonterminal	ArrayAccess	;
+nonterminal	PostfixExpression	;
+nonterminal	PostIncrementExpression	;
+nonterminal	PostDecrementExpression	;
+nonterminal	UnaryExpression	;
+nonterminal	PreIncrementExpression	;
+nonterminal	PreDecrementExpression	;
+nonterminal	UnaryExpressionNotPlusMinus	;
+nonterminal	CastExpression	;
+nonterminal	MultiplicativeExpression	;
+nonterminal	AdditiveExpression	;
+nonterminal	ShiftExpression	;
+nonterminal	RelationalExpression	;
+nonterminal	EqualityExpression	;
+nonterminal	AndExpression	;
+nonterminal	ExclusiveOrExpression	;
+nonterminal	InclusiveOrExpression	;
+nonterminal	ConditionalAndExpression	;
+nonterminal	ConditionalOrExpression	;
+nonterminal	ConditionalExpression	;
+nonterminal	AssignmentExpression	;
+nonterminal	Assignment	;
+nonterminal	LeftHandSide	;
+nonterminal	AssignmentOperator	;
+nonterminal	Expression	;
+nonterminal	ConstantExpression	;
+
+/* little aditions to old structures */
+nonterminal Identifier;
+nonterminal AssertStatement;
+nonterminal ForVarControl;
+nonterminal DefaultMethodDeclararation;
+nonterminal TryResources;
+nonterminal Resource;
+nonterminal CatchTypes;
+nonterminal VariableModifiers;
+nonterminal ClassLiteral;
+
+/* new structures */
+
+nonterminal Annotation;
+nonterminal AnnotationElement;
+nonterminal ElementValuePairs;
+nonterminal ElementValuePair;
+nonterminal ElementValue;
+nonterminal ElementValueArrayInitializer; 
+nonterminal ElementValues;
+
+
+
+nonterminal EnumDeclaration;
+nonterminal EnumBody;
+nonterminal EnumConstants;
+nonterminal EnumConstant;
+nonterminal Annotations_opt;
+nonterminal EnumBodyDeclarations;
+
+
+
+nonterminal AnnotationTypeDeclaration; 
+nonterminal AnnotationTypeBody;
+nonterminal AnnotationTypeElementDeclarations;
+nonterminal AnnotationTypeElementDeclaration;
+nonterminal AnnotationTypeElementRest;
+nonterminal AnnotationMethodOrConstantRest;
+nonterminal AnnotationMethodRest;
+nonterminal ConstantDeclaratorRest;
+
+
+
+
+nonterminal LambdaExpression;
+nonterminal LambdaParameters;
+nonterminal IdentifierList;	
+nonterminal LambdaBody;
+nonterminal VariableModifier;
+
+
+
+
+
+
+nonterminal TypeArgumentsOrDiamond;
+nonterminal TypeArguments;
+nonterminal TypeArgumentList;
+nonterminal TypeArgument;
+nonterminal Wildcard;
+nonterminal WildcardBounds;
+
+
+
+
+
+
+
+/* Precedence declarations */
+/* The last precedence declaration give its terminals the highest precedence */
+/* https://introcs.cs.princeton.edu/java/11precedence/ */
+
+/* precedence right lambda -> */
+precedence right ARROW;
+precedence right BECOMES, PLUS_EQUALS, MINUS_EQUALS, TIMES_EQUALS, DIV_EQUALS, MOD_EQUALS, AND_EQUALS, XOR_EQUALS, OR_EQUALS, SHIFT_LEFT_EQUALS, SHIFT_RIGHT_EQUALS, SHIFT_RIGHT_ARITHM_EQUALS; /* level 1*/
+precedence left QUESTION, COLON; 		/* level 2*/
+precedence left DOUBLE_OR; 				/* level 3*/
+precedence left DOUBLE_AND; 			/* level 4*/
+precedence left OR; 					/* level 5*/
+precedence left XOR; 					/* level 6*/
+precedence left AND; 					/* level 7*/
+precedence left EQUALS, NOT_EQUALS; 	/* LEVEL 8 */
+precedence left LT, GT, LE, GE, INSTANCEOF;   					/* LEVEL 9 */
+precedence left SHIFT_LEFT, SHIFT_RIGHT, SHIFT_RIGHT_ARITHM;   	/* LEVEL 10 */
+precedence left PLUS, MINUS; 			/* LEVEL 11 */
+precedence left TIMES, DIVIDE, MOD; 	/* LEVEL 12 */
+precedence right NOT, BITWISE_NOT;		/* LEVEL 14 + UNARY PLUS MINUS PREINC, PREDEC */
+precedence nonassoc AT, ELSE;					/* ? */
+precedence left INC, DEC; 				/* LEVEL 15*/
+precedence left LPAREN, RPAREN, LBRACE, RBRACE, NEW, DOT; 		/*LEVEL 16, + METHOD REFERENCE :: */
+
+
+
+start with Goal;
+
+
+
+/* Productions */
+/* 19.2 Productions from §2.3: The Syntactic Grammar */
+
+Goal::=
+    	CompilationUnit:i  		{: RESULT = i; :}
+    	;
+
+CompilationUnit::=
+    	TypeDeclarations_opt:t	{: RESULT = t; :}
+    	;
+
+
+
+
+
+
+
+
+TypeDeclarations_opt::= TypeDeclarations_opt:o Modifiers:m TypeDeclaration:t		{: RESULT = o+"\n"+m+" "+t; :}
+		|
+		TypeDeclarations_opt:o TypeDeclaration:t		{: RESULT = o+"\n"+t; :}
+		| 
+		{: RESULT = ""; :}
+    	;
+TypeDeclaration::=
+    	CLASS ClassDeclaration:i					{: RESULT = i; :}
+    	|
+    	INTERFACE InterfaceDeclaration:i			{: RESULT = i; :}
+    	|
+		ENUM EnumDeclaration:i						{: RESULT = i; :}
+		|
+		AT INTERFACE AnnotationTypeDeclaration:i	{: RESULT = i; :}
+    	;
+ClassDeclaration::=
+    	IDENTIFIER:i Super_opt:s Interfaces_opt:r ClassBody:b {: RESULT = "class "+i+s+r+" "+b; :}
+    	;
+InterfaceDeclaration::=
+    	IDENTIFIER:i ExtendsInterfaces_opt:r InterfaceBody:b {: RESULT = "interface "+i+r+" "+b; :}
+    	;
+EnumDeclaration::=
+    	IDENTIFIER:i Interfaces_opt:r EnumBody:b  {: RESULT = "enum "+i+r+" "+b; :}
+    	;
+AnnotationTypeDeclaration::=
+    	IDENTIFIER:i AnnotationTypeBody:b {: RESULT = "@interface "+i+" "+b; :}
+    	;
+Super_opt::= EXTENDS Name:n 		{: RESULT = " extends "+n; :}
+		|
+		{: RESULT = ""; :}
+		;
+Interfaces_opt::= IMPLEMENTS InterfaceTypeList:i	{: RESULT = " implements "+i; :}
+		|
+		{: RESULT = ""; :}
+		;
+ExtendsInterfaces_opt::= EXTENDS InterfaceTypeList:i	{: RESULT = " extends "+i; :}
+		|
+		{: RESULT = ""; :}
+		;
+InterfaceTypeList::=
+    	InterfaceTypeList:i COMMA Name:n		{: RESULT = i+", "+n; :}
+    	|
+    	Name:n									{: RESULT = n; :}
+    	;
+Modifiers::=
+		Modifiers:m Modifier:n 			{: RESULT = m+" "+n; :}
+	    |
+	    Modifier:n 						{: RESULT = n; :}
+	    ;
+Modifier::=	    
+		AT Name:i LPAREN RPAREN						{: RESULT = "@"+i+"()"; :}
+		|
+		AT Name:i		{: RESULT = "@"+i; :}										
+		| FINAL:i 			{: RESULT = i ; :}
+	    | PUBLIC:i 			{: RESULT = i ; :}
+	    | PROTECTED:i 		{: RESULT = i ; :}
+	    | PRIVATE:i 		{: RESULT = i ; :}
+	    | STATIC:i 			{: RESULT = i ; :}
+	    | ABSTRACT:i 		{: RESULT = i ; :}	    
+	    | NATIVE:i 			{: RESULT = i ; :}
+	    | SYNCHRONIZED:i 	{: RESULT = i ; :}
+	    | TRANSIENT:i 		{: RESULT = i ; :}
+	    | VOLATILE:i 		{: RESULT = i ; :}
+	    | STRICTFP:i 		{: RESULT = i ; :}	    
+		;	    
+Name::= Name:n DOT IDENTIFIER:i 		{: RESULT = n+"."+i; :}    	
+    	|    	
+    	Name:p DOT CLASS				{: RESULT = p+".class"; :}
+    	|
+    	IDENTIFIER:i					{: RESULT = i; :}
+    	;
+		
+
+
+ClassBody::=
+    	LBRACE ClassBodyDeclarations_opt:o RBRACE		{: RESULT = "{ "+o+" }"; :}
+    	;
+InterfaceBody::=
+    	LBRACE  RBRACE		{: RESULT = "{ InterfaceBody-1 }"; :}
+    	;
+EnumBody::=
+    	LBRACE  RBRACE		{: RESULT = "{ EnumBody-1 }"; :}
+    	;
+AnnotationTypeBody::=
+    	LBRACE  RBRACE		{: RESULT = "{ AnnotationTypeBody-1 }"; :}
+    	;
+    	
+    	
+ClassBodyDeclarations_opt::=	
+		ClassBodyDeclarations_opt:o Modifiers:m ClassBodyDeclaration:i {: RESULT = o+" "+m+" "+i; :}
+		|
+		ClassBodyDeclarations_opt:o ClassBodyDeclaration:i {: RESULT = o+" "+i; :}
+		|
+		{: RESULT = ""; :}
+		;
+ClassBodyDeclaration::=
+    	CLASS ClassDeclaration:i					{: RESULT = i; :}
+    	|
+    	INTERFACE InterfaceDeclaration:i			{: RESULT = i; :}
+    	|
+		ENUM EnumDeclaration:i						{: RESULT = i; :}
+		|
+		AT INTERFACE AnnotationTypeDeclaration:i	{: RESULT = i; :}
+		|
+		Block:i										{: RESULT = i; :}
+		|
+		Type:t IDENTIFIER:i LPAREN FormalParameterList_opt:p RPAREN Throws_opt:e MethodBody:b {: RESULT = t+" "+i+"("+p+") "+e+" "+b; :}
+		|
+		Type:t IDENTIFIER:i SEMICOLON {: RESULT = t+" "+i+";"; :}
+		;
+    	
+Type::=
+    	BOOLEAN:i 	{: RESULT = "PrimitiveType-2 ("+i+")"; :}
+    	|
+	    BYTE:i 		{: RESULT = i; :}
+	    |
+	    SHORT:i 	{: RESULT = i; :}    
+	    |
+	    INT:i 		{: RESULT = i; :}
+	    |
+	    LONG:i 		{: RESULT = i; :}
+	    |
+	    CHAR:i 		{: RESULT = i; :}
+		|
+	    FLOAT:i 	{: RESULT = i; :}
+    	|
+    	DOUBLE:i 	{: RESULT = i; :}
+    	|
+    	VOID:i 		{: RESULT = i; :}
+    	|
+    	Name:i 		{: RESULT = i; :}
+    	|
+    	Type:i LBRACKET RBRACKET {: RESULT = i+"[]"; :}
+    	|
+    	Type:i LT GT {: RESULT = i+"<>"; :}
+    	|
+    	Type:i LT InterfaceTypeList:j GT {: RESULT = i+"<"+j+">"; :}
+    	;    	
+    	
+    	
+    	
+FormalParameterList_opt::=	FormalParameterList_opt:o COMMA FormalParameter:p {: RESULT = o+", "+p; :}
+		|
+		FormalParameter:p		{: RESULT = p; :}
+		|    	
+		{: RESULT = ""; :}
+    	;
+FormalParameter::=
+    	Modifiers:m Type:t IDENTIFIER:i				{: RESULT = m+""+t+" "+i; :}
+    	|
+    	Modifiers:m Type:t ELLIPSIS IDENTIFIER:i	{: RESULT = m+""+t+"..."+i; :}
+    	|
+    	Type:t IDENTIFIER:i				{: RESULT = t+" "+i; :}
+    	|
+    	Type:t ELLIPSIS IDENTIFIER:i	{: RESULT = t+"..."+i; :}
+    	;
+Throws_opt::=
+    	THROWS InterfaceTypeList:j				{: RESULT = "throws "+j; :}
+    	|
+    	{: RESULT = ""; :}
+    	;
+MethodBody::=
+    	Block:b   {: RESULT = b ; :}
+		|
+    	SEMICOLON {: RESULT = ";"; :}
+    	;
+    	
+    	
+    	
+    	
+Block::=
+    	LBRACE  RBRACE		{: RESULT = "{ Code Block }"; :}    	
+    	;
+    	
+    	
+    	

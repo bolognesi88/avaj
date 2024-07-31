@@ -1,18 +1,15 @@
-import Scanner.*;
-import Parser.*;
-import AST.*;
-import AST.Visitor.*;
-import Throwables.*;
+import java.io.FileReader;
+
+import Parser.Java7Parser;
+import Parser.Java7Sym;
+import Scanner.Java7Scanner;
+import Throwables.CompilerException;
 import java_cup.runtime.Symbol;
 
-import java.io.FileReader;
-import java.io.InputStreamReader;
-import java.util.*;
-
-public class Java7Test{
+public class AvajTest{
 	
     public static void main(String [] args) {
-    	final String FILE = "C:\\Java\\eclipse-workspace\\avaj\\src\\main\\java\\bla\\JavaExample.java";
+    	final String FILE = "C:\\Java\\eclipse-workspace\\avaj\\src\\main\\java\\AvajExample.avaj";
     	
     	Java7Parser p=null;
         try {

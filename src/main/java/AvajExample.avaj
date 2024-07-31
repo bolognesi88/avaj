@@ -1,0 +1,61 @@
+
+public class AvajExample extends OutraClasse implements Face1, Face2, Face3 {
+	class Inner1{
+	}
+	public static interface Inner2{
+	}
+	static enum Inner3{
+	}
+	static {
+	}
+	private int i;	
+	int[][] j;
+	@XmlIgnore List<String> lista;
+	public static void main(){
+	}
+	public static void main(String[] args){
+	}
+	public static void main(Integer param1, Long...paramN){
+	}
+}
+
+private class AvajExample2 extends OutraClasse {
+}
+
+protected class AvajExample3 implements Face1 {
+}
+
+
+public static enum Enum1{
+	
+}
+
+public static enum Enum2 implements Face1, Face2, Face3 {
+	
+}
+
+
+protected interface Interface1 extends Face1, Face2, Face3{
+	
+}
+
+static abstract class Class3{
+	
+}
+
+
+@interface Annotassaonn{
+	
+}
+ 
+@java.lang.Deprecated
+public class Subclass1{
+	
+}
+
+class C5 {
+
+
+
+
+}
