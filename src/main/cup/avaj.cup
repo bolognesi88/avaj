@@ -512,7 +512,7 @@ InterfaceBody::=
     	LBRACE InterfaceMemberDeclarations_opt:o RBRACE		{: RESULT = "{ "+o+" }"; :}
     	;
 EnumBody::=
-    	LBRACE  RBRACE		{: RESULT = "{ EnumBody-1 }"; :}
+    	LBRACE EnumBodyDeclarations:i RBRACE		{: RESULT = "{ "+i+" }"; :}
     	;
 AnnotationTypeBody::=
     	LBRACE  RBRACE		{: RESULT = "{ AnnotationTypeBody-1 }"; :}
@@ -656,6 +656,43 @@ ElementValues ::= ElementValue:i						{: RESULT = i; :}
 			;
 				    	
     	
+    	
+    	
+    	
+EnumBodyDeclarations::=
+    EnumConstants:c COMMA			{: RESULT = c+", "; :}
+    | 
+    EnumConstants:c SEMICOLON ClassBodyDeclarations_opt:o		{: RESULT = c+"; "+o; :}    
+    |
+    {: RESULT = ""; :}
+    ;
+EnumConstants::=
+    EnumConstants:c COMMA Annotations_opt:o IDENTIFIER:i EnumConstant:e			{: RESULT = c+", "+o+" "+i+" "+e; :}
+    |
+    Annotations_opt:o IDENTIFIER:i EnumConstant:e	 							{: RESULT = o+" "+i+" "+e; :}
+    ;
+EnumConstant::=
+    LPAREN FormalParameterList_opt:p RPAREN ClassBody:b	{: RESULT = "("+p+") "+b; :}
+    |
+    LPAREN FormalParameterList_opt:p RPAREN				{: RESULT = "("+p+")"; :}
+    |
+    ClassBody:b											{: RESULT = b; :}
+    |
+    {: RESULT = ""; :}	
+    ;
+Annotations_opt::=
+	Annotations_opt:o Annotation:i		{: RESULT = o+" "+i; :}
+	|
+	{: RESULT = ""; :}
+	;
+Annotation::=
+		AT Name:i LPAREN AnnotationElement:p RPAREN			{: RESULT = "@"+i+"("+p+")"; :}
+		|
+		AT Name:i LPAREN RPAREN								{: RESULT = "@"+i+"()"; :}
+		|
+		AT Name:i											{: RESULT = "@"+i; :}
+		;	
+	    	
     	
     	
     	
