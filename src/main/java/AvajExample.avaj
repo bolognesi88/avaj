@@ -48,8 +48,26 @@ public static enum Enum2 implements Face1, Face2, Face3 {
 }
 
 
-protected interface Interface1 extends Face1, Face2, Face3{
+protected interface Interface1 extends Face1<T>, Face2, Face3{
+	public void animalSound(); // interface method (does not have a body)
+  	public void run(); // interface method (does not have a body)
+  	
+  	public static final int MAX = 50;
+  	
+  	static int metd(){
+  	}
+  	
+  	default int metd2(){
+  	}
+  	
+  	class Inner1b{
+	}
 	
+	public static interface Inner2b{
+	}
+	
+	static enum Inner3b{
+	}
 }
 
 static abstract class Class3{

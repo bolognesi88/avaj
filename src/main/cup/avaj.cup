@@ -507,7 +507,7 @@ ClassBody::=
     	LBRACE ClassBodyDeclarations_opt:o RBRACE		{: RESULT = "{ "+o+" }"; :}
     	;
 InterfaceBody::=
-    	LBRACE  RBRACE		{: RESULT = "{ InterfaceBody-1 }"; :}
+    	LBRACE InterfaceMemberDeclarations_opt:o RBRACE		{: RESULT = "{ "+o+" }"; :}
     	;
 EnumBody::=
     	LBRACE  RBRACE		{: RESULT = "{ EnumBody-1 }"; :}
@@ -597,6 +597,23 @@ MethodBody::=
 		|
     	SEMICOLON {: RESULT = ";"; :}
     	;
+    	
+    	
+    	
+    	
+    	
+    	
+InterfaceMemberDeclarations_opt::=	
+		InterfaceMemberDeclarations_opt:o Modifiers:m ClassBodyDeclaration:i {: RESULT = o+" "+m+" "+i; :}
+		|
+		InterfaceMemberDeclarations_opt:o DEFAULT ClassBodyDeclaration:i {: RESULT = o+" default "+i; :}
+		|
+		InterfaceMemberDeclarations_opt:o ClassBodyDeclaration:i {: RESULT = o+" "+i; :}
+		|
+		{: RESULT = ""; :}
+		;
+		    	
+    	
     	
     	
     	
