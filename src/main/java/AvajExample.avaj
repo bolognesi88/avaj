@@ -63,11 +63,16 @@ protected interface Interface1 extends Face1<T>, Face2, Face3{
   	class Inner1b{
 	}
 	
+	@SuppressWarnings("unused")
 	public static interface Inner2b{
 	}
 	
 	static enum Inner3b{
 	}
+}
+
+protected interface InterfaceVazia{
+	;;;
 }
 
 static abstract class Class3{

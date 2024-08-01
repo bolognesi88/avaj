@@ -479,6 +479,8 @@ Modifiers::=
 	    Modifier:n 						{: RESULT = n; :}
 	    ;
 Modifier::=	    
+		AT Name:i LPAREN AnnotationElement:p RPAREN						{: RESULT = "@"+i+"("+p+")"; :}
+		|
 		AT Name:i LPAREN RPAREN						{: RESULT = "@"+i+"()"; :}
 		|
 		AT Name:i		{: RESULT = "@"+i; :}										
@@ -540,7 +542,11 @@ ClassBodyDeclaration::=
 		Type:t IDENTIFIER:i BECOMES Expression:e SEMICOLON {: RESULT = t+" "+i+" = "+e+";"; :}
 		|
 		Type:t IDENTIFIER:i SEMICOLON {: RESULT = t+" "+i+";"; :}
+		|
+		SEMICOLON {: RESULT = ";"; :}
 		;
+		
+		
     	
 Type::=
     	BOOLEAN:i 	{: RESULT = "PrimitiveType-2 ("+i+")"; :}
@@ -617,6 +623,44 @@ InterfaceMemberDeclarations_opt::=
     	
     	
     	
+/** Annotations **/ 
+AnnotationElement::=
+		    ElementValuePairs:i		{: RESULT = i; :}
+		    |
+		    ElementValue:i			{: RESULT = i; :}
+		    ;
+ElementValuePairs::= ElementValuePair:i 					{: RESULT = i; :}
+			|
+			ElementValuePairs:p COMMA ElementValuePair:i	{: RESULT = p+", "+i; :}
+			;
+ElementValuePair::= IDENTIFIER:i BECOMES ElementValue:p		{: RESULT = i+"="+p; :}
+			;
+ElementValue::=  Annotation:i					{: RESULT = i; :}
+			|
+		    Expression:i						{: RESULT = i; :}
+		    |
+		    ElementValueArrayInitializer:i		{: RESULT = i; :}
+		    ;
+ElementValueArrayInitializer::= 
+			LBRACE ElementValues:i COMMA RBRACE		{: RESULT = "{"+i+",}"; :}
+			|
+			LBRACE ElementValues:i RBRACE			{: RESULT = "{"+i+"}"; :}
+			|
+			LBRACE COMMA RBRACE						{: RESULT = "{,}"; :}
+			|
+			LBRACE RBRACE							{: RESULT = "{}"; :}
+			;
+ElementValues ::= ElementValue:i						{: RESULT = i; :}
+			|
+			ElementValues:p COMMA	ElementValue:i		{: RESULT = p+", "+i; :}
+			;
+				    	
+    	
+    	
+    	
+    	
+    	
+    	
     	
 Block::=
     	LBRACE  RBRACE		{: RESULT = "{ Code Block }"; :}    	
@@ -627,6 +671,8 @@ Block::=
 Expression::= IDENTIFIER:b   {: RESULT = b ; :} 
 			| 
 			INTEGER_LITERAL:b   {: RESULT = b ; :}
+			| 
+			STRING_LITERAL:b   {: RESULT = "\""+b+"\"" ; :}
 			;    	
     	
     	
