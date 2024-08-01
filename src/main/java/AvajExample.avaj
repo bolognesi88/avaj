@@ -41,6 +41,31 @@ protected class AvajExample3 implements Face1 {
 
 public static enum Enum1{
 	
+	ABERTA ("Aberta"), // 0
+	CONCLUIDA_CEAD ("Concluída pela CEAD"), // 1
+	ENCAMINHADA_DIRECAO ("Encaminhada para a direção"), // 2
+	CIENCIA_DIRECAO ("Ciência da Direção efetuada"), // 3
+	AGUARDANDO_DEVOLUTIVA ("Aguardando registro da devolutiva pela CEAD"), // 4
+	DEVOLUTIVA_EFETUADA ("Devolutiva efetuada"), // 5
+	PARECER_SERVIDOR_EFETUADO ("Parecer do servidor efetuado"), // 6
+	ENCAMINHADA_PARA_CEAD ("Encaminhada para a CEAD"), // 7
+	FINALIZADA ("Finalizada pela CEAD"); // 8
+
+
+	private String descricao;
+	
+	private StatusAvaliacao(String descricao) {
+		//this.descricao = descricao;
+	}
+	
+	public String getDescricao(){	
+		//return descricao;
+	}
+
+	public int getCodigo(){
+		//return this.ordinal();
+	}
+	
 }
 
 public static enum Enum2 implements Face1, Face2, Face3 {

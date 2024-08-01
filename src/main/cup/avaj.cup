@@ -543,6 +543,8 @@ ClassBodyDeclaration::=
 		|
 		Type:t IDENTIFIER:i SEMICOLON {: RESULT = t+" "+i+";"; :}
 		|
+		IDENTIFIER:i LPAREN FormalParameterList_opt:p RPAREN Throws_opt:e MethodBody:b {: RESULT = i+"("+p+") "+e+" "+b; :}
+		|
 		SEMICOLON {: RESULT = ";"; :}
 		;
 		
@@ -672,9 +674,9 @@ EnumConstants::=
     Annotations_opt:o IDENTIFIER:i EnumConstant:e	 							{: RESULT = o+" "+i+" "+e; :}
     ;
 EnumConstant::=
-    LPAREN FormalParameterList_opt:p RPAREN ClassBody:b	{: RESULT = "("+p+") "+b; :}
+    LPAREN ArgumentList:p RPAREN ClassBody:b	{: RESULT = "("+p+") "+b; :}
     |
-    LPAREN FormalParameterList_opt:p RPAREN				{: RESULT = "("+p+")"; :}
+    LPAREN ArgumentList:p RPAREN				{: RESULT = "("+p+")"; :}
     |
     ClassBody:b											{: RESULT = b; :}
     |
@@ -703,6 +705,12 @@ Block::=
     	LBRACE  RBRACE		{: RESULT = "{ Code Block }"; :}    	
     	;
     	
+    	
+ArgumentList::=
+    	Expression:b   {: RESULT = b ; :} 
+		|
+    	ArgumentList:a COMMA Expression:b   {: RESULT = a+", "+b ; :} 
+    	;
     	
     	
 Expression::= IDENTIFIER:b   {: RESULT = b ; :} 
