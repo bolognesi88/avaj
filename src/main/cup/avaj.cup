@@ -515,7 +515,9 @@ EnumBody::=
     	LBRACE EnumBodyDeclarations:i RBRACE		{: RESULT = "{ "+i+" }"; :}
     	;
 AnnotationTypeBody::=
-    	LBRACE  RBRACE		{: RESULT = "{ AnnotationTypeBody-1 }"; :}
+    	LBRACE AnnotationTypeElementDeclarations:i RBRACE		{: RESULT = "{ "+i+" }"; :}
+    	|
+    	LBRACE RBRACE		{: RESULT = "{ }"; :}
     	;
     	
     	
@@ -696,6 +698,62 @@ Annotation::=
 		;	
 	    	
     	
+    	
+    	
+    	
+    	
+AnnotationTypeElementDeclarations::=
+	AnnotationTypeElementDeclarations:o Modifiers:m AnnotationTypeElementDeclaration:a		{: RESULT = o+" "+m+" "+a; :}
+	|
+	AnnotationTypeElementDeclarations:o AnnotationTypeElementDeclaration:a					{: RESULT = o+" "+a; :}
+	|
+    Modifiers:m AnnotationTypeElementDeclaration:a 											{: RESULT = m+" "+a; :}
+    |
+    AnnotationTypeElementDeclaration:a														{: RESULT = a; :}    
+    ;
+AnnotationTypeElementDeclaration::=
+		CLASS ClassDeclaration:i					{: RESULT = i; :}
+    	|
+    	INTERFACE InterfaceDeclaration:i			{: RESULT = i; :}
+    	|
+		ENUM EnumDeclaration:i						{: RESULT = i; :}
+		|
+		AT INTERFACE AnnotationTypeDeclaration:i	{: RESULT = i; :}
+		|
+		Type:t IDENTIFIER:i AnnotationMethodOrConstantRest:e SEMICOLON {: RESULT = t+" "+i+" "+e+"; "; :}
+	    ;
+AnnotationMethodOrConstantRest::=
+    LPAREN RPAREN LBRACKET RBRACKET DEFAULT ElementValue:e		{: RESULT = "() [] default "+e; :}
+    |
+    LPAREN RPAREN DEFAULT ElementValue:e						{: RESULT = "() default "+e; :}
+    |
+    LPAREN RPAREN LBRACKET RBRACKET								{: RESULT = "() []"; :}
+    |
+    LPAREN RPAREN 												{: RESULT = "()"; :}
+	|
+    LBRACKET RBRACKET BECOMES VariableInitializer:i				{: RESULT = "[] = "+i; :}
+    |
+    BECOMES VariableInitializer:i								{: RESULT = " = "+i; :}
+    ;
+VariableInitializer::=
+    	Expression:e			{: RESULT = e; :}
+		|
+    	ArrayInitializer:a		{: RESULT = a; :}
+    	;
+VariableInitializers::=
+		VariableInitializers:s COMMA VariableInitializer:i		{: RESULT = s+", "+i; :}
+		|
+    	VariableInitializer:i									{: RESULT = i; :}
+		;
+ArrayInitializer::=
+    	LBRACE VariableInitializers:i COMMA RBRACE		{: RESULT = "["+i+", ]"; :}
+    	|
+    	LBRACE VariableInitializers:i RBRACE			{: RESULT = "["+i+"]"; :}
+    	|
+    	LBRACE COMMA RBRACE 							{: RESULT = "[, ]"; :}
+    	|    	
+    	LBRACE RBRACE									{: RESULT = "[]"; :}
+    	;
     	
     	
     	
