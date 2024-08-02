@@ -582,9 +582,9 @@ Type::=
     	Type:i LT InterfaceTypeList:j GT {: RESULT = i+"<"+j+">"; :}
     	;    	
 ArrayAccess::=
-    	Name DimExpr
-		|
-    	PrimaryNoNewArray DimExpr
+/* fixme será?    	Name DimExpr
+		| */
+    	PrimaryNoNewArray:a DimExpr:b {: RESULT = a+" "+b; :}
     	;
     	
     	
@@ -770,19 +770,19 @@ ArrayInitializer::=
   /* ********************** BLOCK & derivatives ********************************* */  	
     	
 Block::=
-    	LBRACE BlockStatements_opt RBRACE	{: RESULT = "Block-1"; :}	
+    	LBRACE BlockStatements_opt:o RBRACE	{: RESULT = "{"+o+"}"; :}	
     	;
     	
     	
-BlockStatements_opt::=	/* empty */ 	{: RESULT = "BlockStatements_opt-1 (empty)"; :}	
+BlockStatements_opt::=	{: RESULT = ""; :}	
 		|
-		BlockStatements					{: RESULT = "BlockStatements_opt-2"; :}	
+		BlockStatements:b					{: RESULT = b; :}	
 		;    	
 
 BlockStatements::=
-    	BlockStatement					{: RESULT = "BlockStatements-1"; :}	
+    	BlockStatement:b					{: RESULT = b; :}
 		|
-    	BlockStatements BlockStatement	{: RESULT = "BlockStatements-2"; :}
+    	BlockStatements:s BlockStatement:b	{: RESULT = s+" "+b; :}
     	;
 
 BlockStatement::=
@@ -792,103 +792,103 @@ BlockStatement::=
     	;
 
 LocalVariableDeclarationStatement::=	
-    	LocalVariableDeclaration SEMICOLON	{: RESULT = "LocalVariableDeclarationStatement-1"; :}
+    	LocalVariableDeclaration:i SEMICOLON	{: RESULT = i+";"; :}
     	;
 
 LocalVariableDeclaration::=
-    	Type VariableDeclarators			{: RESULT = "LocalVariableDeclaration-1"; :}
+    	Type:t VariableDeclarators:v						{: RESULT = t+""+v; :}
     	|
-    	VariableModifiers Type VariableDeclarators			{: RESULT = "LocalVariableDeclaration-1"; :}
+    	VariableModifiers:m Type:t VariableDeclarators:v	{: RESULT = m+""+t+""+v; :}
     	;
 
 Statement::=
-    	StatementWithoutTrailingSubstatement	{: RESULT = "Statement-1"; :}
+    	StatementWithoutTrailingSubstatement:i		{: RESULT = i; :}
 		|
-    	LabeledStatement						{: RESULT = "Statement-2"; :}
+    	LabeledStatement:i		{: RESULT = i; :}
 		|
-    	IfThenStatement							{: RESULT = "Statement-3"; :}
+    	IfThenStatement	:i		{: RESULT = i; :}
 		|
-    	IfThenElseStatement						{: RESULT = "Statement-4"; :}
+    	IfThenElseStatement:i	{: RESULT = i; :}
 		|
-    	WhileStatement							{: RESULT = "Statement-5"; :}
+    	WhileStatement:i		{: RESULT = i; :}
 		|
-    	ForStatement							{: RESULT = "Statement-6"; :}
+    	ForStatement:i			{: RESULT = i; :}
     	|
-    	AssertStatement							{: RESULT = "Statement-7"; :}
+    	AssertStatement:i		{: RESULT = i; :}
     	;
     	
 AssertStatement::=    	
-    	ASSERT Expression COLON Expression SEMICOLON	 {: RESULT = "AssertStatement-1"; :}
+    	ASSERT Expression:a COLON Expression:b SEMICOLON	 {: RESULT = "assert "+a+": "+b+"; "; :}
     	|
-    	ASSERT Expression SEMICOLON  	 {: RESULT = "AssertStatement-2"; :}
+    	ASSERT Expression:a SEMICOLON  	 					{: RESULT = "assert "+a+"; "; :}
     	;
 
 StatementNoShortIf::=
-    	StatementWithoutTrailingSubstatement
+    	StatementWithoutTrailingSubstatement:i		{: RESULT = i; :}
 		|
-    	LabeledStatementNoShortIf
+    	LabeledStatementNoShortIf:i			{: RESULT = i; :}
 		|
-    	IfThenElseStatementNoShortIf
+    	IfThenElseStatementNoShortIf:i		{: RESULT = i; :}
 		|
-    	WhileStatementNoShortIf
+    	WhileStatementNoShortIf:i			{: RESULT = i; :}
 		|
-    	ForStatementNoShortIf
+    	ForStatementNoShortIf:i				{: RESULT = i; :}
     	;
 
 StatementWithoutTrailingSubstatement::=
-    	Block
+    	Block:i							{: RESULT = i; :}
 		|
-    	EmptyStatement
+    	EmptyStatement:i				{: RESULT = i; :}
 		|
-    	ExpressionStatement
+    	ExpressionStatement:i			{: RESULT = i; :}
 		|
-    	SwitchStatement
+    	SwitchStatement:i				{: RESULT = i; :}
 		|
-    	DoStatement
+    	DoStatement:i					{: RESULT = i; :}
 		|
-    	BreakStatement
+    	BreakStatement:i				{: RESULT = i; :}
 		|
-    	ContinueStatement
+    	ContinueStatement:i				{: RESULT = i; :}
 		|
-    	ReturnStatement
+    	ReturnStatement:i				{: RESULT = i; :}
 		|
-    	SynchronizedStatement
+    	SynchronizedStatement:i			{: RESULT = i; :}
 		|
-    	ThrowStatement
+    	ThrowStatement:i				{: RESULT = i; :}
 		|
-    	TryStatement
+    	TryStatement:i					{: RESULT = i; :}
     	;
 
 EmptyStatement::=
-		SEMICOLON
+		SEMICOLON:i		{: RESULT = "; "; :}
     	;
 
 LabeledStatement::=
-    	Identifier COLON Statement
+    	Identifier:i COLON Statement:s		{: RESULT = i+": "+s; :}
     	;
 
 LabeledStatementNoShortIf::=
-    	Identifier COLON StatementNoShortIf
+    	Identifier:i COLON StatementNoShortIf:s		{: RESULT = i+": "+s; :}
     	;
 
 ExpressionStatement::=
-    	StatementExpression SEMICOLON
+    	StatementExpression:i SEMICOLON		{: RESULT = i+"; "; :}
     	;
 
 StatementExpression::=
-    	Assignment
+    	Assignment:i					{: RESULT = i; :}
 		|
-    	PreIncrementExpression
+    	PreIncrementExpression:i		{: RESULT = i; :}
 		|
-    	PreDecrementExpression
+    	PreDecrementExpression:i		{: RESULT = i; :}
 		|
-    	PostIncrementExpression
+    	PostIncrementExpression:i		{: RESULT = i; :}
 		|
-    	PostDecrementExpression
+    	PostDecrementExpression:i		{: RESULT = i; :}
 		|
-    	MethodInvocation
+    	MethodInvocation:i				{: RESULT = i; :}
 		|
-    	ClassInstanceCreationExpression
+    	ClassInstanceCreationExpression:i		{: RESULT = i; :}
 		;
 		
 IfThenStatement::=
@@ -1101,24 +1101,25 @@ LambdaBody::=
     Block:e							{: RESULT = e; :}
     ;
 AssignmentExpression::=
-    	ConditionalExpression
+    	ConditionalExpression:i		{: RESULT = i; :}
 		|
-    	Assignment
+    	Assignment:i				{: RESULT = i; :}
     	;
 ConditionalExpression::=
-    	ConditionalOrExpression
+    	ConditionalOrExpression:i	{: RESULT = i; :}
 		|
     	ConditionalOrExpression QUESTION Expression COLON ConditionalExpression
     	;
 Assignment::=
-    	LeftHandSide AssignmentOperator AssignmentExpression
+    	LeftHandSide:a AssignmentOperator:o AssignmentExpression:i		{: RESULT = a+""+o+""+i; :}
+    	
     	;
 LeftHandSide::=
-	   	Name
+	   	Name:i				{: RESULT = i; :}
 		|
-    	FieldAccess
+    	FieldAccess:i		{: RESULT = i; :}
 		|
-    	ArrayAccess
+    	ArrayAccess:i		{: RESULT = i; :}
     	;
 AssignmentOperator::= 
 	    BECOMES:i 		{: RESULT = i; :}
@@ -1161,51 +1162,51 @@ MethodInvocation::=
 
 
 PostfixExpression::=
-    	Primary
+    	Primary:i						{: RESULT = i; :}
 		|
-    	Name
+    	Name:i							{: RESULT = i; :}
 		|
-    	PostIncrementExpression
+    	PostIncrementExpression:i		{: RESULT = i; :}
 		|
-    	PostDecrementExpression
+    	PostDecrementExpression:i		{: RESULT = i; :}
     	;
 
 PostIncrementExpression::=
-    	PostfixExpression INC
+    	PostfixExpression:i INC						{: RESULT = i+"++"; :}
 		;
 		
 PostDecrementExpression::=
-    	PostfixExpression DEC
+    	PostfixExpression:i DEC						{: RESULT = i+"--"; :}
     	;
 
 UnaryExpression::=
-    	PreIncrementExpression
+    	PreIncrementExpression:i					{: RESULT = i; :}
 		|
-    	PreDecrementExpression
+    	PreDecrementExpression:i					{: RESULT = i; :}
 		|
-    	PLUS UnaryExpression
+    	PLUS UnaryExpression:i						{: RESULT = "+"+i; :}
 		|
-    	MINUS UnaryExpression
+    	MINUS UnaryExpression:i						{: RESULT = "-"+i; :}
 		|
-    	UnaryExpressionNotPlusMinus
+    	UnaryExpressionNotPlusMinus:i				{: RESULT = i; :}
     	;
 
 PreIncrementExpression::=
-    	INC UnaryExpression
+    	INC UnaryExpression:i						{: RESULT = "++"+i; :}
     	;
 
 PreDecrementExpression::=
-    	DEC UnaryExpression
+    	DEC UnaryExpression:i						{: RESULT = "--"+i; :}
     	;
 
 UnaryExpressionNotPlusMinus::=
-    	PostfixExpression
+    	PostfixExpression:i						{: RESULT = i; :}
 		|
-    	BITWISE_NOT UnaryExpression
+    	BITWISE_NOT UnaryExpression:i			{: RESULT = "!"+i; :}
 		|
-    	NOT UnaryExpression
+    	NOT UnaryExpression:i					{: RESULT = "~"+i; :}
     	|
-    	CastExpression
+    	CastExpression:i						{: RESULT = i; :}
     	;
 
 CastExpression::=
@@ -1217,7 +1218,7 @@ CastExpression::=
     	;
 
 MultiplicativeExpression::=
-    	UnaryExpression
+    	UnaryExpression:i						{: RESULT = i; :}
 		|
     	MultiplicativeExpression TIMES UnaryExpression
 		|
@@ -1227,7 +1228,7 @@ MultiplicativeExpression::=
     	;
 
 AdditiveExpression::=
-    	MultiplicativeExpression
+    	MultiplicativeExpression:i						{: RESULT = i; :}
 		|
     	AdditiveExpression PLUS MultiplicativeExpression
 		|
@@ -1235,7 +1236,7 @@ AdditiveExpression::=
     	;
 
 ShiftExpression::=
-    	AdditiveExpression
+    	AdditiveExpression:i						{: RESULT = i; :}
 		|
     	ShiftExpression SHIFT_LEFT AdditiveExpression
 		|
@@ -1245,7 +1246,7 @@ ShiftExpression::=
     	;
 
 RelationalExpression::=
-    	ShiftExpression
+    	ShiftExpression:i						{: RESULT = i; :}
 		|
     	RelationalExpression LT ShiftExpression
 		|
@@ -1259,7 +1260,7 @@ RelationalExpression::=
     	;
 
 EqualityExpression::=
-    	RelationalExpression
+    	RelationalExpression:i						{: RESULT = i; :}
 		|
     	EqualityExpression EQUALS RelationalExpression
 		|
@@ -1267,54 +1268,54 @@ EqualityExpression::=
     	;
 
 AndExpression::=
-    	EqualityExpression
+    	EqualityExpression:i						{: RESULT = i; :}
 		|
     	AndExpression AND EqualityExpression
     	;
 
 ExclusiveOrExpression::=
-    	AndExpression
+    	AndExpression:i						{: RESULT = i; :}
 		|
     	ExclusiveOrExpression XOR AndExpression
     	;
 
 InclusiveOrExpression::=
-    	ExclusiveOrExpression
+    	ExclusiveOrExpression:i						{: RESULT = i; :}
 		|
     	InclusiveOrExpression OR ExclusiveOrExpression
     	;
 
 ConditionalAndExpression::=
-    	InclusiveOrExpression
+    	InclusiveOrExpression:i						{: RESULT = i; :}
 		|
     	ConditionalAndExpression DOUBLE_AND InclusiveOrExpression
     	;
 
 ConditionalOrExpression::=
-    	ConditionalAndExpression
+    	ConditionalAndExpression:i						{: RESULT = i; :}
 		|
     	ConditionalOrExpression DOUBLE_OR ConditionalAndExpression
     	;		
 Primary::=
-    	PrimaryNoNewArray
+    	PrimaryNoNewArray:i				{: RESULT = i; :}
 		|
-    	ArrayCreationExpression
+    	ArrayCreationExpression:i		{: RESULT = i; :}
     	;
 
 PrimaryNoNewArray::=
-    	Literal								{: RESULT = "PrimaryNoNewArray-1"; :}
+    	Literal:i					{: RESULT = i; :}
 		|
-    	THIS								{: RESULT = "PrimaryNoNewArray-2"; :}
+    	THIS:i						{: RESULT = i; :}
 		|	
-    	LPAREN Expression RPAREN			{: RESULT = "PrimaryNoNewArray-3"; :}
+    	LPAREN Expression:i RPAREN				{: RESULT = "("+i+")"; :}
 		|
-    	ClassInstanceCreationExpression		{: RESULT = "PrimaryNoNewArray-4"; :}
+    	ClassInstanceCreationExpression:i		{: RESULT = i; :}
 		|
-    	FieldAccess							{: RESULT = "PrimaryNoNewArray-5"; :}
+    	FieldAccess:i				{: RESULT = i; :}
 		|
-    	MethodInvocation					{: RESULT = "PrimaryNoNewArray-6"; :}
+    	MethodInvocation:i			{: RESULT = i; :}
 		|
-    	ArrayAccess							{: RESULT = "PrimaryNoNewArray-7"; :}
+    	ArrayAccess:i				{: RESULT = i; :}
     	;
 
 
