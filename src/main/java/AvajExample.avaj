@@ -1,5 +1,14 @@
 
 public class AvajExample extends OutraClasse implements Face1, Face2, Face3 {
+	public AvajExample(){
+		super(1);
+	}
+	
+	@Enumerated
+	private AvajExample(int i){
+		super(i);
+	}
+
 	static {	
 		x();
 		this.texto = "a";

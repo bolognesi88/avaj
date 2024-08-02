@@ -589,7 +589,7 @@ ClassBodyDeclaration::=
 		|
 		Type:t IDENTIFIER:i SEMICOLON {: RESULT = t+" "+i+";"; :}
 		|
-		IDENTIFIER:i LPAREN FormalParameterList_opt:p RPAREN Throws_opt:e MethodBody:b {: RESULT = i+"("+p+") "+e+" "+b; :}
+		IDENTIFIER:i LPAREN FormalParameterList_opt:p RPAREN Throws_opt:e ConstructorBody:b {: RESULT = i+"("+p+") "+e+" "+b; :}		
 		|
 		SEMICOLON {: RESULT = ";"; :}
 		;
@@ -1396,5 +1396,24 @@ DimExprs::=
     	;
 DimExpr::=
     	LBRACKET Expression:i RBRACKET	{: RESULT = "["+i+"]"; :}
+    	;
+    	
+    	
+    	
+    	
+/* ************ ctors *********************** */
+ConstructorBody::=
+    	LBRACE ExplicitConstructorInvocation:i BlockStatements:b RBRACE	{: RESULT = "{"+i+""+b+"}"; :}
+    	|
+    	LBRACE BlockStatements:i RBRACE						{: RESULT = "{"+i+"}"; :}
+    	|
+    	LBRACE ExplicitConstructorInvocation:i RBRACE		{: RESULT = "{"+i+"}"; :}
+    	|
+    	LBRACE RBRACE    	{: RESULT = "{}"; :}
+    	;	
+ExplicitConstructorInvocation::=
+    	THIS LPAREN ArgumentList_opt:o RPAREN SEMICOLON			{: RESULT = "this("+o+");"; :}
+		|
+    	SUPER LPAREN ArgumentList_opt:o RPAREN SEMICOLON		{: RESULT = "super("+o+");"; :}
     	;
     	
