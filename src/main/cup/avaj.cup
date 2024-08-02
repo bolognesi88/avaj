@@ -500,6 +500,8 @@ Name::= Name:n DOT IDENTIFIER:i 		{: RESULT = n+"."+i; :}
     	|    	
     	Name:p DOT CLASS				{: RESULT = p+".class"; :}
     	|
+    	VOID DOT CLASS					{: RESULT = "void.class"; :}
+    	|
     	IDENTIFIER:i					{: RESULT = i; :}
     	;
 		
@@ -553,7 +555,7 @@ ClassBodyDeclaration::=
 		
     	
 Type::=
-    	BOOLEAN:i 	{: RESULT = "PrimitiveType-2 ("+i+")"; :}
+    	BOOLEAN:i 	{: RESULT = i; :}
     	|
 	    BYTE:i 		{: RESULT = i; :}
 	    |
@@ -573,13 +575,17 @@ Type::=
     	|
     	Name:i 		{: RESULT = i; :}
     	|
-    	Type:i LBRACKET RBRACKET {: RESULT = i+"[]"; :}
+    	Type:i Dims:d {: RESULT = i+""+d; :}
     	|
     	Type:i LT GT {: RESULT = i+"<>"; :}
     	|
     	Type:i LT InterfaceTypeList:j GT {: RESULT = i+"<"+j+">"; :}
     	;    	
-    	
+ArrayAccess::=
+    	Name DimExpr
+		|
+    	PrimaryNoNewArray DimExpr
+    	;
     	
     	
 FormalParameterList_opt::=	FormalParameterList_opt:o COMMA FormalParameter:p {: RESULT = o+", "+p; :}
@@ -696,7 +702,11 @@ Annotation::=
 		|
 		AT Name:i											{: RESULT = "@"+i; :}
 		;	
-	    	
+ArgumentList::=
+    	Expression:b   {: RESULT = b ; :} 
+		|
+    	ArgumentList:a COMMA Expression:b   {: RESULT = a+", "+b ; :} 
+    	;	    	
     	
     	
     	
@@ -757,25 +767,595 @@ ArrayInitializer::=
     	
     	
     	
-    	
+  /* ********************** BLOCK & derivatives ********************************* */  	
     	
 Block::=
-    	LBRACE  RBRACE		{: RESULT = "{ Code Block }"; :}    	
+    	LBRACE BlockStatements_opt RBRACE	{: RESULT = "Block-1"; :}	
     	;
     	
     	
-ArgumentList::=
-    	Expression:b   {: RESULT = b ; :} 
+BlockStatements_opt::=	/* empty */ 	{: RESULT = "BlockStatements_opt-1 (empty)"; :}	
 		|
-    	ArgumentList:a COMMA Expression:b   {: RESULT = a+", "+b ; :} 
+		BlockStatements					{: RESULT = "BlockStatements_opt-2"; :}	
+		;    	
+
+BlockStatements::=
+    	BlockStatement					{: RESULT = "BlockStatements-1"; :}	
+		|
+    	BlockStatements BlockStatement	{: RESULT = "BlockStatements-2"; :}
+    	;
+
+BlockStatement::=
+    	LocalVariableDeclarationStatement	{: RESULT = "BlockStatement-1"; :}
+		|
+    	Statement							{: RESULT = "BlockStatement-2"; :}
+    	;
+
+LocalVariableDeclarationStatement::=	
+    	LocalVariableDeclaration SEMICOLON	{: RESULT = "LocalVariableDeclarationStatement-1"; :}
+    	;
+
+LocalVariableDeclaration::=
+    	Type VariableDeclarators			{: RESULT = "LocalVariableDeclaration-1"; :}
+    	|
+    	VariableModifiers Type VariableDeclarators			{: RESULT = "LocalVariableDeclaration-1"; :}
+    	;
+
+Statement::=
+    	StatementWithoutTrailingSubstatement	{: RESULT = "Statement-1"; :}
+		|
+    	LabeledStatement						{: RESULT = "Statement-2"; :}
+		|
+    	IfThenStatement							{: RESULT = "Statement-3"; :}
+		|
+    	IfThenElseStatement						{: RESULT = "Statement-4"; :}
+		|
+    	WhileStatement							{: RESULT = "Statement-5"; :}
+		|
+    	ForStatement							{: RESULT = "Statement-6"; :}
+    	|
+    	AssertStatement							{: RESULT = "Statement-7"; :}
     	;
     	
+AssertStatement::=    	
+    	ASSERT Expression COLON Expression SEMICOLON	 {: RESULT = "AssertStatement-1"; :}
+    	|
+    	ASSERT Expression SEMICOLON  	 {: RESULT = "AssertStatement-2"; :}
+    	;
+
+StatementNoShortIf::=
+    	StatementWithoutTrailingSubstatement
+		|
+    	LabeledStatementNoShortIf
+		|
+    	IfThenElseStatementNoShortIf
+		|
+    	WhileStatementNoShortIf
+		|
+    	ForStatementNoShortIf
+    	;
+
+StatementWithoutTrailingSubstatement::=
+    	Block
+		|
+    	EmptyStatement
+		|
+    	ExpressionStatement
+		|
+    	SwitchStatement
+		|
+    	DoStatement
+		|
+    	BreakStatement
+		|
+    	ContinueStatement
+		|
+    	ReturnStatement
+		|
+    	SynchronizedStatement
+		|
+    	ThrowStatement
+		|
+    	TryStatement
+    	;
+
+EmptyStatement::=
+		SEMICOLON
+    	;
+
+LabeledStatement::=
+    	Identifier COLON Statement
+    	;
+
+LabeledStatementNoShortIf::=
+    	Identifier COLON StatementNoShortIf
+    	;
+
+ExpressionStatement::=
+    	StatementExpression SEMICOLON
+    	;
+
+StatementExpression::=
+    	Assignment
+		|
+    	PreIncrementExpression
+		|
+    	PreDecrementExpression
+		|
+    	PostIncrementExpression
+		|
+    	PostDecrementExpression
+		|
+    	MethodInvocation
+		|
+    	ClassInstanceCreationExpression
+		;
+		
+IfThenStatement::=
+    	IF LPAREN Expression RPAREN Statement
+    	;
+
+IfThenElseStatement::=
+    	IF LPAREN Expression RPAREN StatementNoShortIf ELSE Statement
+    	;
+
+IfThenElseStatementNoShortIf::=
+    	IF LPAREN Expression RPAREN StatementNoShortIf ELSE StatementNoShortIf
+		;
+		
+SwitchStatement::=
+    	SWITCH LPAREN Expression RPAREN SwitchBlock
+    	;
+
+SwitchBlock::=
+    	LBRACE SwitchBlockStatementGroups SwitchLabels RBRACE
+    	|
+    	LBRACE SwitchBlockStatementGroups  RBRACE
+    	|
+    	LBRACE SwitchLabels RBRACE
+    	|
+    	LBRACE RBRACE
+    	;
+
+SwitchBlockStatementGroups::=
+    	SwitchBlockStatementGroup
+		|
+    	SwitchBlockStatementGroups SwitchBlockStatementGroup
+    	;
+
+SwitchBlockStatementGroup::=
+    	SwitchLabels BlockStatements
+    	;
+
+SwitchLabels::=
+    	SwitchLabel
+		|
+    	SwitchLabels SwitchLabel
+    	;
+
+SwitchLabel::=
+    	CASE ConstantExpression COLON
+		|
+    	DEFAULT COLON
+    	;
+
+WhileStatement::=
+    	WHILE LPAREN Expression RPAREN Statement
+    	;
+
+WhileStatementNoShortIf::=
+    	WHILE LPAREN Expression RPAREN StatementNoShortIf
+    	;
+
+DoStatement::=
+    	DO Statement WHILE LPAREN Expression RPAREN SEMICOLON
+    	;
+
+ForStatement::=
+    	FOR LPAREN ForVarControl RPAREN Statement
+    	;
+
+ForStatementNoShortIf::=
+    	FOR LPAREN ForVarControl RPAREN StatementNoShortIf
+    	;
+
+ForVarControl::=
+		ForInit_opt SEMICOLON Expression_opt SEMICOLON ForUpdate_opt
+		|
+		LocalVariableDeclaration COLON Expression
+		;
+
+
+ForInit_opt::=
+	|
+	ForInit 
+	;
+	 
+Expression_opt::=
+	|
+	Expression 
+	; 
+	
+ForUpdate_opt::=
+	|
+	ForUpdate
+	;
+
+
+ForInit::=
+    	StatementExpressionList
+		|
+    	LocalVariableDeclaration
+    	;
+
+ForUpdate::=
+    	StatementExpressionList
+    	;
+
+StatementExpressionList::=
+    	StatementExpression
+		|
+    	StatementExpressionList COMMA StatementExpression
+    	;
+
+
+Identifier_opt::= 
+		Identifier:i  {: RESULT = i; :}
+		|
+		{: RESULT = ""; :}
+		;
+BreakStatement::=
+    	BREAK Identifier_opt:o SEMICOLON 		{: RESULT = "break "+o+"; "; :}
+    	;
+ContinueStatement::=
+    	CONTINUE Identifier_opt:o SEMICOLON		{: RESULT = "continue "+o+"; "; :}
+    	;
+
+ReturnStatement::=
+    	RETURN Expression_opt:o SEMICOLON		{: RESULT = "return"+o+"; "; :}
+    	;
+
+ThrowStatement::=
+    	THROW Expression:o SEMICOLON			{: RESULT = "throw "+o+"; "; :}
+    	;
+
+SynchronizedStatement::=
+    	SYNCHRONIZED LPAREN Expression:e RPAREN Block:b	{: RESULT = "synchronized ("+e+")"+b; :}
+    	;
+
+TryStatement::=
+    	TRY Block Catches											{: RESULT = "TryStatement-1"; :}
+		|
+    	TRY Block Catches_opt Finally								{: RESULT = "TryStatement-2"; :}
+    	|
+    	TRY LPAREN TryResources RPAREN Block Catches				{: RESULT = "TryStatement-3"; :}
+    	|
+    	TRY LPAREN TryResources RPAREN Block Catches_opt Finally	{: RESULT = "TryStatement-4"; :}
+		|
+		TRY LPAREN TryResources RPAREN Block						{: RESULT = "TryStatement-5"; :}
+    	;
     	
-Expression::= IDENTIFIER:b   {: RESULT = b ; :} 
-			| 
-			INTEGER_LITERAL:b   {: RESULT = b ; :}
-			| 
-			STRING_LITERAL:b   {: RESULT = "\""+b+"\"" ; :}
-			;    	
+TryResources::= Resource						{: RESULT = "TryResources-1"; :}
+		|
+		TryResources SEMICOLON Resource			{: RESULT = "TryResources-2"; :}
+		; 
+
+Resource::=
+    Modifiers_opt Type VariableDeclaratorId BECOMES Expression {: RESULT = "Resource-1"; :}		
+    ;     	
     	
+
+Catches_opt::=	/* empty */ {: RESULT = "Catches_opt-1 (empty)"; :}	
+		|
+		Catches				{: RESULT = "Catches_opt-2"; :}	
+		;
+
+Catches::=
+    	CatchClause			{: RESULT = "Catches-1"; :}	
+		|
+    	Catches CatchClause {: RESULT = "Catches-2"; :}
+    	;
+
+CatchClause::=
+    	CATCH LPAREN CatchTypes VariableDeclaratorId RPAREN Block  		{: RESULT = "CatchClause-2"; :}
+    	;
+
+CatchTypes::= Type
+		|
+		CatchTypes OR Type							{: RESULT = "CatchTypes-1"; :}
+		;  	
+
+Finally::=
+    	FINALLY Block								{: RESULT = "Finally-1"; :}
+    	;
+
+    	
+    /* ********************** EXPRESSION & derivatives ********************************* */  	  	
+
+Expression::=
+		LambdaExpression:e		{: RESULT = e; :}
+		|
+    	AssignmentExpression:e	{: RESULT = e; :}    	
+    	;    	
+    	
+LambdaExpression::=
+    LambdaParameters:p ARROW LambdaBody:e	{: RESULT = p+" -> "+e; :}
+    |
+    IDENTIFIER:p ARROW LambdaBody:e			{: RESULT = p+" -> "+e; :}     
+    ;
+LambdaParameters::=
+    LPAREN RPAREN							{: RESULT = "()"; :}
+    |
+    LPAREN IDENTIFIER:e RPAREN			{: RESULT = "("+e+")"; :}
+	|
+    LPAREN IdentifierList:e RPAREN			{: RESULT = "("+e+")"; :}    
+    ;
+IdentifierList::=	
+	IdentifierList:o COMMA IDENTIFIER:e		{: RESULT = o+", "+e; :}
+	|
+	{: RESULT = ""; :}
+	;	    
+LambdaBody::=
+    Expression:e					{: RESULT = e; :}
+    | 
+    Block:e							{: RESULT = e; :}
+    ;
+AssignmentExpression::=
+    	ConditionalExpression
+		|
+    	Assignment
+    	;
+ConditionalExpression::=
+    	ConditionalOrExpression
+		|
+    	ConditionalOrExpression QUESTION Expression COLON ConditionalExpression
+    	;
+Assignment::=
+    	LeftHandSide AssignmentOperator AssignmentExpression
+    	;
+LeftHandSide::=
+	   	Name
+		|
+    	FieldAccess
+		|
+    	ArrayAccess
+    	;
+AssignmentOperator::= 
+	    BECOMES:i 		{: RESULT = i; :}
+	    | 
+	    PLUS_EQUALS:i 	{: RESULT = i; :}
+	    |
+	    MINUS_EQUALS:i 	{: RESULT = i; :}
+	    |
+	    TIMES_EQUALS:i 	{: RESULT = i; :}
+	    |
+	    DIV_EQUALS:i 	{: RESULT = i; :}
+	    |
+	    AND_EQUALS:i 	{: RESULT = i; :}
+	    |
+	    OR_EQUALS:i 	{: RESULT = i; :}
+	    |
+	    XOR_EQUALS:i 	{: RESULT = i; :}
+	    |
+	    MOD_EQUALS:i 	{: RESULT = i; :}
+	    |
+		SHIFT_LEFT_EQUALS:i 	{: RESULT = i; :}
+		|
+		SHIFT_RIGHT_EQUALS:i 	{: RESULT = i; :}
+		|
+		SHIFT_RIGHT_ARITHM_EQUALS:i {: RESULT = i; :}
+		;
+FieldAccess::=
+    	Primary:p DOT Identifier:i 		{: RESULT = "FieldAccess "+p+"."+i; :}
+		|
+    	SUPER DOT Identifier:i		{: RESULT = "FieldAccess super."+i; :}
+    	;
+
+MethodInvocation::=
+    	Name LPAREN ArgumentList_opt RPAREN
+		|
+    	Primary DOT Identifier LPAREN ArgumentList_opt RPAREN
+		|
+    	SUPER DOT Identifier LPAREN ArgumentList_opt RPAREN
+    	;
+
+
+PostfixExpression::=
+    	Primary
+		|
+    	Name
+		|
+    	PostIncrementExpression
+		|
+    	PostDecrementExpression
+    	;
+
+PostIncrementExpression::=
+    	PostfixExpression INC
+		;
+		
+PostDecrementExpression::=
+    	PostfixExpression DEC
+    	;
+
+UnaryExpression::=
+    	PreIncrementExpression
+		|
+    	PreDecrementExpression
+		|
+    	PLUS UnaryExpression
+		|
+    	MINUS UnaryExpression
+		|
+    	UnaryExpressionNotPlusMinus
+    	;
+
+PreIncrementExpression::=
+    	INC UnaryExpression
+    	;
+
+PreDecrementExpression::=
+    	DEC UnaryExpression
+    	;
+
+UnaryExpressionNotPlusMinus::=
+    	PostfixExpression
+		|
+    	BITWISE_NOT UnaryExpression
+		|
+    	NOT UnaryExpression
+    	|
+    	CastExpression
+    	;
+
+CastExpression::=
+    	LPAREN PrimitiveType Dims_opt RPAREN UnaryExpression
+		|
+    	LPAREN Expression RPAREN UnaryExpressionNotPlusMinus
+		|
+    	LPAREN Name Dims RPAREN UnaryExpressionNotPlusMinus
+    	;
+
+MultiplicativeExpression::=
+    	UnaryExpression
+		|
+    	MultiplicativeExpression TIMES UnaryExpression
+		|
+    	MultiplicativeExpression DIVIDE UnaryExpression
+		|
+    	MultiplicativeExpression MOD UnaryExpression
+    	;
+
+AdditiveExpression::=
+    	MultiplicativeExpression
+		|
+    	AdditiveExpression PLUS MultiplicativeExpression
+		|
+    	AdditiveExpression MINUS MultiplicativeExpression
+    	;
+
+ShiftExpression::=
+    	AdditiveExpression
+		|
+    	ShiftExpression SHIFT_LEFT AdditiveExpression
+		|
+    	ShiftExpression SHIFT_RIGHT AdditiveExpression
+		|
+    	ShiftExpression SHIFT_RIGHT_ARITHM AdditiveExpression
+    	;
+
+RelationalExpression::=
+    	ShiftExpression
+		|
+    	RelationalExpression LT ShiftExpression
+		|
+    	RelationalExpression GT ShiftExpression
+		|
+    	RelationalExpression LE ShiftExpression
+		|
+    	RelationalExpression GE ShiftExpression
+		|
+    	RelationalExpression INSTANCEOF ReferenceType
+    	;
+
+EqualityExpression::=
+    	RelationalExpression
+		|
+    	EqualityExpression EQUALS RelationalExpression
+		|
+    	EqualityExpression NOT_EQUALS RelationalExpression
+    	;
+
+AndExpression::=
+    	EqualityExpression
+		|
+    	AndExpression AND EqualityExpression
+    	;
+
+ExclusiveOrExpression::=
+    	AndExpression
+		|
+    	ExclusiveOrExpression XOR AndExpression
+    	;
+
+InclusiveOrExpression::=
+    	ExclusiveOrExpression
+		|
+    	InclusiveOrExpression OR ExclusiveOrExpression
+    	;
+
+ConditionalAndExpression::=
+    	InclusiveOrExpression
+		|
+    	ConditionalAndExpression DOUBLE_AND InclusiveOrExpression
+    	;
+
+ConditionalOrExpression::=
+    	ConditionalAndExpression
+		|
+    	ConditionalOrExpression DOUBLE_OR ConditionalAndExpression
+    	;		
+Primary::=
+    	PrimaryNoNewArray
+		|
+    	ArrayCreationExpression
+    	;
+
+PrimaryNoNewArray::=
+    	Literal								{: RESULT = "PrimaryNoNewArray-1"; :}
+		|
+    	THIS								{: RESULT = "PrimaryNoNewArray-2"; :}
+		|	
+    	LPAREN Expression RPAREN			{: RESULT = "PrimaryNoNewArray-3"; :}
+		|
+    	ClassInstanceCreationExpression		{: RESULT = "PrimaryNoNewArray-4"; :}
+		|
+    	FieldAccess							{: RESULT = "PrimaryNoNewArray-5"; :}
+		|
+    	MethodInvocation					{: RESULT = "PrimaryNoNewArray-6"; :}
+		|
+    	ArrayAccess							{: RESULT = "PrimaryNoNewArray-7"; :}
+    	;
+
+
+ClassInstanceCreationExpression::=
+    	NEW ClassType LPAREN ArgumentList_opt RPAREN	{: RESULT = "ClassInstanceCreationExpression-1"; :}
+    	;
+
+    	
+    	
+Literal::=
+	INTEGER_LITERAL:i 				{: RESULT = ""+i; :}
+	|
+	FLOATING_POINT_LITERAL:i 		{: RESULT = ""+i; :}
+	|
+	TRUE:i 							{: RESULT = ""+i; :} 
+	| 
+	FALSE:i 						{: RESULT = ""+i; :}
+	|
+	NULL:i 							{: RESULT = ""+i; :}
+	|
+	CHARACTER_LITERAL:i 			{: RESULT = "'"+i+"'"; :}
+	|
+	STRING_LITERAL:i 				{: RESULT = "\""+i+"\""; :}
+	;
+	
+
+Dims_opt::=
+		Dims_opt:o Dims:i		{: RESULT = o+""+i; :}
+		|
+		{: RESULT = ""; :}
+		;
+Dims::=
+    	LBRACKET RBRACKET {: RESULT = "[]"; :}
+		;
+		
+DimExprs::=
+		DimExprs:o DimExpr:i	{: RESULT = o+""+i; :}
+		|
+    	DimExpr:i				{: RESULT = i; :}				
+    	;
+DimExpr::=
+    	LBRACKET Expression:i RBRACKET	{: RESULT = "["+i+"]"; :}
+    	;
     	
