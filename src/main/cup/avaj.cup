@@ -532,15 +532,21 @@ Modifier::=
 	    | VOLATILE:i 		{: RESULT = i ; :}
 	    | STRICTFP:i 		{: RESULT = i ; :}	    
 		;	    
-Name::= Name:n DOT IDENTIFIER:i 		{: RESULT = n+"."+i; :}    	
+Name::= Name:n DOT Identifier:i 		{: RESULT = n+"."+i; :}    	
     	|    	
     	Name:p DOT CLASS				{: RESULT = p+".class"; :}
     	|
     	VOID DOT CLASS					{: RESULT = "void.class"; :}
     	|
-    	IDENTIFIER:i					{: RESULT = i; :}
+    	Identifier:i					{: RESULT = i; :}
     	;
-		
+Identifier::=
+		THIS:i					{: RESULT = i; :}
+		|
+		SUPER:i					{: RESULT = i; :}
+		|
+    	IDENTIFIER:i			{: RESULT = i; :}
+    	;
 
 
 ClassBody::=
@@ -824,7 +830,7 @@ BlockStatements::=
 BlockStatement::=
     	LocalVariableDeclarationStatement	{: RESULT = "BlockStatement-1"; :}
 		|
-    	Statement							{: RESULT = "BlockStatement-2"; :}
+    	Statement:s							{: RESULT = s; :}
     	;
 
 LocalVariableDeclarationStatement::=	
@@ -1183,17 +1189,13 @@ AssignmentOperator::=
 		SHIFT_RIGHT_ARITHM_EQUALS:i {: RESULT = i; :}
 		;
 FieldAccess::=
-    	Primary:p DOT Identifier:i 		{: RESULT = "FieldAccess "+p+"."+i; :}
-		|
-    	SUPER DOT Identifier:i		{: RESULT = "FieldAccess super."+i; :}
+    	Primary:p DOT Identifier:i 		{: RESULT = p+"."+i; :}
     	;
 
 MethodInvocation::=
     	Name LPAREN ArgumentList_opt RPAREN
 		|
     	Primary DOT Identifier LPAREN ArgumentList_opt RPAREN
-		|
-    	SUPER DOT Identifier LPAREN ArgumentList_opt RPAREN
     	;
 
 
@@ -1341,8 +1343,6 @@ Primary::=
 PrimaryNoNewArray::=
     	Literal:i					{: RESULT = i; :}
 		|
-    	THIS:i						{: RESULT = i; :}
-		|	
     	LPAREN Expression:i RPAREN				{: RESULT = "("+i+")"; :}
 		|
     	ClassInstanceCreationExpression:i		{: RESULT = i; :}
