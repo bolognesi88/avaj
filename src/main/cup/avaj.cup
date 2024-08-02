@@ -748,9 +748,11 @@ ArgumentList::=
     	Expression:b   {: RESULT = b ; :} 
 		|
     	ArgumentList:a COMMA Expression:b   {: RESULT = a+", "+b ; :} 
-    	;	    	
-    	
-    	
+    	;	    	    	
+ArgumentList_opt::=    	{: RESULT = "" ; :} 
+		|
+		ArgumentList:i	{: RESULT = i ; :} 
+		;
     	
     	
     	
@@ -828,7 +830,7 @@ BlockStatements::=
     	;
 
 BlockStatement::=
-    	LocalVariableDeclarationStatement	{: RESULT = "BlockStatement-1"; :}
+    	LocalVariableDeclarationStatement:i	{: RESULT = i; :}
 		|
     	Statement:s							{: RESULT = s; :}
     	;
@@ -1150,7 +1152,7 @@ AssignmentExpression::=
 ConditionalExpression::=
     	ConditionalOrExpression:i	{: RESULT = i; :}
 		|
-    	ConditionalOrExpression QUESTION Expression COLON ConditionalExpression
+    	ConditionalOrExpression:i QUESTION Expression:e COLON ConditionalExpression:o    {: RESULT = i+" ? "+e+" : "+o; :}
     	;
 Assignment::=
     	LeftHandSide:a AssignmentOperator:o AssignmentExpression:i		{: RESULT = a+""+o+""+i; :}
@@ -1193,9 +1195,9 @@ FieldAccess::=
     	;
 
 MethodInvocation::=
-    	Name LPAREN ArgumentList_opt RPAREN
+    	Name:i LPAREN ArgumentList_opt:o RPAREN							{: RESULT = i+"("+o+")"; :}
 		|
-    	Primary DOT Identifier LPAREN ArgumentList_opt RPAREN
+    	Primary:p DOT Identifier:i LPAREN ArgumentList_opt:o RPAREN		{: RESULT = p+"."+i+"("+o+")"; :}
     	;
 
 
@@ -1300,9 +1302,9 @@ RelationalExpression::=
 EqualityExpression::=
     	RelationalExpression:i						{: RESULT = i; :}
 		|
-    	EqualityExpression EQUALS RelationalExpression
-		|
-    	EqualityExpression NOT_EQUALS RelationalExpression
+    	EqualityExpression:e EQUALS RelationalExpression:i		{: RESULT = e+"=="+i; :}
+		|	
+    	EqualityExpression:e NOT_EQUALS RelationalExpression:i	{: RESULT = e+"!="+i; :}	
     	;
 
 AndExpression::=

@@ -1,9 +1,10 @@
 
 public class AvajExample extends OutraClasse implements Face1, Face2, Face3 {
 	static {	
+		x();
 		this.texto = "a";
-		this.y.texto = "b";
-		z.texto = "c"+this.texto;
+		this.getY().texto = "b";
+		z.texto = "c"+this.texto.length();
 	}
 	
 	
