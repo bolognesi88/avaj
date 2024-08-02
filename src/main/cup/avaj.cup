@@ -1296,7 +1296,7 @@ RelationalExpression::=
 		|
     	RelationalExpression GE ShiftExpression
 		|
-    	RelationalExpression INSTANCEOF ReferenceType
+    	RelationalExpression INSTANCEOF Type
     	;
 
 EqualityExpression::=
