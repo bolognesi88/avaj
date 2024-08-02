@@ -1358,7 +1358,7 @@ PrimaryNoNewArray::=
 
 
 ClassInstanceCreationExpression::=
-    	NEW ClassType LPAREN ArgumentList_opt RPAREN	{: RESULT = "ClassInstanceCreationExpression-1"; :}
+    	NEW Type:t LPAREN ArgumentList_opt:o RPAREN	{: RESULT = "new "+t+"("+o+")"; :}
     	;
 
     	
@@ -1416,4 +1416,23 @@ ExplicitConstructorInvocation::=
 		|
     	SUPER LPAREN ArgumentList_opt:o RPAREN SEMICOLON		{: RESULT = "super("+o+");"; :}
     	;
+    	
+    	
+    	
+VariableDeclarators::=
+    	VariableDeclarator:i								{: RESULT = i; :}
+		|
+    	VariableDeclarators:s COMMA VariableDeclarator:i	{: RESULT = s+", "+i; :}
+    	;
+VariableDeclarator::=
+    	VariableDeclaratorId:i							 {: RESULT = i; :}
+		|
+    	VariableDeclaratorId:i BECOMES VariableInitializer:v {: RESULT = i+" = "+v; :}
+    	;
+VariableDeclaratorId::=
+    	Identifier:i										{: RESULT = i; :}
+		|
+    	VariableDeclaratorId:i LBRACKET RBRACKET			{: RESULT = i+"[]"; :}
+    	;
+
     	
