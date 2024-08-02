@@ -418,8 +418,44 @@ Goal::=
     	CompilationUnit:i  		{: RESULT = i; :}
     	;
 
-CompilationUnit::=
-    	TypeDeclarations_opt:t	{: RESULT = t; :}
+CompilationUnit::=    	
+    	PackageDeclaration_opt:p ImportDeclarations_opt:i TypeDeclarations_opt:t	{: RESULT = p+"\n"+i+"\n"+t; :}
+    	;
+
+
+
+
+PackageDeclaration_opt::= {: RESULT = ""; :}
+		|
+		PackageDeclaration:i						{: RESULT = i; :}
+		;
+PackageDeclaration::=
+    	PACKAGE Name:i SEMICOLON				{: RESULT = "package "+i+"; "; :}
+    	;
+		 
+ImportDeclarations_opt::= {: RESULT = ""; :}
+		|
+		ImportDeclarations:i						{: RESULT = i; :}
+		;
+ImportDeclarations::=
+    	ImportDeclaration:i						{: RESULT = i ; :}
+		|
+    	ImportDeclarations:s ImportDeclaration:i	{: RESULT = s+""+i; :}
+    	;
+ImportDeclaration::=
+    	SingleTypeImportDeclaration:i				{: RESULT = i; :}
+		|
+    	TypeImportOnDemandDeclaration:i				{: RESULT = i; :}
+    	;
+SingleTypeImportDeclaration::=
+    	IMPORT STATIC Name:i SEMICOLON					{: RESULT = "import static "+i+";\n"; :}
+    	|
+    	IMPORT Name:i SEMICOLON							{: RESULT = "import "+i+";\n"; :}
+    	;		
+TypeImportOnDemandDeclaration::=
+    	IMPORT STATIC Name:i DOT TIMES SEMICOLON		{: RESULT = "import static "+i+".*;\n"; :}
+    	|
+    	IMPORT Name:i DOT TIMES SEMICOLON				{: RESULT = "import "+i+".*;\n"; :}
     	;
 
 
