@@ -1268,9 +1268,9 @@ MultiplicativeExpression::=
 AdditiveExpression::=
     	MultiplicativeExpression:i						{: RESULT = i; :}
 		|
-    	AdditiveExpression PLUS MultiplicativeExpression
+    	AdditiveExpression:a PLUS MultiplicativeExpression:i						{: RESULT = a+"+"+i; :}
 		|
-    	AdditiveExpression MINUS MultiplicativeExpression
+    	AdditiveExpression:a MINUS MultiplicativeExpression:i						{: RESULT = a+"-"+i; :}
     	;
 
 ShiftExpression::=
