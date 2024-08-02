@@ -2,6 +2,7 @@
 public class AvajExample extends OutraClasse implements Face1, Face2, Face3 {
 	public AvajExample(){
 		super(1);
+		return new String[0];
 	}
 	
 	@Enumerated

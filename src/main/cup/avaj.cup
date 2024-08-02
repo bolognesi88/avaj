@@ -1015,9 +1015,9 @@ ForInit_opt::=
 	ForInit 
 	;
 	 
-Expression_opt::=
+Expression_opt::= {: RESULT = ""; :}
 	|
-	Expression 
+	Expression:i {: RESULT = i; :}
 	; 
 	
 ForUpdate_opt::=
@@ -1056,7 +1056,7 @@ ContinueStatement::=
     	;
 
 ReturnStatement::=
-    	RETURN Expression_opt:o SEMICOLON		{: RESULT = "return"+o+"; "; :}
+    	RETURN Expression_opt:o SEMICOLON		{: RESULT = "return "+o+"; "; :}
     	;
 
 ThrowStatement::=
@@ -1398,7 +1398,9 @@ DimExpr::=
     	LBRACKET Expression:i RBRACKET	{: RESULT = "["+i+"]"; :}
     	;
     	
-    	
+ArrayCreationExpression::=
+    	NEW Type:i DimExprs:e {: RESULT = "new "+i+""+e; :}
+    	;
     	
     	
 /* ************ ctors *********************** */
