@@ -2,7 +2,7 @@
 public class AvajExample extends OutraClasse implements Face1, Face2, Face3 {
 	public AvajExample(){
 		super(1);
-		String ip = ((int)FacesContext.getCurrentInstance().getExternalContext().getRequest()).getRemoteAddr();
+		final String ip = ((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getRemoteAddr();
 		return new String[0];
 	}
 	

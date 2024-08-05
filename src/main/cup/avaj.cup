@@ -842,7 +842,7 @@ LocalVariableDeclarationStatement::=
 LocalVariableDeclaration::=
     	Type:t VariableDeclarators:v						{: RESULT = t+""+v; :}
     	|
-    	VariableModifiers:m Type:t VariableDeclarators:v	{: RESULT = m+""+t+""+v; :}
+    	Modifiers:m Type:t VariableDeclarators:v			{: RESULT = m+""+t+""+v; :}
     	;
 
 Statement::=
@@ -1270,7 +1270,7 @@ PrimitiveType::=
 CastExpression::=
     	LPAREN PrimitiveType:t Dims_opt:o RPAREN UnaryExpression:e 	{: RESULT = "\n(cast as "+t+""+o+")"+e; :}
 		|
-    	LPAREN Expression:t RPAREN UnaryExpressionNotPlusMinus:e	{: RESULT = "\n(cast as "+t+")"+e; :}
+    	LPAREN Name:t RPAREN UnaryExpressionNotPlusMinus:e	{: RESULT = "\n(cast as "+t+")"+e; :}
 		|
     	LPAREN Name:t Dims:o RPAREN UnaryExpressionNotPlusMinus:e	{: RESULT = "\n(cast as "+t+""+o+")"+e; :}
     	;
