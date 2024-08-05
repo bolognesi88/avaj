@@ -1250,11 +1250,11 @@ UnaryExpressionNotPlusMinus::=
     	;
 
 CastExpression::=
-    	LPAREN PrimitiveType Dims_opt RPAREN UnaryExpression
+    	LPAREN PrimitiveType:t Dims_opt:o RPAREN UnaryExpression:e 	{: RESULT = "\n(cast as "+t+""+o+")"+e; :}
 		|
-    	LPAREN Expression RPAREN UnaryExpressionNotPlusMinus
+    	LPAREN Expression:t RPAREN UnaryExpressionNotPlusMinus:e	{: RESULT = "\n(cast as "+t+")"+e; :}
 		|
-    	LPAREN Name Dims RPAREN UnaryExpressionNotPlusMinus
+    	LPAREN Name:t Dims:o RPAREN UnaryExpressionNotPlusMinus:e	{: RESULT = "\n(cast as "+t+""+o+")"+e; :}
     	;
 
 MultiplicativeExpression::=
