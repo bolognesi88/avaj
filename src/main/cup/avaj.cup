@@ -1249,6 +1249,24 @@ UnaryExpressionNotPlusMinus::=
     	CastExpression:i						{: RESULT = i; :}
     	;
 
+PrimitiveType::=
+    	BOOLEAN:i 	{: RESULT = i; :}
+    	|
+	    BYTE:i 		{: RESULT = i; :}
+	    |
+	    SHORT:i 	{: RESULT = i; :}    
+	    |
+	    INT:i 		{: RESULT = i; :}
+	    |
+	    LONG:i 		{: RESULT = i; :}
+	    |
+	    CHAR:i 		{: RESULT = i; :}
+		|
+	    FLOAT:i 	{: RESULT = i; :}
+    	|
+    	DOUBLE:i 	{: RESULT = i; :}
+		;
+
 CastExpression::=
     	LPAREN PrimitiveType:t Dims_opt:o RPAREN UnaryExpression:e 	{: RESULT = "\n(cast as "+t+""+o+")"+e; :}
 		|
