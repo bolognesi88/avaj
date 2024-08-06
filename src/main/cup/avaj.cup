@@ -1268,11 +1268,13 @@ PrimitiveType::=
 		;
 
 CastExpression::=
-    	LPAREN PrimitiveType:t Dims_opt:o RPAREN UnaryExpression:e 	{: RESULT = "\n(cast as "+t+""+o+")"+e; :}
+    	LPAREN PrimitiveType:t Dims_opt:o RPAREN UnaryExpression:e 	{: RESULT = "("+t+""+o+")"+e; :}
 		|
-    	LPAREN Name:t RPAREN UnaryExpressionNotPlusMinus:e	{: RESULT = "\n(cast as "+t+")"+e; :}
+    	LPAREN Expression:t RPAREN UnaryExpressionNotPlusMinus:e	{: RESULT = "("+t+")"+e; :}
 		|
-    	LPAREN Name:t Dims:o RPAREN UnaryExpressionNotPlusMinus:e	{: RESULT = "\n(cast as "+t+""+o+")"+e; :}
+    	LPAREN Name:t Dims:o RPAREN UnaryExpressionNotPlusMinus:e	{: RESULT = "("+t+""+o+")"+e; :}
+    	|
+    	LambdaParameters:i UnaryExpressionNotPlusMinus:e	{: RESULT = i+" "+e; :} /* i know its wrong! */
     	;
 
 MultiplicativeExpression::=
