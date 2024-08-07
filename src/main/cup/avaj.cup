@@ -622,9 +622,10 @@ Type::=
     	Type:i LT GT {: RESULT = i+"<>"; :}
     	|
     	Type:i LT InterfaceTypeList:j GT {: RESULT = i+"<"+j+">"; :}
-    	;    	
+    	;
+    	    	
 ArrayAccess::=
-/* fixme será?    	Name DimExpr
+		/* Name:a DimExpr:b {: RESULT = a+" "+b; :}
 		| */
     	PrimaryNoNewArray:a DimExpr:b {: RESULT = a+" "+b; :}
     	;
@@ -840,9 +841,9 @@ LocalVariableDeclarationStatement::=
     	;
 
 LocalVariableDeclaration::=
-    	Type:t VariableDeclarators:v						{: RESULT = t+""+v; :}
+    	Type:t VariableDeclarators:v						{: RESULT = t+" "+v; :}
     	|
-    	Modifiers:m Type:t VariableDeclarators:v			{: RESULT = m+""+t+""+v; :}
+    	Modifiers:m Type:t VariableDeclarators:v			{: RESULT = m+" "+t+" "+v; :}
     	;
 
 Statement::=
@@ -936,11 +937,11 @@ StatementExpression::=
 		;
 		
 IfThenStatement::=
-    	IF LPAREN Expression RPAREN Statement
+    	IF LPAREN Expression:e RPAREN Statement:i			{: RESULT = "if ("+e+") "+i; :}
     	;
 
 IfThenElseStatement::=
-    	IF LPAREN Expression RPAREN StatementNoShortIf ELSE Statement
+    	IF LPAREN Expression:e RPAREN StatementNoShortIf:n ELSE Statement:i			{: RESULT = "if ("+e+") "+n+""+i; :}
     	;
 
 IfThenElseStatementNoShortIf::=
@@ -996,23 +997,23 @@ DoStatement::=
     	;
 
 ForStatement::=
-    	FOR LPAREN ForVarControl RPAREN Statement
+    	FOR LPAREN ForVarControl:v RPAREN Statement:i			{: RESULT = "for ("+v+") "+i; :}
     	;
 
 ForStatementNoShortIf::=
-    	FOR LPAREN ForVarControl RPAREN StatementNoShortIf
+    	FOR LPAREN ForVarControl:v RPAREN StatementNoShortIf:i			{: RESULT = "for ("+v+") "+i; :}
     	;
 
 ForVarControl::=
 		ForInit_opt SEMICOLON Expression_opt SEMICOLON ForUpdate_opt
 		|
-		LocalVariableDeclaration COLON Expression
+		LocalVariableDeclaration:v COLON Expression:i			{: RESULT = v+": "+i; :}
 		;
 
 
-ForInit_opt::=
+ForInit_opt::= {: RESULT = ""; :}
 	|
-	ForInit 
+	ForInit :i			{: RESULT = i; :}
 	;
 	 
 Expression_opt::= {: RESULT = ""; :}
