@@ -3,7 +3,6 @@ public class AvajExample extends OutraClasse implements Face1, Face2, Face3 {
 	public AvajExample(){
 		super(1);
 		final String ip = ((HttpServletRequest) (FacesContext.getCurrentInstance().getExternalContext())).getRequest();
-		retorno[i++] = retorno[++i];
 		return new String[0];
 	}
 	
@@ -147,6 +146,9 @@ public class Subclass1{
 class C5 {
 
 
-
+	static {
+		retorno[i++] = retorno[++i];
+		retorno[i] = 0;
+	}
 
 }

@@ -834,10 +834,12 @@ BlockStatement::=
     	LocalVariableDeclarationStatement:i	{: RESULT = i; :}
 		|
     	Statement:s							{: RESULT = s; :}
+    	|
+    	error:e								{: RESULT = "\n\n // FIXME ERROR :"+e+"\n\n"; :}
     	;
 
 LocalVariableDeclarationStatement::=	
-    	LocalVariableDeclaration:i SEMICOLON	{: RESULT = i+";"; :}
+    	LocalVariableDeclaration:i SEMICOLON	{: RESULT = i+"; /* local variable declaration statement */"; :}
     	;
 
 LocalVariableDeclaration::=
@@ -921,7 +923,7 @@ ExpressionStatement::=
     	;
 
 StatementExpression::=
-    	Assignment:i					{: RESULT = i; :}
+    	Assignment:i					{: RESULT = i+" /* statement expression assignment */"; :}
 		|
     	PreIncrementExpression:i		{: RESULT = i; :}
 		|
@@ -945,43 +947,43 @@ IfThenElseStatement::=
     	;
 
 IfThenElseStatementNoShortIf::=
-    	IF LPAREN Expression RPAREN StatementNoShortIf ELSE StatementNoShortIf
+    	IF LPAREN Expression:e RPAREN StatementNoShortIf:n ELSE StatementNoShortIf:i	{: RESULT = "if ("+e+") "+n+""+i; :}
 		;
 		
 SwitchStatement::=
-    	SWITCH LPAREN Expression RPAREN SwitchBlock
+    	SWITCH LPAREN Expression:e RPAREN SwitchBlock:b	{: RESULT = "switch ("+e+") "+b; :}
     	;
 
 SwitchBlock::=
-    	LBRACE SwitchBlockStatementGroups SwitchLabels RBRACE
+    	LBRACE SwitchBlockStatementGroups:b SwitchLabels:i RBRACE		{: RESULT = "{"+b+" "+i+"}"; :}
     	|
-    	LBRACE SwitchBlockStatementGroups  RBRACE
+    	LBRACE SwitchBlockStatementGroups:b  RBRACE						{: RESULT = "{"+b+"}"; :}
     	|
-    	LBRACE SwitchLabels RBRACE
+    	LBRACE SwitchLabels:i RBRACE									{: RESULT = "{"+i+"}"; :}
     	|
-    	LBRACE RBRACE
+    	LBRACE RBRACE													{: RESULT = "{ }"; :}	
     	;
 
 SwitchBlockStatementGroups::=
-    	SwitchBlockStatementGroup
+    	SwitchBlockStatementGroup:i		{: RESULT = i; :}
 		|
-    	SwitchBlockStatementGroups SwitchBlockStatementGroup
+    	SwitchBlockStatementGroups:s SwitchBlockStatementGroup:i		{: RESULT = s+" "+i; :}
     	;
 
 SwitchBlockStatementGroup::=
-    	SwitchLabels BlockStatements
+    	SwitchLabels:s BlockStatements:i		{: RESULT = s+" "+i; :}
     	;
 
 SwitchLabels::=
-    	SwitchLabel
+    	SwitchLabel:i						{: RESULT = i; :}
 		|
-    	SwitchLabels SwitchLabel
+    	SwitchLabels:s SwitchLabel:i		{: RESULT = s+" "+i; :}
     	;
 
 SwitchLabel::=
-    	CASE ConstantExpression COLON
+    	CASE ConstantExpression:i COLON			{: RESULT = "case "+i+": "; :}
 		|
-    	DEFAULT COLON
+    	DEFAULT COLON							{: RESULT = "default: "; :}
     	;
 
 WhileStatement::=
@@ -1021,26 +1023,26 @@ Expression_opt::= {: RESULT = ""; :}
 	Expression:i {: RESULT = i; :}
 	; 
 	
-ForUpdate_opt::=
+ForUpdate_opt::= {: RESULT = ""; :}
 	|
-	ForUpdate
+	ForUpdate:i		{: RESULT = i; :}
 	;
 
 
 ForInit::=
-    	StatementExpressionList
+    	StatementExpressionList:i		{: RESULT = i; :}
 		|
-    	LocalVariableDeclaration
+    	LocalVariableDeclaration:i		{: RESULT = i; :}
     	;
 
 ForUpdate::=
-    	StatementExpressionList
+    	StatementExpressionList:i		{: RESULT = i; :}
     	;
 
 StatementExpressionList::=
-    	StatementExpression
+    	StatementExpression:i		{: RESULT = i; :}
 		|
-    	StatementExpressionList COMMA StatementExpression
+    	StatementExpressionList:s COMMA StatementExpression:i		{: RESULT = s+", "+i; :}
     	;
 
 
