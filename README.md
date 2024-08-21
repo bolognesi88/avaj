@@ -27,10 +27,15 @@ Avaj was supposed to be a java superset, but now I don giv a fick anymore. It se
 
 Avaj is an acronym that stands for:
 
-A-vajisa  
+A-vaj-is-a
+  
 V-ery
+
 A-wesome
-J-avaextension.
+
+J-ava-extension.
+
+
 
 
 
