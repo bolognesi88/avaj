@@ -276,7 +276,8 @@ nonterminal	Catches	;
 nonterminal	CatchClause	;
 nonterminal	Finally	;
 nonterminal	Primary	;
-nonterminal	CreationExpression	;
+nonterminal	PrimaryNoNewArray	;
+nonterminal	ClassInstanceCreationExpression	;
 nonterminal	ArgumentList_opt	;
 nonterminal	ArgumentList	;
 nonterminal	ArrayCreationExpression	;
@@ -354,11 +355,11 @@ nonterminal AnnotationMethodOrConstantRest;
 nonterminal AnnotationMethodRest;
 nonterminal ConstantDeclaratorRest;
 
-nonterminal ExpressionList;
+
 
 
 nonterminal LambdaExpression;
-nonterminal ParentherizedExpressionList;
+nonterminal LambdaParameters;
 nonterminal IdentifierList;	
 nonterminal LambdaBody;
 nonterminal VariableModifier;
@@ -413,41 +414,101 @@ start with Goal;
 /* Productions */
 /* 19.2 Productions from §2.3: The Syntactic Grammar */
 
-Goal::= Block:b 	{: RESULT = b; :}
-	;
-    	
-Block::=
-    	LBRACE BlockStatements_opt:o RBRACE	{: RESULT = "{"+o+"}"; :}	
+Goal::=
+    	CompilationUnit:i  		{: RESULT = i; :}
     	;
-    	
 
-BlockStatements_opt::=	{: RESULT = ""; :}	
+CompilationUnit::=    	
+    	PackageDeclaration_opt:p ImportDeclarations_opt:i TypeDeclarations_opt:t	{: RESULT = p+"\n"+i+"\n"+t; :}
+    	;
+
+
+
+
+PackageDeclaration_opt::= {: RESULT = ""; :}
 		|
-		BlockStatements:b					{: RESULT = b; :}	
-		;    	
-
-BlockStatements::=
-    	BlockStatement:b					{: RESULT = b; :}
+		PackageDeclaration:i						{: RESULT = i; :}
+		;
+PackageDeclaration::=
+    	PACKAGE Name:i SEMICOLON				{: RESULT = "package "+i+"; "; :}
+    	;
+		 
+ImportDeclarations_opt::= {: RESULT = ""; :}
 		|
-    	BlockStatements:s BlockStatement:b	{: RESULT = s+"\n\t\t"+b; :}
-    	;
-
-BlockStatement::=
-    	LocalVariableDeclarationStatement:i	{: RESULT = i; :}
+		ImportDeclarations:i						{: RESULT = i; :}
+		;
+ImportDeclarations::=
+    	ImportDeclaration:i						{: RESULT = i ; :}
 		|
-    	Statement:s							{: RESULT = s; :}
+    	ImportDeclarations:s ImportDeclaration:i	{: RESULT = s+""+i; :}
     	;
-
-LocalVariableDeclarationStatement::=	
-    	LocalVariableDeclaration:i SEMICOLON	{: RESULT = i+";"; :}
+ImportDeclaration::=
+    	SingleTypeImportDeclaration:i				{: RESULT = i; :}
+		|
+    	TypeImportOnDemandDeclaration:i				{: RESULT = i; :}
     	;
-
-LocalVariableDeclaration::=
-    	Name:t VariableDeclarators:v						{: RESULT = t+" "+v; :}
+SingleTypeImportDeclaration::=
+    	IMPORT STATIC Name:i SEMICOLON					{: RESULT = "import static "+i+";\n"; :}
     	|
-    	Modifiers:m Name:t VariableDeclarators:v			{: RESULT = m+" "+t+" "+v; :}
+    	IMPORT Name:i SEMICOLON							{: RESULT = "import "+i+";\n"; :}
+    	;		
+TypeImportOnDemandDeclaration::=
+    	IMPORT STATIC Name:i DOT TIMES SEMICOLON		{: RESULT = "import static "+i+".*;\n"; :}
+    	|
+    	IMPORT Name:i DOT TIMES SEMICOLON				{: RESULT = "import "+i+".*;\n"; :}
     	;
 
+
+
+
+
+
+
+
+TypeDeclarations_opt::= TypeDeclarations_opt:o Modifiers:m TypeDeclaration:t		{: RESULT = o+"\n"+m+" "+t; :}
+		|
+		TypeDeclarations_opt:o TypeDeclaration:t		{: RESULT = o+"\n"+t; :}
+		| 
+		{: RESULT = ""; :}
+    	;
+TypeDeclaration::=
+    	CLASS ClassDeclaration:i					{: RESULT = i; :}
+    	|
+    	INTERFACE InterfaceDeclaration:i			{: RESULT = i; :}
+    	|
+		ENUM EnumDeclaration:i						{: RESULT = i; :}
+		|
+		AT INTERFACE AnnotationTypeDeclaration:i	{: RESULT = i; :}
+    	;
+ClassDeclaration::=
+    	IDENTIFIER:i Super_opt:s Interfaces_opt:r ClassBody:b {: RESULT = "class "+i+s+r+" "+b; :}
+    	;
+InterfaceDeclaration::=
+    	IDENTIFIER:i ExtendsInterfaces_opt:r InterfaceBody:b {: RESULT = "interface "+i+r+" "+b; :}
+    	;
+EnumDeclaration::=
+    	IDENTIFIER:i Interfaces_opt:r EnumBody:b  {: RESULT = "enum "+i+r+" "+b; :}
+    	;
+AnnotationTypeDeclaration::=
+    	IDENTIFIER:i AnnotationTypeBody:b {: RESULT = "@interface "+i+" "+b; :}
+    	;
+Super_opt::= EXTENDS Name:n 		{: RESULT = " extends "+n; :}
+		|
+		{: RESULT = ""; :}
+		;
+Interfaces_opt::= IMPLEMENTS InterfaceTypeList:i	{: RESULT = " implements "+i; :}
+		|
+		{: RESULT = ""; :}
+		;
+ExtendsInterfaces_opt::= EXTENDS InterfaceTypeList:i	{: RESULT = " extends "+i; :}
+		|
+		{: RESULT = ""; :}
+		;
+InterfaceTypeList::=
+    	InterfaceTypeList:i COMMA Type:n		{: RESULT = i+", "+n; :}
+    	|
+    	Type:n									{: RESULT = n; :}
+    	;
 Modifiers::=
 		Modifiers:m Modifier:n 			{: RESULT = m+" "+n; :}
 	    |
@@ -455,6 +516,8 @@ Modifiers::=
 	    ;
 Modifier::=	    
 		AT Name:i LPAREN AnnotationElement:p RPAREN						{: RESULT = "@"+i+"("+p+")"; :}
+		|
+		AT Name:i LPAREN RPAREN						{: RESULT = "@"+i+"()"; :}
 		|
 		AT Name:i		{: RESULT = "@"+i; :}										
 		| FINAL:i 			{: RESULT = i ; :}
@@ -468,25 +531,265 @@ Modifier::=
 	    | TRANSIENT:i 		{: RESULT = i ; :}
 	    | VOLATILE:i 		{: RESULT = i ; :}
 	    | STRICTFP:i 		{: RESULT = i ; :}	    
+		;	    
+Name::= Name:n DOT Identifier:i 		{: RESULT = n+"."+i; :}    	
+    	|    	
+    	Name:p DOT CLASS				{: RESULT = p+".class"; :}
+    	|
+    	VOID DOT CLASS					{: RESULT = "void.class"; :}
+    	|
+    	Identifier:i					{: RESULT = i; :}
+    	;
+Identifier::=
+		THIS:i					{: RESULT = i; :}
+		|
+		SUPER:i					{: RESULT = i; :}
+		|
+    	IDENTIFIER:i			{: RESULT = i; :}
+    	;
+
+
+ClassBody::=
+    	LBRACE ClassBodyDeclarations_opt:o RBRACE		{: RESULT = "{ "+o+" }"; :}
+    	;
+InterfaceBody::=
+    	LBRACE InterfaceMemberDeclarations_opt:o RBRACE		{: RESULT = "{ "+o+" }"; :}
+    	;
+EnumBody::=
+    	LBRACE EnumBodyDeclarations:i RBRACE		{: RESULT = "{ "+i+" }"; :}
+    	;
+AnnotationTypeBody::=
+    	LBRACE AnnotationTypeElementDeclarations:i RBRACE		{: RESULT = "{ "+i+" }"; :}
+    	|
+    	LBRACE RBRACE		{: RESULT = "{ }"; :}
+    	;
+    	
+    	
+ClassBodyDeclarations_opt::=	
+		ClassBodyDeclarations_opt:o Modifiers:m ClassBodyDeclaration:i {: RESULT = o+" "+m+" "+i; :}
+		|
+		ClassBodyDeclarations_opt:o ClassBodyDeclaration:i {: RESULT = o+" "+i; :}
+		|
+		{: RESULT = ""; :}
 		;
-
-
-VariableDeclarators::=
-    	VariableDeclarator:i								{: RESULT = i; :}
+ClassBodyDeclaration::=
+    	CLASS ClassDeclaration:i					{: RESULT = i; :}
+    	|
+    	INTERFACE InterfaceDeclaration:i			{: RESULT = i; :}
+    	|
+		ENUM EnumDeclaration:i						{: RESULT = i; :}
 		|
-    	VariableDeclarators:s COMMA VariableDeclarator:i	{: RESULT = s+", "+i; :}
-    	;
-VariableDeclarator::=
-    	VariableDeclaratorId:i							 {: RESULT = i; :}
+		AT INTERFACE AnnotationTypeDeclaration:i	{: RESULT = i; :}
 		|
-    	VariableDeclaratorId:i BECOMES VariableInitializer:v {: RESULT = i+" = "+v; :}
-    	;
-VariableDeclaratorId::=
-    	Identifier:i										{: RESULT = i; :}
+		Block:i										{: RESULT = i; :}
 		|
-    	VariableDeclaratorId:i LBRACKET RBRACKET			{: RESULT = i+"[]"; :}
+		Type:t IDENTIFIER:i LPAREN FormalParameterList_opt:p RPAREN Throws_opt:e MethodBody:b {: RESULT = t+" "+i+"("+p+") "+e+" "+b; :}
+		|
+		Type:t IDENTIFIER:i BECOMES Expression:e SEMICOLON {: RESULT = t+" "+i+" = "+e+";"; :}
+		|
+		Type:t IDENTIFIER:i SEMICOLON {: RESULT = t+" "+i+";"; :}
+		|
+		IDENTIFIER:i LPAREN FormalParameterList_opt:p RPAREN Throws_opt:e ConstructorBody:b {: RESULT = i+"("+p+") "+e+" "+b; :}		
+		|
+		SEMICOLON {: RESULT = ";"; :}
+		;
+		
+		
+    	
+Type::=
+    	BOOLEAN:i 	{: RESULT = i; :}
+    	|
+	    BYTE:i 		{: RESULT = i; :}
+	    |
+	    SHORT:i 	{: RESULT = i; :}    
+	    |
+	    INT:i 		{: RESULT = i; :}
+	    |
+	    LONG:i 		{: RESULT = i; :}
+	    |
+	    CHAR:i 		{: RESULT = i; :}
+		|
+	    FLOAT:i 	{: RESULT = i; :}
+    	|
+    	DOUBLE:i 	{: RESULT = i; :}
+    	|
+    	VOID:i 		{: RESULT = i; :}
+    	|
+    	Name:i 		{: RESULT = i; :}
+    	|
+    	Type:i Dims:d {: RESULT = i+""+d; :}
+    	|
+    	Type:i LT GT {: RESULT = i+"<>"; :}
+    	|
+    	Type:i LT InterfaceTypeList:j GT {: RESULT = i+"<"+j+">"; :}
     	;
-
+    	    	
+ArrayAccess::=
+		/* Name:a DimExpr:b {: RESULT = a+" "+b; :}
+		| */
+    	PrimaryNoNewArray:a DimExpr:b {: RESULT = a+" "+b; :}
+    	;
+    	
+    	
+FormalParameterList_opt::=	FormalParameterList_opt:o COMMA FormalParameter:p {: RESULT = o+", "+p; :}
+		|
+		FormalParameter:p		{: RESULT = p; :}
+		|    	
+		{: RESULT = ""; :}
+    	;
+FormalParameter::=
+    	Modifiers:m Type:t IDENTIFIER:i				{: RESULT = m+""+t+" "+i; :}
+    	|
+    	Modifiers:m Type:t ELLIPSIS IDENTIFIER:i	{: RESULT = m+""+t+"..."+i; :}
+    	|
+    	Type:t IDENTIFIER:i				{: RESULT = t+" "+i; :}
+    	|
+    	Type:t ELLIPSIS IDENTIFIER:i	{: RESULT = t+"..."+i; :}
+    	;
+Throws_opt::=
+    	THROWS InterfaceTypeList:j				{: RESULT = "throws "+j; :}
+    	|
+    	{: RESULT = ""; :}
+    	;
+MethodBody::=
+    	Block:b   {: RESULT = b ; :}
+		|
+    	SEMICOLON {: RESULT = ";"; :}
+    	;
+    	
+    	
+    	
+    	
+    	
+    	
+InterfaceMemberDeclarations_opt::=	
+		InterfaceMemberDeclarations_opt:o Modifiers:m ClassBodyDeclaration:i {: RESULT = o+" "+m+" "+i; :}
+		|
+		InterfaceMemberDeclarations_opt:o DEFAULT ClassBodyDeclaration:i {: RESULT = o+" default "+i; :}
+		|
+		InterfaceMemberDeclarations_opt:o ClassBodyDeclaration:i {: RESULT = o+" "+i; :}
+		|
+		{: RESULT = ""; :}
+		;
+		    	
+    	
+    	
+    	
+    	
+/** Annotations **/ 
+AnnotationElement::=
+		    ElementValuePairs:i		{: RESULT = i; :}
+		    |
+		    ElementValue:i			{: RESULT = i; :}
+		    ;
+ElementValuePairs::= ElementValuePair:i 					{: RESULT = i; :}
+			|
+			ElementValuePairs:p COMMA ElementValuePair:i	{: RESULT = p+", "+i; :}
+			;
+ElementValuePair::= IDENTIFIER:i BECOMES ElementValue:p		{: RESULT = i+"="+p; :}
+			;
+ElementValue::=  Annotation:i					{: RESULT = i; :}
+			|
+		    Expression:i						{: RESULT = i; :}
+		    |
+		    ElementValueArrayInitializer:i		{: RESULT = i; :}
+		    ;
+ElementValueArrayInitializer::= 
+			LBRACE ElementValues:i COMMA RBRACE		{: RESULT = "{"+i+",}"; :}
+			|
+			LBRACE ElementValues:i RBRACE			{: RESULT = "{"+i+"}"; :}
+			|
+			LBRACE COMMA RBRACE						{: RESULT = "{,}"; :}
+			|
+			LBRACE RBRACE							{: RESULT = "{}"; :}
+			;
+ElementValues ::= ElementValue:i						{: RESULT = i; :}
+			|
+			ElementValues:p COMMA	ElementValue:i		{: RESULT = p+", "+i; :}
+			;
+				    	
+    	
+    	
+    	
+    	
+EnumBodyDeclarations::=
+    EnumConstants:c COMMA			{: RESULT = c+", "; :}
+    | 
+    EnumConstants:c SEMICOLON ClassBodyDeclarations_opt:o		{: RESULT = c+"; "+o; :}    
+    |
+    {: RESULT = ""; :}
+    ;
+EnumConstants::=
+    EnumConstants:c COMMA Annotations_opt:o IDENTIFIER:i EnumConstant:e			{: RESULT = c+", "+o+" "+i+" "+e; :}
+    |
+    Annotations_opt:o IDENTIFIER:i EnumConstant:e	 							{: RESULT = o+" "+i+" "+e; :}
+    ;
+EnumConstant::=
+    LPAREN ArgumentList:p RPAREN ClassBody:b	{: RESULT = "("+p+") "+b; :}
+    |
+    LPAREN ArgumentList:p RPAREN				{: RESULT = "("+p+")"; :}
+    |
+    ClassBody:b											{: RESULT = b; :}
+    |
+    {: RESULT = ""; :}	
+    ;
+Annotations_opt::=
+	Annotations_opt:o Annotation:i		{: RESULT = o+" "+i; :}
+	|
+	{: RESULT = ""; :}
+	;
+Annotation::=
+		AT Name:i LPAREN AnnotationElement:p RPAREN			{: RESULT = "@"+i+"("+p+")"; :}
+		|
+		AT Name:i LPAREN RPAREN								{: RESULT = "@"+i+"()"; :}
+		|
+		AT Name:i											{: RESULT = "@"+i; :}
+		;	
+ArgumentList::=
+    	Expression:b   {: RESULT = b ; :} 
+		|
+    	ArgumentList:a COMMA Expression:b   {: RESULT = a+", "+b ; :} 
+    	;	    	    	
+ArgumentList_opt::=    	{: RESULT = "" ; :} 
+		|
+		ArgumentList:i	{: RESULT = i ; :} 
+		;
+    	
+    	
+    	
+AnnotationTypeElementDeclarations::=
+	AnnotationTypeElementDeclarations:o Modifiers:m AnnotationTypeElementDeclaration:a		{: RESULT = o+" "+m+" "+a; :}
+	|
+	AnnotationTypeElementDeclarations:o AnnotationTypeElementDeclaration:a					{: RESULT = o+" "+a; :}
+	|
+    Modifiers:m AnnotationTypeElementDeclaration:a 											{: RESULT = m+" "+a; :}
+    |
+    AnnotationTypeElementDeclaration:a														{: RESULT = a; :}    
+    ;
+AnnotationTypeElementDeclaration::=
+		CLASS ClassDeclaration:i					{: RESULT = i; :}
+    	|
+    	INTERFACE InterfaceDeclaration:i			{: RESULT = i; :}
+    	|
+		ENUM EnumDeclaration:i						{: RESULT = i; :}
+		|
+		AT INTERFACE AnnotationTypeDeclaration:i	{: RESULT = i; :}
+		|
+		Type:t IDENTIFIER:i AnnotationMethodOrConstantRest:e SEMICOLON {: RESULT = t+" "+i+" "+e+"; "; :}
+	    ;
+AnnotationMethodOrConstantRest::=
+    LPAREN RPAREN LBRACKET RBRACKET DEFAULT ElementValue:e		{: RESULT = "() [] default "+e; :}
+    |
+    LPAREN RPAREN DEFAULT ElementValue:e						{: RESULT = "() default "+e; :}
+    |
+    LPAREN RPAREN LBRACKET RBRACKET								{: RESULT = "() []"; :}
+    |
+    LPAREN RPAREN 												{: RESULT = "()"; :}
+	|
+    LBRACKET RBRACKET BECOMES VariableInitializer:i				{: RESULT = "[] = "+i; :}
+    |
+    BECOMES VariableInitializer:i								{: RESULT = " = "+i; :}
+    ;
 VariableInitializer::=
     	Expression:e			{: RESULT = e; :}
 		|
@@ -506,7 +809,44 @@ ArrayInitializer::=
     	|    	
     	LBRACE RBRACE									{: RESULT = "[]"; :}
     	;
+    	
+    	
+    	
+  /* ********************** BLOCK & derivatives ********************************* */  	
+    	
+Block::=
+    	LBRACE BlockStatements_opt:o RBRACE	{: RESULT = "{"+o+"}"; :}	
+    	;
+    	
+    	
+BlockStatements_opt::=	{: RESULT = ""; :}	
+		|
+		BlockStatements:b					{: RESULT = b; :}	
+		;    	
 
+BlockStatements::=
+    	BlockStatement:b					{: RESULT = b; :}
+		|
+    	BlockStatements:s BlockStatement:b	{: RESULT = s+" "+b; :}
+    	;
+
+BlockStatement::=
+    	LocalVariableDeclarationStatement:i	{: RESULT = i; :}
+		|
+    	Statement:s							{: RESULT = s; :}
+    	|
+    	error:e								{: RESULT = "\n\n // FIXME ERROR :"+e+"\n\n"; :}
+    	;
+
+LocalVariableDeclarationStatement::=	
+    	LocalVariableDeclaration:i SEMICOLON	{: RESULT = i+"; /* local variable declaration statement */"; :}
+    	;
+
+LocalVariableDeclaration::=
+    	Type:t VariableDeclarators:v						{: RESULT = t+" "+v; :}
+    	|
+    	Modifiers:m Type:t VariableDeclarators:v			{: RESULT = m+" "+t+" "+v; :}
+    	;
 
 Statement::=
     	StatementWithoutTrailingSubstatement:i		{: RESULT = i; :}
@@ -522,151 +862,7 @@ Statement::=
     	ForStatement:i			{: RESULT = i; :}
     	|
     	AssertStatement:i		{: RESULT = i; :}
-    	|
-    	error:i					{: RESULT = " /* ERROR FIXME! */ "; :}	
     	;
-
-StatementWithoutTrailingSubstatement::=
-    	Block:i							{: RESULT = i; :}
-		|
-    	ExpressionStatement:i			{: RESULT = i; :}    	
-    	|
-    	EmptyStatement:i				{: RESULT = i; :}
-		|
-    	SwitchStatement:i				{: RESULT = i; :}
-		|
-    	DoStatement:i					{: RESULT = i; :}
-		|
-    	BreakStatement:i				{: RESULT = i; :}
-		|
-    	ContinueStatement:i				{: RESULT = i; :}
-		|
-    	ReturnStatement:i				{: RESULT = i; :}
-		|
-    	SynchronizedStatement:i			{: RESULT = i; :}
-		|
-    	ThrowStatement:i				{: RESULT = i; :}
-		|
-    	TryStatement:i					{: RESULT = i; :}
-    	;
-
-EmptyStatement::=
-		SEMICOLON:i		{: RESULT = "; /* empty statement */ "; :}
-    	;
-
-ExpressionStatement::=
-    	StatementExpression:i SEMICOLON		{: RESULT = i+";"; :}
-    	|
-    	Name:i SEMICOLON		{: RESULT = i+";"; :}
-    	;
-
-StatementExpression::=
-    	Assignment:i					{: RESULT = i; :}    	
-		|
-    	PreIncrementExpression:i		{: RESULT = i; :}
-		|
-    	PreDecrementExpression:i		{: RESULT = i; :}
-		|
-    	PostIncrementExpression:i		{: RESULT = i; :}
-		|
-    	PostDecrementExpression:i		{: RESULT = i; :}
-		|
-    	CreationExpression:i		{: RESULT = i; :}
-		;
-
-Assignment::=
-    	Name:a AssignmentOperator:o AssignmentExpression:i		{: RESULT = a+" "+o+" "+i; :}
-    	;
-    	
-AssignmentOperator::= 
-	    BECOMES:i 		{: RESULT = i; :}
-	    | 
-	    PLUS_EQUALS:i 	{: RESULT = i; :}
-	    |
-	    MINUS_EQUALS:i 	{: RESULT = i; :}
-	    |
-	    TIMES_EQUALS:i 	{: RESULT = i; :}
-	    |
-	    DIV_EQUALS:i 	{: RESULT = i; :}
-	    |
-	    AND_EQUALS:i 	{: RESULT = i; :}
-	    |
-	    OR_EQUALS:i 	{: RESULT = i; :}
-	    |
-	    XOR_EQUALS:i 	{: RESULT = i; :}
-	    |
-	    MOD_EQUALS:i 	{: RESULT = i; :}
-	    |
-		SHIFT_LEFT_EQUALS:i 	{: RESULT = i; :}
-		|
-		SHIFT_RIGHT_EQUALS:i 	{: RESULT = i; :}
-		|
-		SHIFT_RIGHT_ARITHM_EQUALS:i {: RESULT = i; :}
-		;
-    	
-    	
-ExpressionList::= ExpressionList:o COMMA Expression:e {: RESULT = o+", "+e; :}
-		|
-		Expression:e    	{: RESULT = e; :}
-		; 
-
-			    
-Name::= Name:n DOT Identifier:i 		{: RESULT = n+"."+i; :}    	
-    	|    	
-    	Name:p DOT CLASS				{: RESULT = p+".class"; :}
-    	|
-    	Name:i LBRACKET Expression:j RBRACKET {: RESULT = i+"["+j+"]"; :}
-    	|
-    	Name:i LBRACKET RBRACKET{: RESULT = i+"[]"; :}
-    	|
-    	Name:i LT GT {: RESULT = i+"<>"; :}
-    	|
-    	Name:i LT InterfaceTypeList:j GT {: RESULT = i+"<"+j+">"; :}  
-    	|
-    	Name:i ParentherizedExpressionList:j {: RESULT = i+""+j+""; :}     	
-    	|
-    	Identifier:i					{: RESULT = i; :}
-    	|
-    	PrimitiveType:i 		{: RESULT = i; :}
-    	;
-    	
-Identifier::=
-		THIS:i					{: RESULT = i; :}
-		|
-		SUPER:i					{: RESULT = i; :}
-		|
-    	IDENTIFIER:i			{: RESULT = i; :}
-    	;
-
-
-PrimitiveType::=
-    	BOOLEAN:i 	{: RESULT = i; :}
-    	|
-	    BYTE:i 		{: RESULT = i; :}
-	    |
-	    SHORT:i 	{: RESULT = i; :}    
-	    |
-	    INT:i 		{: RESULT = i; :}
-	    |
-	    LONG:i 		{: RESULT = i; :}
-	    |
-	    CHAR:i 		{: RESULT = i; :}
-		|
-	    FLOAT:i 	{: RESULT = i; :}
-    	|
-    	DOUBLE:i 	{: RESULT = i; :}
-    	|
-    	VOID:i 	{: RESULT = i; :}
-		;
-    	    	
-InterfaceTypeList::=
-    	InterfaceTypeList:i COMMA Name:n		{: RESULT = i+", "+n; :}
-    	|
-    	Name:n									{: RESULT = n; :}
-    	;
-    	
-    	
-    	
     	
 AssertStatement::=    	
     	ASSERT Expression:a COLON Expression:b SEMICOLON	 {: RESULT = "assert "+a+": "+b+"; "; :}
@@ -686,8 +882,33 @@ StatementNoShortIf::=
     	ForStatementNoShortIf:i				{: RESULT = i; :}
     	;
 
+StatementWithoutTrailingSubstatement::=
+    	Block:i							{: RESULT = i; :}
+		|
+    	EmptyStatement:i				{: RESULT = i; :}
+		|
+    	ExpressionStatement:i			{: RESULT = i; :}
+		|
+    	SwitchStatement:i				{: RESULT = i; :}
+		|
+    	DoStatement:i					{: RESULT = i; :}
+		|
+    	BreakStatement:i				{: RESULT = i; :}
+		|
+    	ContinueStatement:i				{: RESULT = i; :}
+		|
+    	ReturnStatement:i				{: RESULT = i; :}
+		|
+    	SynchronizedStatement:i			{: RESULT = i; :}
+		|
+    	ThrowStatement:i				{: RESULT = i; :}
+		|
+    	TryStatement:i					{: RESULT = i; :}
+    	;
 
-
+EmptyStatement::=
+		SEMICOLON:i		{: RESULT = "; "; :}
+    	;
 
 LabeledStatement::=
     	Identifier:i COLON Statement:s		{: RESULT = i+": "+s; :}
@@ -697,6 +918,25 @@ LabeledStatementNoShortIf::=
     	Identifier:i COLON StatementNoShortIf:s		{: RESULT = i+": "+s; :}
     	;
 
+ExpressionStatement::=
+    	StatementExpression:i SEMICOLON		{: RESULT = i+"; "; :}
+    	;
+
+StatementExpression::=
+    	Assignment:i					{: RESULT = i+" /* statement expression assignment */"; :}
+		|
+    	PreIncrementExpression:i		{: RESULT = i; :}
+		|
+    	PreDecrementExpression:i		{: RESULT = i; :}
+		|
+    	PostIncrementExpression:i		{: RESULT = i; :}
+		|
+    	PostDecrementExpression:i		{: RESULT = i; :}
+		|
+    	MethodInvocation:i				{: RESULT = i; :}
+		|
+    	ClassInstanceCreationExpression:i		{: RESULT = i; :}
+		;
 		
 IfThenStatement::=
     	IF LPAREN Expression:e RPAREN Statement:i			{: RESULT = "if ("+e+") "+i; :}
@@ -767,9 +1007,7 @@ ForStatementNoShortIf::=
     	;
 
 ForVarControl::=
-		ForInit_opt SEMICOLON Expression SEMICOLON ForUpdate_opt
-		|
-		ForInit_opt SEMICOLON SEMICOLON ForUpdate_opt
+		ForInit_opt SEMICOLON Expression_opt SEMICOLON ForUpdate_opt
 		|
 		LocalVariableDeclaration:v COLON Expression:i			{: RESULT = v+": "+i; :}
 		;
@@ -780,6 +1018,11 @@ ForInit_opt::= {: RESULT = ""; :}
 	ForInit :i			{: RESULT = i; :}
 	;
 	 
+Expression_opt::= {: RESULT = ""; :}
+	|
+	Expression:i {: RESULT = i; :}
+	; 
+	
 ForUpdate_opt::= {: RESULT = ""; :}
 	|
 	ForUpdate:i		{: RESULT = i; :}
@@ -816,9 +1059,7 @@ ContinueStatement::=
     	;
 
 ReturnStatement::=
-    	RETURN Expression:o SEMICOLON		{: RESULT = "return "+o+"; "; :}
-    	|
-    	RETURN SEMICOLON		{: RESULT = "return;"; :}
+    	RETURN Expression_opt:o SEMICOLON		{: RESULT = "return "+o+"; "; :}
     	;
 
 ThrowStatement::=
@@ -847,7 +1088,7 @@ TryResources::= Resource						{: RESULT = "TryResources-1"; :}
 		; 
 
 Resource::=
-    Modifiers_opt Name VariableDeclaratorId BECOMES Expression {: RESULT = "Resource-1"; :}		
+    Modifiers_opt Type VariableDeclaratorId BECOMES Expression {: RESULT = "Resource-1"; :}		
     ;     	
     	
 
@@ -866,9 +1107,9 @@ CatchClause::=
     	CATCH LPAREN CatchTypes VariableDeclaratorId RPAREN Block  		{: RESULT = "CatchClause-2"; :}
     	;
 
-CatchTypes::= Name
+CatchTypes::= Type
 		|
-		CatchTypes OR Name							{: RESULT = "CatchTypes-1"; :}
+		CatchTypes OR Type							{: RESULT = "CatchTypes-1"; :}
 		;  	
 
 Finally::=
@@ -885,17 +1126,22 @@ Expression::=
     	;    	
     	
 LambdaExpression::=
-    ParentherizedExpressionList:p ARROW LambdaBody:e	{: RESULT = p+" -> "+e; :}
+    LambdaParameters:p ARROW LambdaBody:e	{: RESULT = p+" -> "+e; :}
     |
     IDENTIFIER:p ARROW LambdaBody:e			{: RESULT = p+" -> "+e; :}     
     ;
-    
-ParentherizedExpressionList::=
+LambdaParameters::=
     LPAREN RPAREN							{: RESULT = "()"; :}
     |
-    LPAREN ExpressionList:e RPAREN			{: RESULT = "("+e+")"; :}    
+    LPAREN IDENTIFIER:e RPAREN			{: RESULT = "("+e+")"; :}
+	|
+    LPAREN IdentifierList:e RPAREN			{: RESULT = "("+e+")"; :}    
     ;
-
+IdentifierList::=	
+	IdentifierList:o COMMA IDENTIFIER:e		{: RESULT = o+", "+e; :}
+	|
+	{: RESULT = ""; :}
+	;	    
 LambdaBody::=
     Expression:e					{: RESULT = e; :}
     | 
@@ -911,9 +1157,57 @@ ConditionalExpression::=
 		|
     	ConditionalOrExpression:i QUESTION Expression:e COLON ConditionalExpression:o    {: RESULT = i+" ? "+e+" : "+o; :}
     	;
+Assignment::=
+    	LeftHandSide:a AssignmentOperator:o AssignmentExpression:i		{: RESULT = a+""+o+""+i; :}
     	
+    	;
+LeftHandSide::=
+	   	Name:i				{: RESULT = i; :}
+		|
+    	FieldAccess:i		{: RESULT = i; :}
+		|
+    	ArrayAccess:i		{: RESULT = i; :}
+    	;
+AssignmentOperator::= 
+	    BECOMES:i 		{: RESULT = i; :}
+	    | 
+	    PLUS_EQUALS:i 	{: RESULT = i; :}
+	    |
+	    MINUS_EQUALS:i 	{: RESULT = i; :}
+	    |
+	    TIMES_EQUALS:i 	{: RESULT = i; :}
+	    |
+	    DIV_EQUALS:i 	{: RESULT = i; :}
+	    |
+	    AND_EQUALS:i 	{: RESULT = i; :}
+	    |
+	    OR_EQUALS:i 	{: RESULT = i; :}
+	    |
+	    XOR_EQUALS:i 	{: RESULT = i; :}
+	    |
+	    MOD_EQUALS:i 	{: RESULT = i; :}
+	    |
+		SHIFT_LEFT_EQUALS:i 	{: RESULT = i; :}
+		|
+		SHIFT_RIGHT_EQUALS:i 	{: RESULT = i; :}
+		|
+		SHIFT_RIGHT_ARITHM_EQUALS:i {: RESULT = i; :}
+		;
+FieldAccess::=
+    	Primary:p DOT Identifier:i 		{: RESULT = p+"."+i; :}
+    	;
+
+MethodInvocation::=
+    	Name:i LPAREN ArgumentList_opt:o RPAREN							{: RESULT = i+"("+o+")"; :}
+		|
+    	Primary:p DOT Identifier:i LPAREN ArgumentList_opt:o RPAREN		{: RESULT = p+"."+i+"("+o+")"; :}
+    	;
+
+
 PostfixExpression::=
     	Primary:i						{: RESULT = i; :}
+		|
+    	Name:i							{: RESULT = i; :}
 		|
     	PostIncrementExpression:i		{: RESULT = i; :}
 		|
@@ -958,9 +1252,32 @@ UnaryExpressionNotPlusMinus::=
     	CastExpression:i						{: RESULT = i; :}
     	;
 
+PrimitiveType::=
+    	BOOLEAN:i 	{: RESULT = i; :}
+    	|
+	    BYTE:i 		{: RESULT = i; :}
+	    |
+	    SHORT:i 	{: RESULT = i; :}    
+	    |
+	    INT:i 		{: RESULT = i; :}
+	    |
+	    LONG:i 		{: RESULT = i; :}
+	    |
+	    CHAR:i 		{: RESULT = i; :}
+		|
+	    FLOAT:i 	{: RESULT = i; :}
+    	|
+    	DOUBLE:i 	{: RESULT = i; :}
+		;
 
 CastExpression::=
-    	ParentherizedExpressionList:i UnaryExpression:e 	{: RESULT = i+" "+e; :} 	
+    	LPAREN PrimitiveType:t Dims_opt:o RPAREN UnaryExpression:e 	{: RESULT = "("+t+""+o+")"+e; :}
+		|
+    	LPAREN Expression:t RPAREN UnaryExpressionNotPlusMinus:e	{: RESULT = "("+t+")"+e; :}
+		|
+    	LPAREN Name:t Dims:o RPAREN UnaryExpressionNotPlusMinus:e	{: RESULT = "("+t+""+o+")"+e; :}
+    	|
+    	LambdaParameters:i UnaryExpressionNotPlusMinus:e	{: RESULT = i+" "+e; :} /* i know its wrong! */
     	;
 
 MultiplicativeExpression::=
@@ -994,15 +1311,15 @@ ShiftExpression::=
 RelationalExpression::=
     	ShiftExpression:i						{: RESULT = i; :}
 		|
-    	RelationalExpression:e LT ShiftExpression:i						{: RESULT = e+"<"+i; :}
+    	RelationalExpression LT ShiftExpression
 		|
-    	RelationalExpression:e GT ShiftExpression:i						{: RESULT = e+">"+i; :}
+    	RelationalExpression GT ShiftExpression
 		|
-    	RelationalExpression:e LE ShiftExpression:i						{: RESULT = e+"<="+i; :}
+    	RelationalExpression LE ShiftExpression
 		|
-    	RelationalExpression:e GE ShiftExpression:i						{: RESULT = e+">="+i; :}
+    	RelationalExpression GE ShiftExpression
 		|
-    	RelationalExpression:e INSTANCEOF Name:i						{: RESULT = e+" instanceof "+i; :}
+    	RelationalExpression INSTANCEOF Type
     	;
 
 EqualityExpression::=
@@ -1040,25 +1357,31 @@ ConditionalAndExpression::=
 ConditionalOrExpression::=
     	ConditionalAndExpression:i						{: RESULT = i; :}
 		|
-    	ConditionalOrExpression:s DOUBLE_OR ConditionalAndExpression:i						{: RESULT = s+" || "+i; :}
+    	ConditionalOrExpression DOUBLE_OR ConditionalAndExpression
     	;		
-    	
-    	
 Primary::=
+    	PrimaryNoNewArray:i				{: RESULT = i; :}
+		|
+    	ArrayCreationExpression:i		{: RESULT = i; :}
+    	;
+
+PrimaryNoNewArray::=
     	Literal:i					{: RESULT = i; :}
 		|
-    	ParentherizedExpressionList:i				{: RESULT = i; :}
+    	LPAREN Expression:i RPAREN				{: RESULT = "("+i+")"; :}
 		|
-    	CreationExpression:i		{: RESULT = i; :}
+    	ClassInstanceCreationExpression:i		{: RESULT = i; :}
 		|
-    	Name:i				{: RESULT = i; :}
-    	|
-    	Primary:i DOT Primary:j {: RESULT = i+"."+j; :}
+    	FieldAccess:i				{: RESULT = i; :}
+		|
+    	MethodInvocation:i			{: RESULT = i; :}
+		|
+    	ArrayAccess:i				{: RESULT = i; :}
     	;
 
 
-CreationExpression::=
-    	NEW Name:t {: RESULT = "new "+t; :}
+ClassInstanceCreationExpression::=
+    	NEW Type:t LPAREN ArgumentList_opt:o RPAREN	{: RESULT = "new "+t+"("+o+")"; :}
     	;
 
     	
@@ -1079,6 +1402,28 @@ Literal::=
 	STRING_LITERAL:i 				{: RESULT = "\""+i+"\""; :}
 	;
 	
+
+Dims_opt::=
+		Dims_opt:o Dims:i		{: RESULT = o+""+i; :}
+		|
+		{: RESULT = ""; :}
+		;
+Dims::=
+    	LBRACKET RBRACKET {: RESULT = "[]"; :}
+		;
+		
+DimExprs::=
+		DimExprs:o DimExpr:i	{: RESULT = o+""+i; :}
+		|
+    	DimExpr:i				{: RESULT = i; :}				
+    	;
+DimExpr::=
+    	LBRACKET Expression:i RBRACKET	{: RESULT = "["+i+"]"; :}
+    	;
+    	
+ArrayCreationExpression::=
+    	NEW Type:i DimExprs:e {: RESULT = "new "+i+""+e; :}
+    	;
     	
     	
 /* ************ ctors *********************** */
@@ -1099,5 +1444,20 @@ ExplicitConstructorInvocation::=
     	
     	
     	
+VariableDeclarators::=
+    	VariableDeclarator:i								{: RESULT = i; :}
+		|
+    	VariableDeclarators:s COMMA VariableDeclarator:i	{: RESULT = s+", "+i; :}
+    	;
+VariableDeclarator::=
+    	VariableDeclaratorId:i							 {: RESULT = i; :}
+		|
+    	VariableDeclaratorId:i BECOMES VariableInitializer:v {: RESULT = i+" = "+v; :}
+    	;
+VariableDeclaratorId::=
+    	Identifier:i										{: RESULT = i; :}
+		|
+    	VariableDeclaratorId:i LBRACKET RBRACKET			{: RESULT = i+"[]"; :}
+    	;
 
     	

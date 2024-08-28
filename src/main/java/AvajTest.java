@@ -4,6 +4,7 @@ import Parser.Java7Parser;
 import Parser.Java7Sym;
 import Scanner.Java7Scanner;
 import Throwables.CompilerException;
+import TypeNodes.AvajLRParser;
 import java_cup.runtime.Symbol;
 
 public class AvajTest{
@@ -57,13 +58,14 @@ public class AvajTest{
 	            			{
 	            			  debug_message("Symbol #" + 
 	            					((Symbol)stack.elementAt(i)).sym
+	            					+" ["+AvajLRParser.symbolNames.get(((Symbol)stack.elementAt(i)).sym)+"]"
 	            			  		+ " " +((Symbol)stack.elementAt(i)).value 
-	            					//+ " State: " + ((Symbol)stack.elementAt(i)).parse_state)
-	            			  			);
+	            					+ " State: " + ((Symbol)stack.elementAt(i)).parse_state
+	            			  );
 	            			}
 	            		      debug_message("==========================================");
 	            		    
-	            		System.err.println("\\+"+s.sym+": "+symbl_name_from_id(s.sym));
+	            		// System.err.println("\\+"+s.sym+": "+symbl_name_from_id(s.sym));
 	            		return s;
 	            	}
 	            };
