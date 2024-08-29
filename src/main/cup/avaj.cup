@@ -822,9 +822,7 @@ Statement::=
 		|
     	ForStatement:i			{: RESULT = i; :}
     	|
-    	AssertStatement:i		{: RESULT = i; :}
-    	|
-    	error:i					{: RESULT = " /* ERROR FIXME! */ "; :}	
+    	AssertStatement:i		{: RESULT = i; :}    	
     	;
 
 StatementWithoutTrailingSubstatement::=
@@ -987,7 +985,7 @@ SwitchLabels::=
     	;
 
 SwitchLabel::=
-    	CASE ConstantExpression:i COLON			{: RESULT = "case "+i+": "; :}
+    	CASE Expression:i COLON			{: RESULT = "case "+i+": "; :}
 		|
     	DEFAULT COLON							{: RESULT = "default: "; :}
     	;
