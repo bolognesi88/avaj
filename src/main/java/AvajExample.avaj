@@ -23,5 +23,21 @@ public class MyClass
 		this.texto = "a";
 		this.getY().texto = "b";
 		z.texto = "c"+this.texto.length();
+		
+		switch (fun.getCodest()) {
+		case 10:
+		case 21:
+		case 22:
+		case 25:
+		case 35:
+			return "MS";
+		case 2:
+		case 3:
+			return "MA";
+		case 17:
+			return "DEER";
+		default:
+			return "Proc";
+		}		
 	}
 }
