@@ -1,4 +1,6 @@
+public class MyClass
 {
+	private void meuMetodo(){
 		double d;
 		float x,y;
 		int i=3, j=4;
@@ -21,8 +23,5 @@
 		this.texto = "a";
 		this.getY().texto = "b";
 		z.texto = "c"+this.texto.length();
-		
-		
-
-		
+	}
 }
