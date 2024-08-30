@@ -1,5 +1,17 @@
-public class MyClass
-{
+public class MyClass {
+
+	private Class<? extends ItemDoFormulario> classe;
+	Map<Integer, ItemDoFormulario> mapaItens = new HashMap<Integer, ItemDoFormulario>();
+	
+
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumns( {
+		   @JoinColumn(name = "r034fun_numemp", referencedColumnName = "numemp"),
+		   @JoinColumn(name = "r034fun_tipcol", referencedColumnName = "tipcol"),
+		   @JoinColumn(name = "r034fun_numcad", referencedColumnName = "numcad") 
+		})
+	private R034funBase r034fun;
+
 	private void meuMetodo(){
 		double d;
 		float x,y;
@@ -39,5 +51,6 @@ public class MyClass
 		default:
 			return "Proc";
 		}		
+				
 	}
 }

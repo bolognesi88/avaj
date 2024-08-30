@@ -191,7 +191,7 @@ nonterminal	Super_opt	;
 nonterminal	Interfaces_opt	;
 nonterminal	Super	;
 nonterminal	Interfaces	;
-nonterminal	InterfaceTypeList	;
+nonterminal	TypeList	;
 nonterminal	ClassBody	;
 nonterminal	ClassBodyDeclarations_opt	;
 nonterminal	ClassBodyDeclarations	;
@@ -380,7 +380,8 @@ nonterminal WildcardBounds;
 
 nonterminal CreationExpression;
 nonterminal ExpressionList;
-nonterminal ParentherizedExpressionList;
+nonterminal ParenthesizedExpressionList;
+nonterminal WildcardType;
 
 
 /* Precedence declarations */
@@ -497,19 +498,30 @@ Super_opt::= EXTENDS Name:n 		{: RESULT = " extends "+n; :}
 		|
 		{: RESULT = ""; :}
 		;
-Interfaces_opt::= IMPLEMENTS InterfaceTypeList:i	{: RESULT = " implements "+i; :}
+Interfaces_opt::= IMPLEMENTS TypeList:i	{: RESULT = " implements "+i; :}
 		|
 		{: RESULT = ""; :}
 		;
-ExtendsInterfaces_opt::= EXTENDS InterfaceTypeList:i	{: RESULT = " extends "+i; :}
+ExtendsInterfaces_opt::= EXTENDS TypeList:i	{: RESULT = " extends "+i; :}
 		|
 		{: RESULT = ""; :}
 		;
-InterfaceTypeList::=
-    	InterfaceTypeList:i COMMA Name:n		{: RESULT = i+", "+n; :}
+TypeList::=
+    	TypeList:i COMMA WildcardType:n		{: RESULT = i+", "+n; :}
     	|
-    	Name:n									{: RESULT = n; :}
+    	WildcardType:n									{: RESULT = n; :}
     	;
+    	
+    	
+WildcardType::=
+		Name:n						{: RESULT = n; :}
+		|
+		QUESTION EXTENDS Name:n 	{: RESULT = "? extends "+n; :}
+		|
+		QUESTION SUPER Name:n		{: RESULT = "? super "+n; :}
+		|
+		QUESTION					{: RESULT = "?"; :}
+		;	
     	
     	
 Modifiers::=
@@ -596,7 +608,7 @@ FormalParameter::=
     	Name:t ELLIPSIS IDENTIFIER:i	{: RESULT = t+"..."+i; :}
     	;
 Throws_opt::=
-    	THROWS InterfaceTypeList:j				{: RESULT = "throws "+j; :}
+    	THROWS TypeList:j				{: RESULT = "throws "+j; :}
     	|
     	{: RESULT = ""; :}
     	;
@@ -627,7 +639,9 @@ InterfaceMemberDeclarations_opt::=
     	
 /** Annotations **/ 
 AnnotationElement::=
-		    LPAREN ElementValuePairs:i RPAREN		{: RESULT = "("+i+")"; :}		    		   
+		    LPAREN ElementValuePairs:i RPAREN		{: RESULT = "("+i+")"; :}	
+		    |	    		   
+		    LPAREN ElementValueArrayInitializer:i RPAREN		{: RESULT = "("+i+")"; :}
 		    ;
 ElementValuePairs::= ElementValuePair:i 					{: RESULT = i; :}
 			|
@@ -1129,12 +1143,12 @@ Expression::=
     	;    	
     	
 LambdaExpression::=
-    ParentherizedExpressionList:p ARROW LambdaBody:e	{: RESULT = p+" -> "+e; :}
+    ParenthesizedExpressionList:p ARROW LambdaBody:e	{: RESULT = p+" -> "+e; :}
     |
     IDENTIFIER:p ARROW LambdaBody:e			{: RESULT = p+" -> "+e; :}     
     ;
     
-ParentherizedExpressionList::=
+ParenthesizedExpressionList::=
     LPAREN RPAREN							{: RESULT = "()"; :}
     |
     LPAREN ExpressionList:e RPAREN			{: RESULT = "("+e+")"; :}    
@@ -1204,7 +1218,7 @@ UnaryExpressionNotPlusMinus::=
 
 
 CastExpression::=
-    	ParentherizedExpressionList:i UnaryExpression:e 	{: RESULT = i+" "+e; :} 	
+    	ParenthesizedExpressionList:i UnaryExpression:e 	{: RESULT = i+" "+e; :} 	
     	;
 
 MultiplicativeExpression::=
@@ -1291,7 +1305,7 @@ ConditionalOrExpression::=
 Primary::=
     	Literal:i					{: RESULT = i; :}
 		|
-    	ParentherizedExpressionList:i				{: RESULT = i; :}
+    	ParenthesizedExpressionList:i				{: RESULT = i; :}
 		|
     	CreationExpression:i		{: RESULT = i; :}
 		|
@@ -1354,9 +1368,9 @@ Name::= Name:n DOT Identifier:i 		{: RESULT = n+"."+i; :}
     	|
     	Name:i LT GT {: RESULT = i+"<>"; :}
     	|
-    	Name:i LT InterfaceTypeList:j GT {: RESULT = i+"<"+j+">"; :}  
+    	Name:i LT TypeList:j GT {: RESULT = i+"<"+j+">"; :}  
     	|
-    	Name:i ParentherizedExpressionList:j {: RESULT = i+""+j+""; :}     	
+    	Name:i ParenthesizedExpressionList:j {: RESULT = i+""+j+""; :}     	
     	|
     	Identifier:i					{: RESULT = i; :}
     	|
